@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="AppBundle\Entity\Badge" table="badge">
+    <indexes>
+      <index name="FK1_Badge_CreatedBy" columns="CreatedBy"/>
+      <index name="FK2_Badge_ModifiedBy" columns="ModifiedBy"/>
+      <index name="FK2_Badge_Registration_ID" columns="Registration_ID"/>
+      <index name="FK2_Registration_BadgeType_ID" columns="BadgeType_ID"/>
+      <index name="FK2_Registration_BadgeStatus_ID" columns="BadgeStatus_ID"/>
+    </indexes>
+    <id name="badgeId" type="integer" column="Badge_ID">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="number" type="string" column="Number" length="255" nullable="false">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="createddate" type="datetime" column="CreatedDate" nullable="true"/>
+    <field name="modifieddate" type="datetime" column="ModifiedDate" nullable="true"/>
+    <many-to-one field="badgestatus" target-entity="Badgestatus" fetch="LAZY">
+      <join-columns>
+        <join-column name="BadgeStatus_ID" referenced-column-name="BadgeStatus_ID"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="badgetype" target-entity="Badgetype" fetch="LAZY">
+      <join-columns>
+        <join-column name="BadgeType_ID" referenced-column-name="BadgeType_ID"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="createdby" target-entity="User" fetch="LAZY">
+      <join-columns>
+        <join-column name="CreatedBy" referenced-column-name="User_ID"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="modifiedby" target-entity="User" fetch="LAZY">
+      <join-columns>
+        <join-column name="ModifiedBy" referenced-column-name="User_ID"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="registration" target-entity="Registration" fetch="LAZY">
+      <join-columns>
+        <join-column name="Registration_ID" referenced-column-name="Registration_ID"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

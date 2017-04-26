@@ -1,0 +1,77 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Registrationhistory
+ *
+ * @ORM\Table(name="registrationhistory", indexes={@ORM\Index(name="FK1_RegistrationHistory_Registration_ID", columns={"Registration_ID"}), @ORM\Index(name="FK2_RegistrationHistory_CreatedBy", columns={"CreatedBy"}), @ORM\Index(name="FK3_RegistrationHistory_ModifiedBy", columns={"ModifiedBy"})})
+ * @ORM\Entity
+ */
+class Registrationhistory
+{
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="ChangeText", type="text", length=65535, nullable=false)
+     */
+    private $changetext;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="CreatedDate", type="datetime", nullable=true)
+     */
+    private $createddate;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="ModifiedDate", type="datetime", nullable=true)
+     */
+    private $modifieddate;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="RegistrationHistory_ID", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $registrationhistoryId;
+
+    /**
+     * @var \AppBundle\Entity\Registration
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Registration")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="Registration_ID", referencedColumnName="Registration_ID")
+     * })
+     */
+    private $registration;
+
+    /**
+     * @var \AppBundle\Entity\User
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="CreatedBy", referencedColumnName="User_ID")
+     * })
+     */
+    private $createdby;
+
+    /**
+     * @var \AppBundle\Entity\User
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="ModifiedBy", referencedColumnName="User_ID")
+     * })
+     */
+    private $modifiedby;
+
+
+}
+

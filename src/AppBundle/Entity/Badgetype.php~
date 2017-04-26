@@ -1,0 +1,74 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Badgetype
+ *
+ * @ORM\Table(name="badgetype", indexes={@ORM\Index(name="FK1_BadgeType_CreatedBy", columns={"CreatedBy"}), @ORM\Index(name="FK2_BadgeType_ModifiedBy", columns={"ModifiedBy"})})
+ * @ORM\Entity
+ */
+class Badgetype
+{
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="Name", type="string", length=255, nullable=false)
+     */
+    private $name;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="Description", type="string", length=255, nullable=false)
+     */
+    private $description;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="CreatedDate", type="datetime", nullable=true)
+     */
+    private $createddate;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="ModifiedDate", type="datetime", nullable=true)
+     */
+    private $modifieddate;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="BadgeType_ID", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $badgetypeId;
+
+    /**
+     * @var \AppBundle\Entity\User
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="CreatedBy", referencedColumnName="User_ID")
+     * })
+     */
+    private $createdby;
+
+    /**
+     * @var \AppBundle\Entity\User
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="ModifiedBy", referencedColumnName="User_ID")
+     * })
+     */
+    private $modifiedby;
+
+
+}
+

@@ -1,0 +1,81 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Registrationstatus
+ *
+ * @ORM\Table(name="registrationstatus", indexes={@ORM\Index(name="FK1_RegistrationStatus_CreatedBy", columns={"CreatedBy"}), @ORM\Index(name="FK2_RegistrationStatus_ModifiedBy", columns={"ModifiedBy"})})
+ * @ORM\Entity
+ */
+class Registrationstatus
+{
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="Status", type="string", length=255, nullable=false)
+     */
+    private $status;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="Description", type="string", length=255, nullable=false)
+     */
+    private $description;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="Active", type="string", length=255, nullable=false)
+     */
+    private $active = 'false';
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="CreatedDate", type="datetime", nullable=true)
+     */
+    private $createddate;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="ModifiedDate", type="datetime", nullable=true)
+     */
+    private $modifieddate;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="RegistrationStatus_ID", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $registrationstatusId;
+
+    /**
+     * @var \AppBundle\Entity\User
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="CreatedBy", referencedColumnName="User_ID")
+     * })
+     */
+    private $createdby;
+
+    /**
+     * @var \AppBundle\Entity\User
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="ModifiedBy", referencedColumnName="User_ID")
+     * })
+     */
+    private $modifiedby;
+
+
+}
+

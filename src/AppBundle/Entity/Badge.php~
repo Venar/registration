@@ -1,0 +1,97 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Badge
+ *
+ * @ORM\Table(name="badge", indexes={@ORM\Index(name="FK1_Badge_CreatedBy", columns={"CreatedBy"}), @ORM\Index(name="FK2_Badge_ModifiedBy", columns={"ModifiedBy"}), @ORM\Index(name="FK2_Badge_Registration_ID", columns={"Registration_ID"}), @ORM\Index(name="FK2_Registration_BadgeType_ID", columns={"BadgeType_ID"}), @ORM\Index(name="FK2_Registration_BadgeStatus_ID", columns={"BadgeStatus_ID"})})
+ * @ORM\Entity
+ */
+class Badge
+{
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="Number", type="string", length=255, nullable=false)
+     */
+    private $number;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="CreatedDate", type="datetime", nullable=true)
+     */
+    private $createddate;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="ModifiedDate", type="datetime", nullable=true)
+     */
+    private $modifieddate;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="Badge_ID", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $badgeId;
+
+    /**
+     * @var \AppBundle\Entity\Badgestatus
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Badgestatus")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="BadgeStatus_ID", referencedColumnName="BadgeStatus_ID")
+     * })
+     */
+    private $badgestatus;
+
+    /**
+     * @var \AppBundle\Entity\Badgetype
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Badgetype")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="BadgeType_ID", referencedColumnName="BadgeType_ID")
+     * })
+     */
+    private $badgetype;
+
+    /**
+     * @var \AppBundle\Entity\User
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="CreatedBy", referencedColumnName="User_ID")
+     * })
+     */
+    private $createdby;
+
+    /**
+     * @var \AppBundle\Entity\User
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="ModifiedBy", referencedColumnName="User_ID")
+     * })
+     */
+    private $modifiedby;
+
+    /**
+     * @var \AppBundle\Entity\Registration
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Registration")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="Registration_ID", referencedColumnName="Registration_ID")
+     * })
+     */
+    private $registration;
+
+
+}
+

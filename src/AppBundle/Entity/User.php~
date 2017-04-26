@@ -1,0 +1,137 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * User
+ *
+ * @ORM\Table(name="user", uniqueConstraints={@ORM\UniqueConstraint(name="Login", columns={"Login"}), @ORM\UniqueConstraint(name="Nickname", columns={"Nickname"})}, indexes={@ORM\Index(name="FK1_User_CreatedBy", columns={"CreatedBy"}), @ORM\Index(name="FK2_User_ModifiedBy", columns={"ModifiedBy"})})
+ * @ORM\Entity
+ */
+class User
+{
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="openid_identity", type="string", length=255, nullable=true)
+     */
+    private $openidIdentity;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="Login", type="string", length=255, nullable=true)
+     */
+    private $login;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="Email", type="string", length=255, nullable=true)
+     */
+    private $email;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="Nickname", type="string", length=255, nullable=true)
+     */
+    private $nickname;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="Password", type="string", length=255, nullable=false)
+     */
+    private $password;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="FirstName", type="string", length=255, nullable=true)
+     */
+    private $firstname;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="LastName", type="string", length=255, nullable=true)
+     */
+    private $lastname;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="Position", type="string", length=255, nullable=true)
+     */
+    private $position;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="Description", type="string", length=255, nullable=true)
+     */
+    private $description;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="Disabled", type="string", length=255, nullable=false)
+     */
+    private $disabled = 'false';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="PhotoPath", type="string", length=255, nullable=true)
+     */
+    private $photopath;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="CreatedDate", type="datetime", nullable=true)
+     */
+    private $createddate;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="ModifiedDate", type="datetime", nullable=true)
+     */
+    private $modifieddate;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="User_ID", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $userId;
+
+    /**
+     * @var \AppBundle\Entity\User
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="CreatedBy", referencedColumnName="User_ID")
+     * })
+     */
+    private $createdby;
+
+    /**
+     * @var \AppBundle\Entity\User
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="ModifiedBy", referencedColumnName="User_ID")
+     * })
+     */
+    private $modifiedby;
+
+
+}
+

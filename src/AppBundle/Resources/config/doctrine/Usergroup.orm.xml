@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="AppBundle\Entity\Usergroup" table="usergroup">
+    <indexes>
+      <index name="User_ID" columns="User_ID"/>
+      <index name="Group_ID" columns="Group_ID"/>
+      <index name="FK1_UserGroup_CreatedBy" columns="CreatedBy"/>
+      <index name="FK2_UserGroup_ModifiedBy" columns="ModifiedBy"/>
+    </indexes>
+    <id name="usergroupId" type="integer" column="UserGroup_ID">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="createddate" type="datetime" column="CreatedDate" nullable="true"/>
+    <field name="modifieddate" type="datetime" column="ModifiedDate" nullable="true"/>
+    <many-to-one field="createdby" target-entity="User" fetch="LAZY">
+      <join-columns>
+        <join-column name="CreatedBy" referenced-column-name="User_ID"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="modifiedby" target-entity="User" fetch="LAZY">
+      <join-columns>
+        <join-column name="ModifiedBy" referenced-column-name="User_ID"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="group" target-entity="Group" fetch="LAZY">
+      <join-columns>
+        <join-column name="Group_ID" referenced-column-name="Group_ID"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="user" target-entity="User" fetch="LAZY">
+      <join-columns>
+        <join-column name="User_ID" referenced-column-name="User_ID"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>
