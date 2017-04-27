@@ -7,3 +7,14 @@ services:
     #service_name:
     #    class: AppBundle\Directory\ClassName
     #    arguments: ['@another_service_name', 'plain_value', '%parameter_name%']
+    entity_event:
+        class: AppBundle\Service\Entity\Event
+        arguments: [ "@doctrine.orm.entity_manager"]
+
+    entity_badgetype:
+        class: AppBundle\Service\Entity\BadgeType
+        arguments: [ "@doctrine.orm.entity_manager"]
+
+    util_percent:
+        class: AppBundle\Service\Util\Percent
+        arguments: [ "@entity_event", "@entity_badgetype", "@doctrine.orm.entity_manager"]
