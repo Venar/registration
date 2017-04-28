@@ -30,9 +30,10 @@ class Percent
     }
 
     /**
-     * @return int
+     * @return float
      */
-    public function getPercent() {
+    public function getPercent() : float
+    {
         $event = $this->event->getCurrentEvent();
         $remaining = $event->getAttendancecap();
         $badgeTypeStaff = $this->badgeType->getBadgeTypeFromType('STAFF');
