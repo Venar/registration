@@ -9,10 +9,10 @@
 namespace AppBundle\Service\Entity;
 
 
-use AppBundle\Entity\Badgetype as EntityBadgeType;
+use AppBundle\Entity\Badgetype;
 use Doctrine\ORM\EntityManager;
 
-class BadgeType
+class BadgeTypeRepository
 {
     /** @var EntityManager $entityManager */
     protected $entityManager;
@@ -24,7 +24,7 @@ class BadgeType
         $this->entityManager = $entityManager;
     }
 
-    public function getBadgeTypeFromType(String $type) : ?EntityBadgeType
+    public function getBadgeTypeFromType(String $type) : ?Badgetype
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
 
@@ -37,7 +37,7 @@ class BadgeType
     }
 
     /**
-     * @return EntityBadgeType[]
+     * @return Badgetype[]
      */
     public function findAll() : array
     {

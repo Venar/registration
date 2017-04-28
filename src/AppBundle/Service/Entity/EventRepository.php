@@ -8,11 +8,11 @@
 
 namespace AppBundle\Service\Entity;
 
-use AppBundle\Entity\Event as EntityEvent;
+use AppBundle\Entity\Event;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Session\Session;
 
-class Event
+class EventRepository
 {
     /** @var EntityManager $entityManager */
     protected $entityManager;
@@ -24,7 +24,7 @@ class Event
         $this->entityManager = $entityManager;
     }
 
-    public function getCurrentEvent() : ?EntityEvent
+    public function getCurrentEvent() : ?Event
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
 
@@ -37,7 +37,7 @@ class Event
     }
 
 
-    public function getEventFromYear(String $year) : ?EntityEvent
+    public function getEventFromYear(String $year) : ?Event
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
 
@@ -49,7 +49,7 @@ class Event
         return $queryBuilder->getQuery()->getOneOrNullResult();
     }
 
-    public function getSelectedEvent() : ?EntityEvent
+    public function getSelectedEvent() : ?Event
     {
         $session = new Session();
         $selectedEvent = $session->get('selectedEvent');

@@ -2,6 +2,7 @@
 <module type="WEB_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/vendor/aferrandini/phpqrcode" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/composer" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/doctrine/annotations" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/doctrine/cache" />
@@ -35,7 +36,9 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/polyfill-util" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/swiftmailer-bundle" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/symfony" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/tecnickcom/tcpdf" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/twig/twig" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/whiteoctober/tcpdf-bundle" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -54,6 +57,7 @@
     <orderEntry type="module-library">
       <library name="PHP" type="php">
         <CLASSES>
+          <root url="file://$MODULE_DIR$/vendor/aferrandini/phpqrcode" />
           <root url="file://$MODULE_DIR$/vendor/composer" />
           <root url="file://$MODULE_DIR$/vendor/doctrine/annotations" />
           <root url="file://$MODULE_DIR$/vendor/doctrine/cache" />
@@ -87,9 +91,12 @@
           <root url="file://$MODULE_DIR$/vendor/symfony/polyfill-util" />
           <root url="file://$MODULE_DIR$/vendor/symfony/swiftmailer-bundle" />
           <root url="file://$MODULE_DIR$/vendor/symfony/symfony" />
+          <root url="file://$MODULE_DIR$/vendor/tecnickcom/tcpdf" />
           <root url="file://$MODULE_DIR$/vendor/twig/twig" />
+          <root url="file://$MODULE_DIR$/vendor/whiteoctober/tcpdf-bundle" />
         </CLASSES>
         <SOURCES>
+          <root url="file://$MODULE_DIR$/vendor/aferrandini/phpqrcode" />
           <root url="file://$MODULE_DIR$/vendor/composer" />
           <root url="file://$MODULE_DIR$/vendor/doctrine/annotations" />
           <root url="file://$MODULE_DIR$/vendor/doctrine/cache" />
@@ -123,7 +130,9 @@
           <root url="file://$MODULE_DIR$/vendor/symfony/polyfill-util" />
           <root url="file://$MODULE_DIR$/vendor/symfony/swiftmailer-bundle" />
           <root url="file://$MODULE_DIR$/vendor/symfony/symfony" />
+          <root url="file://$MODULE_DIR$/vendor/tecnickcom/tcpdf" />
           <root url="file://$MODULE_DIR$/vendor/twig/twig" />
+          <root url="file://$MODULE_DIR$/vendor/whiteoctober/tcpdf-bundle" />
         </SOURCES>
       </library>
     </orderEntry>

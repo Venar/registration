@@ -5,7 +5,7 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Event
+ * EventRepository
  *
  * @ORM\Table(name="event", indexes={@ORM\Index(name="Year", columns={"Year"}), @ORM\Index(name="Active", columns={"Active", "Public"}), @ORM\Index(name="FK1_Event_CreatedBy", columns={"CreatedBy"}), @ORM\Index(name="FK2_Event_ModifiedBy", columns={"ModifiedBy"})})
  * @ORM\Entity

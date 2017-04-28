@@ -9,20 +9,20 @@
 namespace AppBundle\Service\Util;
 
 
-use AppBundle\Service\Entity\BadgeType;
-use AppBundle\Service\Entity\Event;
+use AppBundle\Service\Entity\BadgeTypeRepository;
+use AppBundle\Service\Entity\EventRepository;
 use Doctrine\ORM\EntityManager;
 
 class Percent
 {
-    /** @var Event $event */
+    /** @var EventRepository $event */
     protected $event;
-    /** @var BadgeType $badgeType */
+    /** @var BadgeTypeRepository $badgeType */
     protected $badgeType;
     /** @var EntityManager $entityManager */
     protected $entityManager;
 
-    public function __construct(Event $event, BadgeType $badgeType, EntityManager $entityManager)
+    public function __construct(EventRepository $event, BadgeTypeRepository $badgeType, EntityManager $entityManager)
     {
         $this->event = $event;
         $this->badgeType = $badgeType;
