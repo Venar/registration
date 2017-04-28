@@ -1,0 +1,38 @@
+<div class="row" style="height: 40px;">
+    <nav id="main_nav">
+        <ul class="sf-menu">
+            {{ render(controller('AppBundle:Page/Menu:menuRouting')) }}
+        </ul>
+        <!-- BEGIN: eventyear -->
+        <ul class="sf-menu" id="year_menu" style="float: right;">
+            {{ render(controller('AppBundle:Page/Menu:switchYears')) }}
+        </ul>
+        <!-- END: eventyear -->
+    </nav>
+    <script>
+        jQuery(document).ready(function($){
+            $("ul.sf-menu").superfish({
+                animation: {height:'show'},   // slide-down effect without fade-in
+                delay:       500,                            // one second delay on mouseout
+                speed:       'fast'                          // faster animation speed
+
+            });  // call supersubs first, then superfish, so that subs are
+            // not display:none when measuring. Call before initialising
+            // containing tabs for same reason.
+            $("#year_menu").superfish({
+                animation: {height:'show'},   // slide-down effect without fade-in
+                delay:       500,                            // one second delay on mouseout
+                speed:       'fast'                          // faster animation speed
+
+            });
+
+            if ($.fn.mobileMenu) {
+                $('#main_nav ul').mobileMenu({
+                    switchWidth: 853,                   //width (in px to switch at) 768 = 48em, 864 = 54em
+                    prependTo: '#main',
+                    topOptionText: '&#9776&nbsp;Navigation Menu'
+                });
+            }
+        });
+    </script>
+</div>

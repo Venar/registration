@@ -1,0 +1,18 @@
+{% for section in sections %}
+    <li>
+        {% if section.items|length == 1 %}
+            {% if section.items[0] is defined %}
+                {% set firstItem = section.items[0] %}
+                <a href="{{ firstItem.url }}">{{ section.name }}</a>
+            {% endif %}
+        {% endif %}
+        {% if section.items|length > 1 %}
+            <a href="#{{ section.name }}">{{ section.name }}</a>
+            <ul>
+                {% for item in section.items %}
+                    <li><a href="{{ item.url }}">{{ item.title }}</a></li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </li>
+{% endfor %}

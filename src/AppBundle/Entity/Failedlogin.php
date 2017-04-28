@@ -79,7 +79,7 @@ class Failedlogin
 
 
     /**
-     * Set login
+     * Set Login
      *
      * @param string $login
      *
@@ -93,7 +93,7 @@ class Failedlogin
     }
 
     /**
-     * Get login
+     * Get Login
      *
      * @return string
      */
