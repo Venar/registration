@@ -36,6 +36,11 @@ class EventRepository
         return $queryBuilder->getQuery()->getOneOrNullResult();
     }
 
+    public function getCurrentEventYear() : String
+    {
+        return $this->getCurrentEvent()->getYear();
+    }
+
 
     public function getEventFromYear(String $year) : ?Event
     {
@@ -59,5 +64,13 @@ class EventRepository
         }
 
         return $this->getEventFromYear($selectedEvent);
+    }
+
+    /**
+     * @return Event[]
+     */
+    public function findAll() : array
+    {
+        return $this->entityManager->getRepository(self::entityName)->findAll();
     }
 }

@@ -159,7 +159,7 @@ class User
     }
 
     /**
-     * Set login
+     * Set Login
      *
      * @param string $login
      *
@@ -173,7 +173,7 @@ class User
     }
 
     /**
-     * Get login
+     * Get Login
      *
      * @return string
      */

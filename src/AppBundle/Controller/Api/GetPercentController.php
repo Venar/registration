@@ -10,6 +10,7 @@ namespace AppBundle\Controller\Api;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class GetPercentController extends Controller
@@ -27,8 +28,6 @@ class GetPercentController extends Controller
             'percent' => $number,
         ];
 
-        return new Response(
-            json_encode($jsonArray)
-        );
+        return new JsonResponse($jsonArray);
     }
 }

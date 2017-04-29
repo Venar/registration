@@ -16,7 +16,7 @@ class ValidateController extends Controller
      * @param String $lastname Lastname that should match the Registration
      * @return Response
      */
-    public function indexAction($confirmation, $lastname)
+    public function validateConfirmation($confirmation, $lastname)
     {
         $headers = [];
         if (array_key_exists('HTTP_ORIGIN', $_SERVER)) {
