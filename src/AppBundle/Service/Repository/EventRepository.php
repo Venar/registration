@@ -6,7 +6,7 @@
  * Time: 11:13 AM
  */
 
-namespace AppBundle\Service\Entity;
+namespace AppBundle\Service\Repository;
 
 use AppBundle\Entity\Event;
 use Doctrine\ORM\EntityManager;

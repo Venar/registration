@@ -8,15 +8,15 @@ services:
     #    class: AppBundle\Directory\ClassName
     #    arguments: ['@another_service_name', 'plain_value', '%parameter_name%']
     repository_event:
-        class: AppBundle\Service\Entity\EventRepository
+        class: AppBundle\Service\Repository\EventRepository
         arguments: [ "@doctrine.orm.entity_manager"]
 
     repository_badgetype:
-        class: AppBundle\Service\Entity\BadgeTypeRepository
+        class: AppBundle\Service\Repository\BadgeTypeRepository
         arguments: [ "@doctrine.orm.entity_manager"]
 
     repository_registration:
-        class: AppBundle\Service\Entity\RegistrationRepository
+        class: AppBundle\Service\Repository\RegistrationRepository
         arguments: [ "@repository_event", "@doctrine.orm.entity_manager"]
 
     util_percent:

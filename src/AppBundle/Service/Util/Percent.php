@@ -9,8 +9,8 @@
 namespace AppBundle\Service\Util;
 
 
-use AppBundle\Service\Entity\BadgeTypeRepository;
-use AppBundle\Service\Entity\EventRepository;
+use AppBundle\Service\Repository\BadgeTypeRepository;
+use AppBundle\Service\Repository\EventRepository;
 use Doctrine\ORM\EntityManager;
 
 class Percent

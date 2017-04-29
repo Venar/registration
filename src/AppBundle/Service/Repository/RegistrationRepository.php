@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace AppBundle\Service\Entity;
+namespace AppBundle\Service\Repository;
 
 
 use AppBundle\Entity\Registration;

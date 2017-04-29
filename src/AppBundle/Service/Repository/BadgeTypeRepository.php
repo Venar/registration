@@ -6,7 +6,7 @@
  * Time: 1:56 PM
  */
 
-namespace AppBundle\Service\Entity;
+namespace AppBundle\Service\Repository;
 
 
 use AppBundle\Entity\Badgetype;
