@@ -1,0 +1,424 @@
+{% extends 'detour.html.twig' %}
+
+{% block body %}
+    <h1>Registrations</h1>
+    <a href="/editregistration/" class="btn btn-primary">New Registration</a><br><br>
+    <script>
+        function changeYear(year) {
+            $('#year').val(year);
+        }
+
+        function reset_page() {
+            $('#page').val('1');
+        }
+    </script>
+
+    <form class="form-horizontal" onsubmit="return false;">
+        <div class="col-lg-1 registration-info">
+            <label for="input_regtype" class="col-sm-2 control-label">Reg&nbsp;Type</label>
+        </div>
+        <div class="col-lg-1 registration-info">
+            <div class="btn-group" id="input_regtype">
+                <input type="hidden" value="{current_RegistrationType_ID}" id="RegistrationType_ID">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="button_RegistrationType">
+                    {{ current_RegistrationType }} <span class="caret"></span>
+                </button>
+                {{ render(controller('AppBundle:Manage/Manage:registrationTypeList')) }}
+            </div>
+        </div>
+
+        <div class="col-lg-1 registration-info">
+            <label for="input_regstatus" class="col-sm-2 control-label">Reg&nbsp;Status</label>
+        </div>
+        <div class="col-lg-1 registration-info">
+            <div class="btn-group" id="input_regstatus">
+                <input type="hidden" value="{current_RegistrationStatus_ID}" id="RegistrationStatus_ID">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="button_RegistrationStatus">
+                    {{  current_RegistrationStatus }} <span class="caret"></span>
+                </button>
+                {{ render(controller('AppBundle:Manage/Manage:registrationStatusList')) }}
+            </div>
+        </div>
+
+        <div class="col-lg-1 registration-info">
+            <label for="input_badgetype" class="col-sm-2 control-label">Badge</label>
+        </div>
+        <div class="col-lg-2 registration-info" id="input_badgetype">
+            <div class="btn-group">
+                <input type="hidden" value="{current_BadgeType_ID}" id="BadgeType_ID">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="button_BadgeType">
+                    {{ current_BadgeType }} <span class="caret"></span>
+                </button>
+                {{ render(controller('AppBundle:Manage/Manage:badgeTypeList')) }}
+            </div>
+        </div>
+
+        <div class="col-lg-3 registration-info" id="input_search">
+            <div class="input-append">
+                <input type="text" id="search" name="search" value="{{ searchText }}" onKeyPress="return searchenter(this,event)" placeholder="Search">
+                <button type="submit" class="btn btn-primary" onclick="search_fn()">Search</button>
+            </div>
+        </div>
+    </form>
+    <div style="clear: both"></div>
+    <div class="scrollable-table">
+        <table class="table table-striped table-header-rotated" id="table_registrations">
+            <thead>
+            <tr height="15px">
+                <th class="rotate"><div><span>Year</span></div></th>
+                <th class="rotate"><div><span>Reg Number</span></div></th>
+                <th class="rotate"><div><span>Last Name</span></div></th>
+                <th class="rotate"><div><span>First Name</span></div></th>
+                <th class="rotate"><div><span>Badge Name</span></div></th>
+                <th class="rotate"><div><span>Email</span></div></th>
+                <th class="rotate"><div><span>Reg Status</span></div></th>
+                <th class="rotate"><div><span>Confirmation Number</span></div></th>
+                <th class="rotate"><div><span>Group?</span></div></th>
+                <!-- Begin Badge Types -->
+                <th class="rotate"><div><span>Badges</span></div></th>
+                <!-- End Badge Types -->
+            </tr>
+            </thead>
+            <tbody id="tbody_registrations">
+            </tbody>
+        </table>
+    </div>
+    <input type="hidden" id="page" value="{page}">
+    <b id="results_footer"></b>
+    <ul class="pager" id="list_pager">
+    </ul>
+
+    <script>
+
+        $( document ).ready(function(){
+            get_registration_list();
+        });
+
+        function get_registration_list() {
+            var search_text           = $('#search').val();
+            var RegistrationType_ID   = $('#RegistrationType_ID').val();
+            var RegistrationStatus_ID = $('#RegistrationStatus_ID').val();
+            var BadgeType_ID          = $('#BadgeType_ID').val();
+            var page        = $('#page').val();
+            $.getJSON('/registrationlist',
+                {
+                    'search':search_text,
+                    'page':page,
+                    'RegistrationType_ID':RegistrationType_ID,
+                    'RegistrationStatus_ID':RegistrationStatus_ID,
+                    'BadgeType_ID':BadgeType_ID
+                },
+                function(json) {
+                    $('#tbody_registrations').empty();
+                    $('#list_pager').empty();
+
+                    // Populate Registration Results
+                    for (i = 0; i < json.results.length; i++) {
+                        var reg = json.results[i];
+                        add_registration(reg.Registration_ID, reg.Year, reg.Number, reg.LastName, reg.FirstName, reg.BadgeName, reg.Reg_Status, reg.Email,
+                            reg.ConfirmationNumber, reg.group, reg.is_adult, reg.is_minor, reg.is_sponsor, reg.is_comsponsor, reg.is_staff, reg.is_guest, reg.is_vendor, reg.is_exhibitor);
+                    }
+
+                    // Populate Page Data
+                    $('#page').val(json.page);
+                    if (json.page <= 1) {
+                        $('#list_pager').append($('<li>')
+                            .attr('class', 'previous disabled')
+                            .append($('<a>')
+                                .attr('href', 'javascript:void(0);')
+                                .attr('id',   'li_prev')
+                                .html('&larr; Previous')
+                            )
+                        );
+                    } else {
+                        $('#list_pager').append($('<li>')
+                            .attr('class', 'previous')
+                            .append($('<a>')
+                                .attr('href', 'javascript:void(0);')
+                                .attr('id',   'li_prev')
+                                .html('&larr; Previous')
+                            )
+                        );
+                        $('#li_prev').click(function() {
+                            $('#page').val(parseInt($('#page').val())-1);
+                            get_registration_list();
+                        })
+                    }
+
+                    var count = json.count_total+' Results. Showing Page '+json.page+' of '+Math.ceil(json.count_total/100)+', 100 per page';
+                    $('#results_footer').html(count);
+                    if (json.page * 100 >= json.count_total) {
+                        $('#list_pager').append($('<li>')
+                            .attr('class', 'next disabled')
+                            .append($('<a>')
+                                .attr('href', 'javascript:void(0);')
+                                .attr('id',   'li_prev')
+                                .html('Next &rarr;')
+                            )
+                        );
+                    } else {
+                        $('#list_pager').append($('<li>')
+                            .attr('class', 'next')
+                            .append($('<a>')
+                                .attr('href', 'javascript:void(0);')
+                                .attr('id',   'li_next')
+                                .html('Next &rarr;')
+                            )
+                        );
+                        $('#li_next').click(function() {
+                            $('#page').val(parseInt($('#page').val())+1);
+                            get_registration_list();
+                        })
+                    }
+                }
+            );
+            window.history.pushState("object or string", "Anime Detour Registration", "/manage?search="+search_text
+                + "&RegistrationStatus_ID="+RegistrationStatus_ID+"&RegistrationType_ID="+RegistrationType_ID
+                + "&BadgeType_ID="+BadgeType_ID+"&page="+page);
+        }
+
+        function add_registration(registration_id, year, number, last_name, first_name, badge_name, reg_status, Email, ConfirmationNumber, group, is_adult, is_minor, is_sponsor,
+                                  is_comsponsor, is_staff, is_guest, is_vendor, is_exhibitor) {
+            var td_badges     = $('<td>');
+
+            if (is_adult) {
+                td_badges.html(td_badges.html()+'<div class="circle" style="background: orange; color: white">A</div>');
+            }
+            if (is_minor) {
+                td_badges.html(td_badges.html()+'<div class="circle" style="background: yellow;">M</div>');
+            }
+            if (is_sponsor) {
+                td_badges.html(td_badges.html()+'<div class="circle" style="background: blue; color: white">S</div>');
+            }
+            if (is_comsponsor) {
+                td_badges.html(td_badges.html()+'<div class="circle" style="background: purple;">C</div>');
+            }
+            if (is_staff) {
+                td_badges.html(td_badges.html()+'<div class="circle" style="background: red; color: white">D</div>');
+            }
+            if (is_guest) {
+                td_badges.html(td_badges.html()+'<div class="circle" style="background: black;">G</div>');
+            }
+            if (is_vendor) {
+                td_badges.html(td_badges.html()+'<div class="circle" style="background: green;">V</div>');
+            }
+            if (is_exhibitor) {
+                td_badges.html(td_badges.html()+'<div class="circle" style="background: silver;">E</div>');
+            }
+
+            $('#table_registrations')
+                .append($('<tr>')
+                    .attr('id', 'tr_'+registration_id)
+                    .append($('<td>')
+                        .html(year)
+                    )
+                    .append($('<td>')
+                        .append($('<a>')
+                            .attr('href', '/view_registration/'+registration_id)
+                            .html(number)
+                        )
+                    )
+                    .append($('<td>')
+                        .html(last_name)
+                    )
+                    .append($('<td>')
+                        .html(first_name)
+                    )
+                    .append($('<td>')
+                        .html(badge_name)
+                    )
+                    .append($('<td>')
+                        .html(Email)
+                    )
+                    .append($('<td>')
+                        .html(reg_status)
+                    )
+                    .append($('<td>')
+                        .html(ConfirmationNumber)
+                    )
+                    .append($('<td>')
+                        .html(group)
+                    )
+                    .append(td_badges)
+                );
+        }
+
+        function searchenter(myfield,e) {
+            var keycode;
+            if (window.event) keycode = window.event.keyCode;
+            else if (e) keycode = e.which;
+            else return true;
+
+            if (keycode == 13) {
+                search_fn();
+                return false;
+            }
+            else
+                return true;
+        }
+
+        function changeType(id, description) {
+            $('#RegistrationType_ID').val(id);
+            $('#button_RegistrationType').html(description + ' <span class="caret">');
+            search_fn();
+        }
+
+        function changeStatus(id, description) {
+            $('#RegistrationStatus_ID').val(id);
+            $('#button_RegistrationStatus').html(description + ' <span class="caret">');
+            search_fn();
+        }
+
+        function changeBadge(id, description) {
+            $('#BadgeType_ID').val(id);
+            $('#button_BadgeType').html(description + ' <span class="caret">');
+            search_fn();
+        }
+
+        function search_fn() {
+            reset_page();
+            get_registration_list();
+        }
+
+        var timeout;
+        $('input[type=text]').keypress(function() {
+            if(timeout) {
+                clearTimeout(timeout);
+                timeout = null;
+            }
+
+            timeout = setTimeout(search_fn, 500)
+        });
+        /*
+         * Start Barcode checks
+         */
+        JsonIsValidBarcodeURL = "/processbarcode";
+        function checkForBarcode(barcode) {
+            if ( !isBarcodeStyle(barcode) ) {
+                return;
+                //
+            }
+
+            $.getJSON(
+                JsonIsValidBarcodeURL,
+                {barcode: barcode},
+                function(json) {
+                    if ( json.valid ) {
+                        window.location.href = '/view_registration/' + json.registrationID;
+                    } else {
+                        alert('Invalid Barcode');
+                    }
+                }
+            );
+        }
+
+        function isBarcodeStyle(barcode) {
+            if ( !barcode ) {
+                return false;
+            }
+
+            if ( barcode.length < 10) {
+                return false;
+            }
+
+            if ( barcode.substring(0,4) == "$AD-" ) {
+                return true;
+            }
+
+            if ( barcode.substring(0,1) == "@" && barcode.substring(2,7).trim() == "ANSI" ) {
+                return true;
+            }
+
+            return false;
+        }
+
+        var KeysPressed = "";
+        var LastKeyPressTime;
+        $(document.body).keypress(function(event) {
+            barcodeCatch(event);
+        });
+
+        var KeysPressed = "";
+        var BarcodeTimer = new Date().getTime();
+        function barcodeCatch(event) {
+            if ( event.timeStamp - LastKeyPressTime < 10000 ) {
+                clearTimeout(BarcodeTimer);
+            }
+            LastKeyPressTime = event.timeStamp;
+            key = String.fromCharCode(event.keyCode).replace(/(?:\r\n|\r|\n)/g, "_");
+            KeysPressed = KeysPressed + String.fromCharCode(event.keyCode);
+            BarcodeTimer = window.setTimeout(
+                function() {
+                    checkForBarcode(KeysPressed);
+                    KeysPressed = "";
+                }, 1000);
+        }
+    </script>
+
+
+    <style>
+        .circle {
+            text-align: center;
+            display: inline-block;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            /* width and height can be anything, as long as they're equal */
+        }
+
+        .table-header-rotated th.row-header{
+            width: auto;
+        }
+
+        .table-header-rotated td{
+            width: 60px;
+            border-top: 1px solid #dddddd;
+            border-left: 1px solid #dddddd;
+            border-right: 1px solid #dddddd;
+            vertical-align: middle;
+            text-align: left;
+        }
+
+        .table-header-rotated th.rotate{
+            height: 80px;
+            width: 40px;
+            min-width: 40px;
+            max-width: 40px;
+            position: relative;
+            vertical-align: bottom;
+            padding: 0;
+            font-size: 12px;
+            line-height: 0.8;
+        }
+
+        .table-header-rotated th.rotate > div{
+            position: relative;
+            top: 0px;
+            left: 40px; /* 80 * tan(45) / 2 = 40 where 80 is the height on the cell and 45 is the transform angle*/
+            height: 100%;
+            -ms-transform:skew(-45deg,0deg);
+            -moz-transform:skew(-45deg,0deg);
+            -webkit-transform:skew(-45deg,0deg);
+            -o-transform:skew(-45deg,0deg);
+            transform:skew(-45deg,0deg);
+            overflow: hidden;
+            border-left: 1px solid #dddddd;
+        }
+
+        .table-header-rotated th.rotate span {
+            -ms-transform:skew(45deg,0deg) rotate(315deg);
+            -moz-transform:skew(45deg,0deg) rotate(315deg);
+            -webkit-transform:skew(45deg,0deg) rotate(315deg);
+            -o-transform:skew(45deg,0deg) rotate(315deg);
+            transform:skew(45deg,0deg) rotate(315deg);
+            position: absolute;
+            bottom: 30px; /* 40 cos(45) = 28 with an additional 2px margin*/
+            left: -25px; /*Because it looked good, but there is probably a mathematical link here as well*/
+            display: inline-block;
+        // width: 100%;
+            width: 85px; /* 80 / cos(45) - 40 cos (45) = 85 where 80 is the height of the cell, 40 the width of the cell and 45 the transform angle*/
+            text-align: left;
+        // white-space: nowrap; /*whether to display in one line or not*/
+        }
+    </style>
+{% endblock %}

@@ -1,0 +1,8 @@
+<ul class="dropdown-menu">
+    <li><a href="javascript:void(0);" onclick="changeBadge('all', 'All')">All</a></li>
+    {% for badgeType in badgeTypeList %}
+        <li>
+            <a href="javascript:void(0);" onclick="changeBadge('{{ badgeType.id }}', '{{ badgeType.name }}')">{{ badgeType.name }}</a>
+        </li>
+    {% endfor %}
+</ul>

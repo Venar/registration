@@ -1,0 +1,8 @@
+<ul class="dropdown-menu">
+    <li><a href="javascript:void(0);" onclick="changeType('all', 'All')">All</a></li>
+    {% for type in typeList %}
+        <li>
+            <a href="javascript:void(0);" onclick="changeType('{{ type.id }}', '{{ type.type }}')">{{ type.type }}</a>
+        </li>
+    {% endfor %}
+</ul>
