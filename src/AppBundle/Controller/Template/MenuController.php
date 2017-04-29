@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace AppBundle\Controller\Page;
+namespace AppBundle\Controller\Template;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -63,7 +63,7 @@ class MenuController extends Controller
             ],
         ];
 
-        return $this->render('page/menu.sub.html.twig', array('sections' => $sections));
+        return $this->render('template/menu.sub.html.twig', array('sections' => $sections));
     }
 
     public function switchYearsAction()
@@ -76,6 +76,6 @@ class MenuController extends Controller
             $years[] = $event->getYear();
         }
 
-        return $this->render('page/switch_year.sub.html.twig', array('selectedYear' => $currentYear, 'years' => $years));
+        return $this->render('template/switch_year.sub.html.twig', array('selectedYear' => $currentYear, 'years' => $years));
     }
 }
