@@ -19,7 +19,7 @@
         </div>
         <div class="col-lg-1 registration-info">
             <div class="btn-group" id="input_regtype">
-                <input type="hidden" value="{current_RegistrationType_ID}" id="RegistrationType_ID">
+                <input type="hidden" value="{{ current_RegistrationType_ID }}" id="RegistrationType_ID">
                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="button_RegistrationType">
                     {{ current_RegistrationType }} <span class="caret"></span>
                 </button>
@@ -32,7 +32,7 @@
         </div>
         <div class="col-lg-1 registration-info">
             <div class="btn-group" id="input_regstatus">
-                <input type="hidden" value="{current_RegistrationStatus_ID}" id="RegistrationStatus_ID">
+                <input type="hidden" value="{{ current_RegistrationStatus_ID }}" id="RegistrationStatus_ID">
                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="button_RegistrationStatus">
                     {{  current_RegistrationStatus }} <span class="caret"></span>
                 </button>
@@ -45,7 +45,7 @@
         </div>
         <div class="col-lg-2 registration-info" id="input_badgetype">
             <div class="btn-group">
-                <input type="hidden" value="{current_BadgeType_ID}" id="BadgeType_ID">
+                <input type="hidden" value="{{ current_BadgeType_ID }}" id="BadgeType_ID">
                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="button_BadgeType">
                     {{ current_BadgeType }} <span class="caret"></span>
                 </button>
@@ -83,7 +83,7 @@
             </tbody>
         </table>
     </div>
-    <input type="hidden" id="page" value="{page}">
+    <input type="hidden" id="page" value="{{ page }}">
     <b id="results_footer"></b>
     <ul class="pager" id="list_pager">
     </ul>

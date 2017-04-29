@@ -24,10 +24,14 @@ class ManageController extends Controller
         }
 
         $vars = [
+            'current_RegistrationType_ID' => '',
+            'current_RegistrationStatus_ID' => '',
+            'current_BadgeType_ID' => '',
             'current_RegistrationType' => 'All',
             'current_RegistrationStatus' => 'All',
             'current_BadgeType' => 'All',
             'searchText' => '',
+            'page' => '1',
         ];
 
         return $this->render('manage/manage.html.twig', $vars);
