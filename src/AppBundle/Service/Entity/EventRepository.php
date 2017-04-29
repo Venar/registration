@@ -71,6 +71,6 @@ class EventRepository
      */
     public function findAll() : array
     {
-        return $this->entityManager->getRepository(self::entityName)->findAll();
+        return $this->entityManager->getRepository(self::entityName)->findBy([], ['year' => 'DESC']);
     }
 }
