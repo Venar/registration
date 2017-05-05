@@ -1,0 +1,645 @@
+{% extends 'detour.html.twig' %}
+
+{% block body %}
+    <form action="/editregistration" method="post" id="form_editregistration">
+
+        <input type="hidden" value="{{ registration.registrationId|default('') }}" id="Registration_ID" name="Registration_ID">
+        <input type="hidden" value="{{ transferredRegistration.registrationId|default('') }}" id="TransferredFrom" name="TransferredFrom">
+
+        <h2 id="reg_header">
+            {% if registration is not null and registration.registrationId %}
+            <a href="/view_registration/{{ registration.registrationId }}" class="btn btn-primary btn-sm">Back</a>&nbsp;-&nbsp;
+            Edit {{ (group.reggroupId is defined) ? 'Group ' : '' }}Membership - {{ registration.event.year }} - {{ registration.number }}
+            {% elseif transferredRegistration is not null and transferredRegistration.registrationId %}
+            Transfer Membership - {{ transferredRegistration.event.year }}
+            {% else %}
+            New {{ group is not null and group.reggroupId ? 'Group ' : '' }}Membership - {{ event.year }} - New
+            {% endif %}
+        </h2>
+
+        <div class="row">
+            <div class="col-sm-3">
+                <h3>Registration Type:</h3>
+            </div>
+            <div class="col-sm-3">
+                <h3>Registration Status:</h3>
+            </div>
+            <div class="col-sm-3">
+            </div>
+            <div class="col-sm-3">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3">
+                <select name="RegistrationType" id="RegistrationType">
+                    {% for type in registrationTypes %}
+                    <option value="{{ type.name }}" {{ registration is not null and registration.registrationtype.registrationtypeId == type.registrationtypeId ? 'selected' : '' }}>
+                        {{ type.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+                <select name="RegGroup_ID" id="RegGroup_ID"
+                        style="width: 150px; {{ registration is null or registration.registrationtype.name != 'Group' ? 'display:none;' : '' }}">
+                    <option value=""></option>
+                    {% for regGroup in regGroups %}
+                        <option value="{{ regGroup.reggroupId }}" {{ (group is not null and group.reggroupId == regGroup.reggroupId) ? 'selected' : '' }}>
+                            {{ regGroup.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-sm-3">
+                <select name="RegistrationStatus">
+                    {% for status in registrationStatuses %}
+                        <option value="{{ status.status }}" {{ registration is not null and registration.registrationstatus.registrationstatusId == status.registrationstatusId ? 'selected' : '' }}>
+                            {{ status.status }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>Membership Type</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="btn-group" data-toggle="buttons">
+                    <label class="btn btn-primary {{ ('ADREGSTANDARD' in currentBadgeTypes or 'MINOR' in currentBadgeTypes) ? 'active' : ''}}">
+                        <input type="radio" name="regtype" value="ADREGSTANDARD"
+                            {{ ('ADREGSTANDARD' in currentBadgeTypes or 'MINOR' in currentBadgeTypes) ? 'checked' : ''}}>
+                        Standard (Minors detected by Birthdate)<br>
+                    </label>
+                    <label class="btn btn-primary {{ 'ADREGSPONSOR' in currentBadgeTypes ? 'active' : '' }}">
+                        <input type="radio" name="regtype" value="ADREGSPONSOR"
+                            {{ 'ADREGSPONSOR' in currentBadgeTypes ? 'checked' : '' }}>
+                        Sponsor<br>
+                    </label>
+                    <label class="btn btn-primary {{ 'ADREGCOMMSPONSOR' in currentBadgeTypes ? 'active' : '' }}">
+                        <input type="radio" name="regtype" value="ADREGCOMMSPONSOR"
+                            {{ 'ADREGCOMMSPONSOR' in currentBadgeTypes ? 'checked' : '' }}>
+                        Community Sponsor<br>
+                    </label>
+                    <label class="btn btn-primary {{ 'GUEST' in currentBadgeTypes ? 'active' : '' }}">
+                        <input type="radio" name="regtype" value="GUEST"
+                            {{ 'GUEST' in currentBadgeTypes ? 'checked' : '' }}>
+                        Guest<br>
+                    </label>
+                    <label class="btn btn-primary {{ 'VENDOR' in currentBadgeTypes ? 'active' : '' }}">
+                        <input type="radio" name="regtype" value="VENDOR"
+                            {{ 'VENDOR' in currentBadgeTypes ? 'checked' : '' }}>
+                        Vendor<br>
+                    </label>
+                    <label class="btn btn-primary {{ 'EXHIBITOR' in currentBadgeTypes ? 'active' : '' }}">
+                        <input type="radio" name="regtype" value="EXHIBITOR"
+                            {{ 'EXHIBITOR' in currentBadgeTypes ? 'checked' : '' }}>
+                        Exhibitor<br>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>Membership Details</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="input-group">
+                    <span class="input-group-addon">Last Name</span>
+                    <input class="form-control" id="lastname" name="LastName" type="text" value="{{ registration.lastname|default('') }}"
+                           placeholder="Last Name">
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="input-group">
+                    <span class="input-group-addon">First Name</span>
+                    <input class="form-control" id="firstname" name="FirstName" type="text" value="{{ registration.firstname|default('') }}"
+                           placeholder="First Name">
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="input-group">
+                    <span class="input-group-addon">Middle Name</span>
+                    <input class="form-control" id="middlename" name="MiddleName" type="text" value="{{ registration.middlename|default('') }}"
+                           placeholder="Middle Name">
+                </div>
+            </div>
+        </div>
+
+        <br>
+
+        <div class="row">
+            <div class="col-sm-7">
+                <div class="input-group">
+                    <span class="input-group-addon">Postal Mailing Address</span>
+                    <input class="form-control" id="address1" name="Address" type="text" value="{{ registration.address|default('') }}"
+                           placeholder="123 Main St.">
+                </div>
+            </div>
+            <div class="col-sm-5">
+                <div class="input-group">
+                    <span class="input-group-addon">Address 2</span>
+                    <input class="form-control" id="address2" name="Address2" type="text" value="{{ registration.address2|default('') }}"
+                           placeholder="APT 12345">
+                </div>
+            </div>
+        </div>
+
+        <br>
+
+        <div class="row">
+            <div class="col-sm-7">
+                <div class="input-group">
+                    <span class="input-group-addon">City</span>
+                    <input class="form-control" id="city" name="City" type="text" value="{{ registration.city|default('') }}"
+                           placeholder="Bloomington">
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="input-group">
+                    <span class="input-group-addon">State</span>
+                    <input class="form-control" id="state" name="State" type="text" value="{{ registration.state|default('') }}" placeholder="MN">
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="input-group">
+                    <span class="input-group-addon">Zip</span>
+                    <input class="form-control" id="zip" name="Zip" type="text" value="{{ registration.zip|default('') }}" placeholder="12345">
+                </div>
+            </div>
+        </div>
+
+        <br>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="input-group">
+                    <span class="input-group-addon">Phone</span>
+                    <input class="form-control" id="phone" name="Phone" type="text" value="{{ registration.phone|default('') }}"
+                           placeholder="(651) 555-1234">
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="input-group">
+                    <span class="input-group-addon">E-Mail</span>
+                    <input class="form-control" id="email" name="Email" type="text" value="{{ registration.email|default('') }}"
+                           placeholder="john.doe@gmail.com">
+                </div>
+            </div>
+        </div>
+
+        <br>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="input-group">
+                    <span class="input-group-addon">Badge Name</span>
+                    <input class="form-control" id="badgename" name="BadgeName" type="text" value="{{ registration.badgename|default('') }}"
+                           placeholder="Captain Tightpants">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6">
+
+                <br>
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="input-group">
+                            <span class="input-group-addon">Birthdate</span>
+                            <input class="form-control datepicker" id="birthdate" name="Birthday" type="text"
+                                   value="{{ registration is not null ? registration.birthday|date('m/d') : '' }}" placeholder="03/26">
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <span class="input-group-addon">Birthyear</span>
+                            <input class="form-control" id="birthyear" name="Birthyear" type="text"
+                                   value="{{ registration is not null ? registration.birthday|date('Y') : '' }}"
+                                   placeholder="">
+                        </div>
+                    </div>
+                </div>
+                <br>
+
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="btn-group" data-toggle="buttons">
+                            <label class="btn btn-primary {{ registration is not null and registration.contactVolunteer == 'true' ? 'active' : '' }}">
+                                <input type="checkbox" name="volunteer" id="volunteer" {{ registration is not null and registration.contactVolunteer == 'true' ? 'Checked' : '' }}>
+                                    Volunteer?
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="btn-group" data-toggle="buttons">
+                            <label class="btn btn-primary {{ registration is not null and registration.contactNewsletter == 'true' ? 'active' : '' }}">
+                                <input type="checkbox" name="newsletter" id="newsletter" {{ registration is not null and registration.contactNewsletter == 'true' ? 'Checked' : '' }}>
+                                    Newsletter?
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="input-group">
+                    <span class="input-group-addon">Comments</span>
+                    <textarea class="form-control custom-control" name="comments" rows="6"
+                              placeholder="Information to be added to the log"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" id="alert_div" style="display: none">
+            <div class="col-sm-12">
+                <div class="bs-callout bs-callout-info" id="alert_subdiv">
+                    <h4 id="alert_heading">Info</h4>
+
+                    <p id="alert_msg">Unknown Error.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-8">
+                <br>
+                <button id="save_form" type="button" class="btn btn-primary">Save</button>
+            </div>
+
+            <div class="col-sm-4">
+                {% if group is not null %}
+                <br>
+                <a href="/editregistration//{{ group.reggroupId }}" class="btn btn-primary">Add another registration to
+                    {{ group.name }}</a>
+                {% endif %}
+                {% if registration is not null and registration.registrationId %}
+                <br>
+                <a href="/editregistration/" class="btn btn-primary">Add another registration</a>
+                {% endif %}
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-sm-6">
+                <h3>T-Shirts</h3>
+            </div>
+            <div class="col-sm-3">
+                <h3>Staff:</h3>
+            </div>
+            <div class="col-sm-3">
+                <h3>Advanced Options:</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <table class="table table-striped" id="table_registrations">
+                    <thead>
+                    <tr height="15px">
+                        <th>Type</th>
+                        <th>Size</th>
+                        <th class="text-right">Remove</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tshirt">
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm-3">
+                <div class="alert alert-danger" role="alert" id="staffdiv">
+                    <div id="staffmsg">This member is also listed on staff for this year.</div>
+                    <a href="javascript:void(0);" class="btn btn-primary" id="staffmodify">Remove</a>
+                </div>
+            </div>
+            <!-- BEGIN: transfer_button -->
+            <div class="col-sm-3">
+                <a href="/editregistration///{registration_id}" class="btn btn-primary">Transfer Registration</a>
+                <br><br>
+                <a href="/rollover/{registration_id}" class="btn btn-primary">Rollover Registration</a>
+            </div>
+            <!-- END: transfer_button -->
+        </div>
+
+        <div class="row">
+            <div class="col-sm-2">
+                <br>
+                <br>
+
+                <div class="form-group">
+                    <select class="form-control" name="shirt_type" id="shirt_type">
+                        <option value="" default="">Select T-Shirt...</option>
+                        <option value="MensTee">Men's T-Shirt</option>
+                        <option value="WomensTee">Women's T-Shirt</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <br>
+                <br>
+
+                <div class="form-group">
+                    <select class="form-control" name="shirt_size" id="shirt_size">
+                        <option value="" default="">Select Size...</option>
+                        <option value="S">S</option>
+                        <option value="M">M</option>
+                        <option value="L">L</option>
+                        <option value="XL">XL</option>
+                        <option value="XLT">XLT (Mens Only)</option>
+                        <option value="2XL">2XL</option>
+                        <option value="2XLT">2XLT (Mens Only)</option>
+                        <option value="3XL">3XL (Mens Only)</option>
+                        <option value="3XLT">3XLT (Mens Only)</option>
+                        <option value="4XL">4XL (Mens Only)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <br>
+                <br>
+
+                <div class="form-group">
+                    <button id="add_shirt" type="button" class="btn btn-primary">Add Shirt</button>
+                </div>
+            </div>
+        </div>
+
+    </form>
+
+
+    <script>
+        var registration_id = {registration_id};
+
+        $(function ()
+        {
+            $(".datepicker").datepicker({
+                changeMonth: true,
+                dateFormat: 'mm/dd'
+            });
+        });
+
+        $(document).ready(function ()
+        {
+            get_regshirtlist();
+        });
+
+        function render_shirt(RegistrationShirt_ID, shirt_type, shirt_size)
+        {
+            $('#tshirt')
+                .append($('<tr>')
+                    .attr('id', 'tr_' + RegistrationShirt_ID)
+                    .append($('<td>')
+                        .text(shirt_type)
+                        .append($('<input>')
+                            .attr('type', 'hidden')
+                            .attr('name', 'RegistrationShirt_ID[]')
+                            .attr('value', RegistrationShirt_ID)
+                        )
+                    )
+                    .append($('<td>')
+                        .html(shirt_size)
+                    )
+                    .append($('<td>')
+                        .append($('<span>')
+                            .attr('class', 'close-btn')
+                            .append($('<a>')
+                                .attr('id', 'delete_' + RegistrationShirt_ID)
+                                .attr('href', 'javascript:void(0);')
+                                .html('X')
+                            )
+                        )
+                    )
+                );
+
+            $('#delete_' + RegistrationShirt_ID).click(function ()
+            {
+                delete_shirt(RegistrationShirt_ID);
+            });
+        }
+
+        $('#add_shirt').click(function ()
+        {
+            var shirt_type = $('#shirt_type').val();
+            var shirt_size = $('#shirt_size').val();
+            var reg_id = $('#Registration_ID').val();
+
+            var RegistrationShirt_ID = 0;
+            $.getJSON('/editregshirtlist/add',
+                {
+                    'Registration_ID': reg_id,
+                    'shirt_type': shirt_type,
+                    'shirt_size': shirt_size
+                },
+                function (json)
+                {
+                    if (json['success'] && json['RegistrationShirt_ID']) {
+                        RegistrationShirt_ID = json['RegistrationShirt_ID'];
+                        render_shirt(RegistrationShirt_ID, shirt_type, shirt_size);
+                    } else {
+                        alert('Error adding shirt. Contact IT.')
+                    }
+                }
+            );
+        });
+
+        function delete_shirt(RegistrationShirt_ID)
+        {
+            var reg_id = $('#Registration_ID').val();
+            $.getJSON('/editregshirtlist/delete',
+                {
+                    'Registration_ID': reg_id,
+                    'RegistrationShirt_ID': RegistrationShirt_ID
+                },
+                function (json)
+                {
+                    $('#tr_' + RegistrationShirt_ID).remove();
+                }
+            );
+            get_regshirtlist();
+        }
+        ;
+
+        function get_regshirtlist()
+        {
+            var reg_id = $('#Registration_ID').val();
+            if (reg_id == '') {
+                //alert('You must save the user before you can add t-shirts');
+                return;
+            }
+
+            $.getJSON('/getregshirtlist/' + reg_id,
+                {},
+                function (json)
+                {
+                    $('#tshirt').empty();
+
+                    var shirtcount = json.length;
+                    for (var i = 0; i < shirtcount; i++) {
+                        var RegistrationShirt_ID = json[i]['RegistrationShirt_ID'];
+                        var shirt_type = json[i]['shirt_type'];
+                        var shirt_size = json[i]['shirt_size'];
+                        render_shirt(RegistrationShirt_ID, shirt_type, shirt_size);
+                    }
+                }
+            );
+        }
+
+        $('#staffmodify').click(function ()
+        {
+            action = 'remove';
+            if ($('#staffmodify').html() == 'Add') {
+                var action = 'add';
+            }
+
+            var reg_id = $('#Registration_ID').val();
+            // Submit the AJAX
+            $.ajax({
+                type: 'POST',
+                url: '/ajaxstaffmodify/' + reg_id + '/' + action,
+                dataType: 'json',
+                data: $('#form_editregistration').serialize(),
+                error: function (x, textStatus)
+                {
+                    if (textStatus == 'parsererror') {
+                        var error = 'Invalid JSON returned. Please retry.';
+                    } else {
+                        if (textStatus == 'timeout') {
+                            var error = 'Timeout Error: Could not communicate with server. Check connection';
+                        } else {
+                            var error = textStatus + ': Please try again.';
+                        }
+                    }
+                    $('#alert_div').show();
+                    $('#alert_msg').text(error);
+                    $('#alert_heading').text('Info');
+                    $('#alert_subdiv').addClass('bs-callout-danger');
+                    $('#alert_subdiv').removeClass('bs-callout-info');
+                }
+            })
+                .done(function (data)
+                {
+                    $('#alert_div').show();
+                    $('#alert_msg').text(data['message']);
+                    if (data['success']) {
+                        $('#alert_heading').text('Info');
+                        $('#alert_subdiv').removeClass('bs-callout-danger');
+                        $('#alert_subdiv').addClass('bs-callout-info');
+
+                        jQuery.data(document.body, "is_staff", false);
+                        if (action == 'add') {
+                            jQuery.data(document.body, "is_staff", true);
+                        }
+                        staffdivstyle();
+                    } else {
+                        $('#alert_heading').text('Error');
+                        $('#alert_subdiv').addClass('bs-callout-danger');
+                        $('#alert_subdiv').removeClass('bs-callout-info');
+                    }
+                });
+        });
+
+        //TODO: FIXMEjQuery.data(document.body, "is_staff", {is_staff});
+        staffdivstyle();
+        function staffdivstyle()
+        {
+            if (jQuery.data(document.body, "is_staff")) {
+                $('#staffdiv').removeClass('alert-danger');
+                $('#staffdiv').addClass('alert-info');
+                $('#staffmsg').html('This member is also listed on staff for this year.');
+                $('#staffmodify').html('Remove');
+            } else {
+                $('#staffdiv').removeClass('alert-info');
+                $('#staffdiv').addClass('alert-danger');
+                $('#staffmsg').html('This member is not listed as staff.');
+                $('#staffmodify').html('Add');
+            }
+        }
+
+        $('#save_form').click(function ()
+        {
+            // Submit the AJAX
+            $.ajax({
+                type: 'POST',
+                url: '/ajaxeditregistration/',
+                dataType: 'json',
+                data: $('#form_editregistration').serialize(),
+                error: function (x, textStatus)
+                {
+                    if (textStatus == 'parsererror') {
+                        var error = 'Invalid JSON returned. Please retry.';
+                    } else {
+                        if (textStatus == 'timeout') {
+                            var error = 'Timeout Error: Could not communicate with server. Check connection';
+                        } else {
+                            var error = textStatus + ': Please try again.';
+                        }
+                    }
+                    $('#alert_div').show();
+                    $('#alert_msg').text(error);
+                    $('#alert_heading').text('Info');
+                    $('#alert_subdiv').addClass('bs-callout-danger');
+                    $('#alert_subdiv').removeClass('bs-callout-info');
+                }
+            })
+                .done(function (data)
+                {
+                    $('#alert_div').show();
+                    $('#alert_msg').text(data['message']);
+                    if (data['success']) {
+                        $('#alert_heading').text('Info');
+                        $('#alert_subdiv').removeClass('bs-callout-danger');
+                        $('#alert_subdiv').addClass('bs-callout-info');
+                        $('#Registration_ID').val(data['Registration_ID']);
+
+                        var group = '';
+                        if ($('#RegGroup_ID').val() != '') {
+                            group = 'Group ';
+                        }
+                        $('#reg_header').html(
+                            'Edit ' + group + 'Membership - ' + data['Year'] + ' - ' + data['Number']);
+                        var reggroup_id = '{reggroup_id}';
+                        if (reggroup_id != '') {
+                            reggroup_id = '/' + reggroup_id;
+                        }
+                        window.history.pushState("object or string", "Registration " + data['Number'],
+                            "/editregistration/" + data['Registration_ID'] + reggroup_id);
+                    } else {
+                        $('#alert_heading').text('Error');
+                        $('#alert_subdiv').addClass('bs-callout-danger');
+                        $('#alert_subdiv').removeClass('bs-callout-info');
+                    }
+                });
+        });
+
+        $('#RegistrationType').on('change', function ()
+        {
+            if (this.value == 'Group') {
+                $('#RegGroup_ID').show();
+            } else {
+                $('#RegGroup_ID').hide();
+            }
+        });
+
+    </script>
+    <style>
+        .close-btn {
+            border: 2px solid #c2c2c2;
+            float: right;
+            padding: 1px 5px;
+            background-color: #605F61;
+            border-radius: 20px;
+        }
+
+        .close-btn a {
+            font-size: 15px;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+    </style>
+{% endblock %}

@@ -23,6 +23,10 @@ services:
         class: AppBundle\Service\Repository\RegistrationRepository
         arguments: [ "@repository_event", "@doctrine.orm.entity_manager"]
 
+    repository_registrationshirt:
+        class: AppBundle\Service\Repository\RegistrationShirtRepository
+        arguments: [ "@doctrine.orm.entity_manager"]
+
     repository_registrationstatus:
         class: AppBundle\Service\Repository\RegistrationStatusRepository
         arguments: [ "@doctrine.orm.entity_manager"]
@@ -33,6 +37,14 @@ services:
 
     repository_registrationhistory:
         class: AppBundle\Service\Repository\RegistrationHistoryRepository
+        arguments: [ "@doctrine.orm.entity_manager"]
+
+    repository_reggroup:
+        class: AppBundle\Service\Repository\RegGroupRepository
+        arguments: [ "@doctrine.orm.entity_manager"]
+
+    repository_shirt:
+        class: AppBundle\Service\Repository\ShirtRepository
         arguments: [ "@doctrine.orm.entity_manager"]
 
     util_percent:

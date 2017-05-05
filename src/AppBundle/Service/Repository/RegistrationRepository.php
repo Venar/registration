@@ -24,8 +24,17 @@ class RegistrationRepository
         $this->entityManager = $entityManager;
     }
 
+    /**
+     * @param String $registrationId
+     * @return Registration|null|object
+     */
     public function getFromRegistrationId($registrationId)
     {
+        if (!$registrationId) {
+
+            return null;
+        }
+
         $registration = $this->entityManager
             ->getRepository('AppBundle:Registration')
             ->find($registrationId)

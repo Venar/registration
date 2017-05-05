@@ -1,24 +1,18 @@
 <?php declare(strict_types=1);
-/**
- * Created by PhpStorm.
- * User: John J. Koniges
- * Date: 4/27/2017
- * Time: 1:56 PM
- */
 
 namespace AppBundle\Service\Repository;
 
-
-use AppBundle\Entity\Badge;
 use AppBundle\Entity\Registration;
+use AppBundle\Entity\Registrationshirt;
 use Doctrine\ORM\EntityManager;
 
-class BadgeRepository
+
+class RegistrationShirtRepository
 {
     /** @var EntityManager $entityManager */
     protected $entityManager;
 
-    const entityName = 'AppBundle:Badge';
+    const entityName = 'AppBundle:Registrationshirt';
 
     public function __construct(EntityManager $entityManager)
     {
@@ -26,27 +20,21 @@ class BadgeRepository
     }
 
     /**
-     * @param null|Registration $registration
-     * @return Badge[]
+     * @param Registration $registration
+     * @return Registrationshirt[]
      */
-    public function getBadgesFromRegistration(?Registration $registration) : array
+    public function getRegistrationShirtsFromRegistration(Registration $registration) : array
     {
-        if (!$registration) {
-
-            return [];
-        }
-
-        $history = $this->entityManager
+        $registrationShirts = $this->entityManager
             ->getRepository(self::entityName)
             ->findBy(
                 array('registration' => $registration)
             );
 
-        return $history;
+        return $registrationShirts;
     }
-
     /**
-     * @return Badge[]
+     * @return Registrationshirt[]
      */
     public function findAll() : array
     {
