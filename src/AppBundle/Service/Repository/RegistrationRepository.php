@@ -24,6 +24,44 @@ class RegistrationRepository
         $this->entityManager = $entityManager;
     }
 
+    public function getFromRegistrationId($registrationId)
+    {
+        $registration = $this->entityManager
+            ->getRepository('AppBundle:Registration')
+            ->find($registrationId)
+            //->getQuery()->getOneOrNullResult()
+        ;
+
+        if (!$registration) {
+            /*
+            throw $this->createNotFoundException(
+                'No registration found for id '.$registrationId
+            );
+            */
+        }
+
+        return $registration;
+    }
+
+    public function getFromTransfered($registrationId)
+    {
+        $registration = $this->entityManager
+            ->getRepository('AppBundle:Registration')
+            ->find($registrationId)
+            //->getQuery()->getOneOrNullResult()
+        ;
+
+        if (!$registration) {
+            /*
+            throw $this->createNotFoundException(
+                'No registration found for id '.$registrationId
+            );
+            */
+        }
+
+        return $registration;
+    }
+
     public function getFromConfirmation(String $confirmation, Event $event) : ?Registration
     {
         if (!$event) {

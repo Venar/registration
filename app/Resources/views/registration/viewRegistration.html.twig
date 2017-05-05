@@ -1,0 +1,220 @@
+{% extends 'detour.html.twig' %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-sm-12">
+            <h1 class="page-header">
+                <span>{{ registration.firstname }} {{ registration.lastname }} ({{ registration.number }})</span>
+            </h1>
+        </div>
+    </div>
+
+    {% if registrationStatus.active != "true" %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="bs-callout bs-callout-danger" id="alert_subdiv">
+                <h4 id="alert_heading">Inactive Registration</h4>
+                <p id="alert_msg">{{ info }}</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="registration">
+        <div class="row">
+            <div class="col-sm-4 contact-info">
+                <h2>Registration Actions</h2>
+
+                <table>
+                    <tr>
+                        <td>
+                            <div class="col-sm-2">
+                                <a href="/editregistration/{{ registration.registrationId }}" class="btn btn-primary"
+                                   style="width: 150px">Edit</a>
+                            </div>
+                        </td><td>
+                            <div class="col-sm-2">
+                                <a href="/print_single/{{ registration.registrationId }}" class="btn btn-primary"
+                                   style="width: 150px">Print</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% if registrationStatus.active == "true" %}
+                    <tr>
+                        <td>
+                            <br>
+                        </td>
+                        <td>
+                            <br>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="col-sm-2">
+                                <a href="/editregistration///{{ registration.registrationId }}" class="btn btn-danger"
+                                   style="width: 150px">Transfer</a>
+                            </div>
+                        </td><td>
+                            <div class="col-sm-2">
+                                <a href="/rollover/{{ registration.registrationId }}" class="btn btn-danger"
+                                   style="width: 150px">Rollover</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endif %}
+                </table>
+
+                <h2>Badges</h2>
+                <table class="table">
+                {% for badge in badges %}
+                    <tr>
+                        <td>
+                            <a href="/badgestatus/{{ registration.registrationId }}/{{ badge.badgeId }}">
+                                <div class="rounded {{ badge.badgetype.name }} {{ badge.badgestatus.active == 'true' ? '' : 'invalid' }}">
+                                    <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                                    {{ badge.badgetype.description }}  ({{ badge.badgestatus.status }}) - {{ badge.number }}
+                                </div>
+                            </a>
+                        </td><td>
+                            {% if badge.badgestatus.active == true %}
+                            <a href="/badgestatus/{{ registration.registrationId }}/{{ badge.badgeId }}" class="btn btn-primary" style="width: 75px">Lost</a><br>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </table>
+            </div>
+            <div class="col-sm-4 registration-info">
+                <h2>Information</h2>
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <th>Full Name</th>
+                            <td>{{ registration.lastname }}, {{ registration.firstname }} {{ registration.middlename }}</td>
+                        </tr><tr>
+                            <th>Badge Name</th>
+                            <td>{{ registration.badgename }}</td>
+                        </tr><tr>
+                            <th>Birthday</th>
+                            <td>{{ registration.birthday|date("F j Y") }}</td>
+                        </tr><tr>
+                            <th>Phone</th>
+                            <td>{{ registration.phone }}</td>
+                        </tr><tr>
+                            <th>Email</th>
+                            <td>{{ registration.email }}</td>
+                        </tr><tr>
+                            <th>Address</th>
+                            <td>
+                                {{ registration.address }} <br/>
+                                {% if registration.address2 != '' %}
+                                {{ registration.address2 }} <br/>
+                                {% endif %}
+                                {{ registration.city }}, {{ registration.state }} {{ registration.zip }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm-4 registration-status">
+                <h2>Status</h2>
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <th>Type:</th>
+                            <td>{{ registrationType.name }}</td>
+                        </tr><tr>
+                            <th>Status:</th>
+                            <td><b>{{ registrationStatus.status }}</b>, {{ registrationStatus.description }}</td>
+                        </tr><tr>
+                            <th>Confirmation #:</th>
+                            <td>{{ registration.confirmationnumber }}</td>
+                        </tr><tr>
+                            <th>Vounteer?</th>
+                            <td>{{ registration.contactVolunteer == 'true' ? 'Yes' : 'No' }}</td>
+                        </tr><tr>
+                            <th>Newsletter?</th>
+                            <td>{{ registration.contactNewsletter == 'true' ? 'Yes' : 'No' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12 registration-info">
+                <h2>History</h2>
+                <table class="table history-table">
+                    <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Date</th>
+                        <th>Notes</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for event in history %}
+                        <tr class="info">
+                            <td>{{ event.createdby.firstname }} {{ event.createdby.lastname }}</td>
+                            <td>{{ event.createddate|date('M d, Y g:i a') }}</td>
+                            <td>{{ event.changetext|raw }}</td>
+                        </tr>
+                        {% endfor %}
+                        {% if history is empty %}
+                        <tr class="warning">
+                            <td colspan="3">
+                                There is no history available for this user yet.
+                            </td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .rounded {
+            -moz-border-radius: 15px;
+            border-radius: 15px;
+            width: 100%;
+            padding-left: 10px;
+            float: left;
+            margin-bottom: 10px;
+        }
+        .rounded a {
+            color: white;
+        }
+        .rounded.ADREGSTANDARD {
+            background: orange;
+            color: white;
+        }
+        .rounded.MINOR {
+            background: yellow;
+        }
+        .rounded.ADREGSPONSOR {
+            background: blue;
+            color: white;
+        }
+        .rounded.ADREGCOMMSPONSOR {
+            background: purple;
+            color: white;
+        }
+        .rounded.STAFF {
+            background: red;
+            color: white;
+        }
+        .rounded.GUEST {
+            background: black;
+        }
+        .rounded.VENDOR {
+            background: green;
+        }
+        .rounded.EXHIBITOR {
+            background: silver;
+        }
+        .rounded.invalid {
+            background-color:rgba(0, 0, 0, 0.5);
+        }
+    </style>
+{% endblock %}
