@@ -267,21 +267,13 @@
         </div>
 
         <div class="row">
-            <div class="col-sm-8">
-                <br>
-                <button id="save_form" type="button" class="btn btn-primary">Save</button>
+            <div class="col-sm-10">
             </div>
 
-            <div class="col-sm-4">
-                {% if group is not null %}
-                <br>
-                <a href="/editregistration//{{ group.reggroupId }}" class="btn btn-primary">Add another registration to
-                    {{ group.name }}</a>
-                {% endif %}
-                {% if registration is not null and registration.registrationId %}
-                <br>
-                <a href="/editregistration/" class="btn btn-primary">Add another registration</a>
-                {% endif %}
+            <div class="col-sm-2">
+                <br><br>
+                <button id="save_form" type="button" class="btn btn-primary btn-lg">Save</button>
+                <br><br>
             </div>
         </div>
 
@@ -317,13 +309,22 @@
                     <a href="javascript:void(0);" class="btn btn-primary" id="staffmodify">Remove</a>
                 </div>
             </div>
-            <!-- BEGIN: transfer_button -->
             <div class="col-sm-3">
-                <a href="/editregistration///{registration_id}" class="btn btn-primary">Transfer Registration</a>
+            {% if registration is not null and registration.registrationId %}
+                <a href="/editregistration///{{ registration.registrationId }}" class="btn btn-primary">Transfer Registration</a>
                 <br><br>
-                <a href="/rollover/{registration_id}" class="btn btn-primary">Rollover Registration</a>
+                <a href="/rollover/{{ registration.registrationId }}" class="btn btn-primary">Rollover Registration</a>
+            {% endif %}
+            {% if group is not null %}
+                <br><br>
+                <a href="/editregistration//{{ group.reggroupId }}" class="btn btn-primary">Add another registration to
+                    {{ group.name }}</a>
+            {% endif %}
+            {% if registration is not null and registration.registrationId %}
+                <br><br>
+                <a href="/editregistration/" class="btn btn-primary">Add another registration</a>
+            {% endif %}
             </div>
-            <!-- END: transfer_button -->
         </div>
 
         <div class="row">
