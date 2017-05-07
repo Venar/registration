@@ -25,6 +25,12 @@ class BadgeRepository
         $this->entityManager = $entityManager;
     }
 
+    public function generateNumber($digits = 4)
+    {
+        $number = rand(pow(10, $digits - 1), pow(10, $digits) - 1);
+        return $number;
+    }
+
     /**
      * @param null|Registration $registration
      * @return Badge[]
@@ -43,6 +49,18 @@ class BadgeRepository
             );
 
         return $history;
+    }
+
+    public function isStaff(Registration $registration) {
+        $badges = $this->getBadgesFromRegistration($registration);
+        foreach ($badges as $badge) {
+            if ($badge->getBadgetype()->getName() == 'STAFF') {
+
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

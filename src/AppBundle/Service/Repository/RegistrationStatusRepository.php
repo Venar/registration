@@ -1,9 +1,4 @@
 <?php declare(strict_types=1);
-/**
- * Created by PhpStorm.
- * User: John J. Koniges
- * Date: 4/29/2017
- */
 
 namespace AppBundle\Service\Repository;
 

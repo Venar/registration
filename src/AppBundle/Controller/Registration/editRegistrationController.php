@@ -2,6 +2,8 @@
 
 namespace AppBundle\Controller\Registration;
 
+use AppBundle\Entity\Badge;
+use AppBundle\Entity\Registrationhistory;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -52,6 +54,7 @@ class editRegistrationController extends Controller
             'regGroups' => $this->get('repository_reggroup')->findAll(),
             'registrationStatuses' => $this->get('repository_registrationstatus')->findAll(),
             'registration' => $registration,
+            'isStaff' => $this->get('repository_badge')->isStaff($registration),
             'currentBadgeTypes' => $currentBadgeTypes,
             'badges' => $badges,
             'group' => $group,
@@ -85,5 +88,56 @@ class editRegistrationController extends Controller
         }
 
         return new JsonResponse($arrayShirts);
+    }
+
+    /**
+     * @Route("/ajaxstaffmodify/{registrationID}/{action}")
+     *
+     * @param String $registrationID
+     * @return Response
+     */
+    public function modifyStaffStatus($registrationID, $action)
+    {
+        $returnData = array();
+        $returnData['success'] = false;
+        $returnData['message'] = 'Invalid Registration ID. Save your badge first.';
+
+        $entityManager = $this->get('doctrine.orm.entity_manager');
+
+        $registration = $this->get('repository_registration')->getFromRegistrationId($registrationID);
+        if ($registration && ($action == 'add' || $action == 'remove')) {
+            $badgeType = $this->get('repository_badgetype')->getBadgeTypeFromType('STAFF');
+            if ($action == 'remove') {
+                $badges = $this->get('repository_badge')->getBadgesFromRegistration($registration);
+                foreach ($badges as $badge) {
+                    if ($badge->getBadgetype()->getBadgetypeId() == $badgeType->getBadgetypeId()) {
+                        $entityManager->remove($badge);
+                        $returnData['success'] = true;
+                        $returnData['message'] = 'Staff badge deleted';
+                    }
+                }
+            } elseif ($action == 'add') {
+                $badgeStatus = $this->get('repository_badgestatus')->getBadgeStatusFromStatus('NEW');
+                $badge = new Badge();
+                $badge->setRegistration($registration);
+                $badge->setBadgetype($badgeType);
+                $badge->setBadgestatus($badgeStatus);
+                $badge->setNumber($this->get('repository_badge')->generateNumber());
+                $entityManager->persist($badge);
+                $returnData['success'] = true;
+                $returnData['message'] = 'Staff badge created';
+            }
+        }
+
+        if ($registration->getRegistrationId() && $returnData['success']) {
+            $registrationHistory = new Registrationhistory();
+            $registrationHistory->setRegistration($registration);
+            $registrationHistory->setChangetext($returnData['message']);
+            $entityManager->persist($registrationHistory);
+
+            $entityManager->flush();
+        }
+
+        return new JsonResponse($returnData);
     }
 }
