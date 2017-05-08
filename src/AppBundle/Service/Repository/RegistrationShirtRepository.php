@@ -20,6 +20,34 @@ class RegistrationShirtRepository
     }
 
     /**
+     * @param String $registrationShirtId
+     * @return RegistrationShirt|null|object
+     */
+    public function getFromRegistrationShirtId($registrationShirtId)
+    {
+        if (!$registrationShirtId) {
+
+            return null;
+        }
+
+        $registration = $this->entityManager
+            ->getRepository('AppBundle:Registrationshirt')
+            ->find($registrationShirtId)
+            //->getQuery()->getOneOrNullResult()
+        ;
+
+        if (!$registration) {
+            /*
+            throw $this->createNotFoundException(
+                'No registration found for id '.$registrationId
+            );
+            */
+        }
+
+        return $registration;
+    }
+
+    /**
      * @param Registration $registration
      * @return Registrationshirt[]
      */

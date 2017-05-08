@@ -430,7 +430,7 @@
             var reg_id = $('#Registration_ID').val();
 
             var RegistrationShirt_ID = 0;
-            $.getJSON('/editregshirtlist/add',
+            $.getJSON('/editregshirtlist/'+reg_id+'/add',
                 {
                     'Registration_ID': reg_id,
                     'shirt_type': shirt_type,
@@ -451,7 +451,7 @@
         function delete_shirt(RegistrationShirt_ID)
         {
             var reg_id = $('#Registration_ID').val();
-            $.getJSON('/editregshirtlist/delete',
+            $.getJSON('/editregshirtlist/'+reg_id+'/delete',
                 {
                     'Registration_ID': reg_id,
                     'RegistrationShirt_ID': RegistrationShirt_ID

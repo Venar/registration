@@ -21,6 +21,20 @@ class ShirtRepository
         $this->entityManager = $entityManager;
     }
 
+    public function getShirtFromTypeAndSize(String $type, String $size) : ?Shirt
+    {
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+
+        $queryBuilder->select('s')
+            ->from('AppBundle:Shirt', 's')
+            ->where("s.shirtsize = :shirtsize")
+            ->andWhere("s.shirttype = :shirttype")
+            ->setParameter('shirtsize', $size)
+            ->setParameter('shirttype', $type);
+
+        return $queryBuilder->getQuery()->getOneOrNullResult();
+    }
+
     /**
      * @param Registration $registration
      * @return Shirt[]
