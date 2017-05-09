@@ -18,6 +18,18 @@ class RegistrationStatusRepository
         $this->entityManager = $entityManager;
     }
 
+    public function getRegistrationStatusFromStatus(String $status) : ?Registrationstatus
+    {
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+
+        $queryBuilder->select('rs')
+            ->from(self::entityName, 'rs')
+            ->where("rs.status = :status")
+            ->setParameter('status', $status);
+
+        return $queryBuilder->getQuery()->getOneOrNullResult();
+    }
+
     /**
      * @return Registrationstatus[]
      */

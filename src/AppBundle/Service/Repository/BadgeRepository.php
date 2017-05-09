@@ -42,13 +42,13 @@ class BadgeRepository
             return [];
         }
 
-        $history = $this->entityManager
+        $badge = $this->entityManager
             ->getRepository(self::entityName)
             ->findBy(
                 array('registration' => $registration)
             );
 
-        return $history;
+        return $badge;
     }
 
     public function isStaff(Registration $registration) {

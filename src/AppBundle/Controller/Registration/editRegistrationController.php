@@ -3,7 +3,9 @@
 namespace AppBundle\Controller\Registration;
 
 use AppBundle\Entity\Badge;
+use AppBundle\Entity\Registration;
 use AppBundle\Entity\Registrationhistory;
+use AppBundle\Entity\Registrationreggroup;
 use AppBundle\Entity\Registrationshirt;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -226,9 +228,12 @@ class editRegistrationController extends Controller
      */
     public function ajaxEditRegistration(Request $request) : JsonResponse
     {
+        $entityManager = $this->get('doctrine.orm.entity_manager');
+        $event = $this->get('repository_event')->getSelectedEvent();
 
         $returnJson = array();
         $returnJson['success'] = false;
+        $returnJson['Year'] = $event->getYear();
 
         $all_fields_sent = true;
         $fields = array(
@@ -246,42 +251,46 @@ class editRegistrationController extends Controller
             'Birthday' => 'birthday',
             'Birthyear' => 'birth year',
         );
-        if (!array_key_exists('Registration_ID', $_REQUEST)) {
+        if (!$request->query->has('Registration_ID')) {
             $all_fields_sent = false;
             $returnJson['message'] = 'Registration_ID was not set.';
         }
-        if (!array_key_exists('regtype', $_REQUEST)) {
+        if (!$request->query->has('regtype')) {
             $all_fields_sent = false;
             $returnJson['message'] = 'regtype was not set.';
         }
-        if (!array_key_exists('Birthday', $_REQUEST)) {
+        if (!$request->query->has('Birthday')) {
             $all_fields_sent = false;
             $returnJson['message'] = 'Birthday was not set.';
         }
-        if (!array_key_exists('Birthyear', $_REQUEST)) {
+        if (!$request->query->has('Birthyear')) {
             $all_fields_sent = false;
             $returnJson['message'] = 'Birthyear was not set.';
         }
-        if (!array_key_exists('RegistrationType', $_REQUEST)) {
+        if (!$request->query->has('RegistrationType')) {
             $all_fields_sent = false;
             $returnJson['message'] = 'RegistrationType was not set.';
         }
-        $registrationType = RegistrationType::load_from_type($_REQUEST['RegistrationType']);
-        if (!$registrationType instanceof RegistrationType) {
-            $all_fields_sent = false;
-            $returnJson['message'] = "RegistrationType '" . $_REQUEST['RegistrationType'] . "' didn't exist. Configuration Error.";
-        }
-        if (!array_key_exists('RegistrationStatus', $_REQUEST)) {
+        if (!$request->query->has('RegistrationStatus')) {
             $all_fields_sent = false;
             $returnJson['message'] = 'RegistrationStatus was not set.';
         }
-        $registrationStatus = RegistrationStatus::load_from_status($_REQUEST['RegistrationStatus']);
-        if (!$registrationStatus instanceof RegistrationStatus) {
+
+        $registrationType = $this->get('repository_registrationtype')
+            ->getRegistrationTypeFromType($request->query->get('RegistrationType'));
+        if (!$registrationType) {
             $all_fields_sent = false;
-            $returnJson['message'] = "RegistrationStatus '" . $_REQUEST['RegistrationStatus'] . "' didn't exist. Configuration Error.";
+            $returnJson['message'] = "RegistrationType '{$request->query->get('RegistrationType')}' didn't exist. Configuration Error.";
+        }
+
+        $registrationStatus = $this->get('repository_registrationstatus')
+            ->getRegistrationStatusFromStatus($request->query->get('RegistrationStatus'));
+        if (!$registrationStatus) {
+            $all_fields_sent = false;
+            $returnJson['message'] = "RegistrationStatus '{$request->query->get('RegistrationStatus')}' didn't exist. Configuration Error.";
         }
         foreach ($fields as $field => $fieldName) {
-            if (!array_key_exists($field, $_REQUEST)) {
+            if (!$request->query->has($field)) {
                 $all_fields_sent = false;
                 $returnJson['message'] = $fieldName . ' was not set.';
                 break;
@@ -289,85 +298,88 @@ class editRegistrationController extends Controller
         }
 
         $transferredFrom = null;
-        if (array_key_exists('TransferredFrom', $_REQUEST)) {
-            $transferredFrom = Registration::load($_REQUEST['TransferredFrom']);
+        if ($request->query->has('TransferredFrom')) {
+            $transferredFrom = $this->get('repository_registration')
+                ->getFromRegistrationId($request->query->get('RegistrationStatus'));
         }
 
         $history = '';
-        $event = Event::LoadSelectedYear();
         if ($all_fields_sent) {
-            $registration = Registration::load($_REQUEST['Registration_ID']);
+            $registration = $this->get('repository_registration')
+                ->getFromRegistrationId($request->query->get('Registration_ID'));
 
-            if (!$registration instanceof Registration) {
+            if (!$registration) {
                 $registration = new Registration();
 
-                $registration->Event_ID = $event->Event_ID;
-                $registration->CreatedDate = date('Y-m-d H:i:s.u');
-                $history .= 'Reg Type: ' . $registrationType->Name . '<br>';
-                $history .= 'Reg Status: ' . $registrationStatus->Status . '<br>';
+                $registration->setEvent($event);
+                $history .= 'Reg Type: ' . $registrationType->getName() . '<br>';
+                $history .= 'Reg Status: ' . $registrationStatus->getStatus() . '<br>';
             } else {
-                $oldRegType = RegistrationType::load($registration->RegistrationType_ID);
-                if ($oldRegType->RegistrationType_ID != $registrationType->RegistrationType_ID) {
-                    $history .= 'Reg Type: ' . $oldRegType->Name . ' => ' . $registrationType->Name . '<br>';
+                $oldRegType = $registration->getRegistrationtype();
+                if ($oldRegType->getRegistrationtypeId() != $registrationType->getRegistrationtypeId()) {
+                    $history .= 'Reg Type: ' . $oldRegType->getName() . ' => ' . $registrationType->getName() . '<br>';
                 }
-                $oldRegStatus = RegistrationStatus::load($registration->RegistrationStatus_ID);
-                if ($oldRegStatus->RegistrationStatus_ID != $registrationStatus->RegistrationStatus_ID) {
-                    $history .= 'Reg Status: ' . $oldRegStatus->Status . ' => ' . $registrationStatus->Status . '<br>';
-                }
-            }
-            $registration->RegistrationStatus_ID = $registrationStatus->RegistrationStatus_ID;
-            $registration->RegistrationType_ID = $registrationType->RegistrationType_ID;
-
-            if ($registrationType->Name != 'Group') {
-                $RegistrationRegGroups = $registration->findAllRegistrationRegGroups();
-                foreach ($RegistrationRegGroups as $RegistrationRegGroup) {
-                    $tmpRegGroup = $RegistrationRegGroup->get_reggroup();
-                    $history .= "Group Removed: {$tmpRegGroup->Name}<br>";
-                    $RegistrationRegGroup->delete();
+                $oldRegStatus = $registration->getRegistrationstatus();
+                if ($oldRegStatus->getRegistrationstatusId() != $registrationStatus->getRegistrationstatusId()) {
+                    $history .= 'Reg Status: ' . $oldRegStatus->getStatus() . ' => ' . $registrationStatus->getStatus() . '<br>';
                 }
             }
+            $registration->setRegistrationstatus($registrationStatus);
+            $registration->setRegistrationtype($registrationType);
 
-            $RegGroup = null;
-            if ($registrationType->Name == 'Group'
-                && array_key_exists('RegGroup_ID', $_REQUEST)
+            if ($registrationType->getName() != 'Group') {
+                $registrationRegGroups = $this->get('repository_registrationreggroup')
+                    ->getRegistrationRegGroupFromRegistration($registration);
+                foreach ($registrationRegGroups as $registrationRegGroup) {
+                    $tmpRegGroup = $registrationRegGroup->getReggroup();
+                    $history .= "Group Removed: {$tmpRegGroup->getName()}<br>";
+                    $entityManager->remove($registrationRegGroup);
+                }
+                $entityManager->flush();
+            }
+
+            $regGroup = null;
+            if ($registrationType->getName() == 'Group'
+                && $request->query->has('RegGroup_ID')
             ) {
-                $RegGroup = RegGroup::load($_REQUEST['RegGroup_ID']);
+                $regGroup = $this->get('repository_reggroup')->getFromReggroupId($request->query->get('RegGroup_ID'));
             }
 
             foreach ($fields as $field => $fieldName) {
                 if ($field == 'Birthyear') {
+
                     continue;
                 }
                 if ($field == 'Birthday') {
-                    $tmpfield = $_REQUEST['Birthday'] . '/' . $_REQUEST['Birthyear'];
-                    if (strtotime($registration->$field) != strtotime($tmpfield)) {
-                        $history .= $field . ': ' . $registration->$field . ' => ' . $tmpfield . '<br>';
+                    $tmpfield = $request->query->get('Birthday') . '/' . $request->query->get('Birthyear');
+                    if (!strtotime($tmpfield)) {
+                        $tmpfield = str_replace('-', '/', $tmpfield);
                     }
-                    $registration->Birthday = $_REQUEST['Birthday'] . '/' . $_REQUEST['Birthyear'];
+                    $newDate = new \DateTime(strtotime($tmpfield));
+                    $oldDate = $registration->getBirthday()->format('m/d/y');
+                    if ($oldDate != $newDate->format('m/d/y')) {
+                        $history .= "$field: $oldDate => {$newDate->format('m/d/y')}<br>";
+                    }
+                    $registration->setBirthday($newDate);
+
                     continue;
                 }
-                if ($registration->$field != $_REQUEST[$field]) {
-                    $history .= $field . ': ' . $registration->$field . ' => ' . $_REQUEST[$field] . '<br>';
+                $value = $request->query->get($field);
+                $fieldLowerSet = 'set'.ucfirst(strtolower($field));
+                $fieldLowerGet = 'get'.ucfirst(strtolower($field));
+                if ($registration->$fieldLowerGet() != $_REQUEST[$field]) {
+                    $history .= "$field: {$registration->$fieldLowerGet()} => $value<br>";
                 }
-                $registration->$field = $_REQUEST[$field];
+                $registration->$fieldLowerSet($value);
             }
 
-            $birthdate = (String)$_REQUEST['Birthday'] . '/' . $_REQUEST['Birthyear'];
-            if (!strtotime($birthdate)) {
-                $birthdate = str_replace('-', '/', $birthdate);
+            $registration->setContactVolunteer('');
+            if ($request->query->has('volunteer') && $request->query->get('volunteer')) {
+                $registration->setContactVolunteer('true');
             }
-            $registration->Birthday = date('Y-m-d H:i:s.u', strtotime($birthdate));
-            if (strtotime($birthdate) === false) {
-                $registration->Birthday = date('Y-m-d H:i:s.u');
-            }
-
-            $registration->contact_volunteer = '';
-            if (array_key_exists('volunteer', $_REQUEST) && $_REQUEST['volunteer']) {
-                $registration->contact_volunteer = 'true';
-            }
-            $registration->contact_newsletter = '';
-            if (array_key_exists('newsletter', $_REQUEST) && $_REQUEST['newsletter']) {
-                $registration->contact_newsletter = 'true';
+            $registration->setContactNewsletter('');
+            if ($request->query->has('newsletter') && $request->query->get('newsletter')) {
+                $registration->setContactNewsletter('true');
             }
 
             $allow_one_badge_types = array(
@@ -379,129 +391,132 @@ class editRegistrationController extends Controller
                 'VENDOR',
                 'EXHIBITOR'
             );
-            $Badges = $registration->find_all_badges();
-            $to_delete = array();
-            $badgetype_found = false;
-            $regtype = $_REQUEST['regtype'];
+
+            $toDelete = [];
+            $badgetypeFound = false;
+            $regtype = $request->query->get('regtype');
             if ($regtype == 'ADREGSTANDARD') {
-                if (strtotime($registration->Birthday) > strtotime($event->StartDate . " -18 years")) {
+                if (strtotime($registration->getBirthday()) > strtotime($event->getStartdate() . " -18 years")) {
                     $regtype = 'MINOR';
                 }
             }
-            foreach ($Badges as $Badge) {
-                /* @var $Badge Badge */
-                $BadgeType = $Badge->get_badge_type();
-                if (in_array($BadgeType->Name, $allow_one_badge_types) && $BadgeType->Name != $regtype) {
-                    $to_delete[] = $Badge;
-                    $history .= 'BadgeType: ' . $BadgeType->Name . ' => ' . $regtype . '<br>';
+
+            $badges = $this->get('repository_badge')->getBadgesFromRegistration($registration);
+            foreach ($badges as $badge) {
+                $badgeType = $badge->getBadgetype();
+                if (in_array($badgeType->getName(), $allow_one_badge_types) && $badgeType->getName() != $regtype) {
+                    $toDelete[] = $badge;
+                    $history .= "BadgeType: {$badgeType->getName()} => $regtype<br>";
                 }
-                if ($BadgeType->Name == $regtype) {
-                    $badgetype_found = true;
+                if ($badgeType->getName() == $regtype) {
+                    $badgetypeFound = true;
                 }
             }
-            if (!$registration->Registration_ID) {
-                $registration->generate_number();
+            if (!$registration->getRegistrationId()) {
+                $registration->setNumber($this->get('repository_registration')->generateNumber($registration));
             }
 
-            if ($transferredFrom instanceof Registration) {
-                $registration->TransferredTo = $transferredFrom->Registration_ID;
-                $history .= " Transferred From <a href='/view_registration/" . $transferredFrom->Registration_ID
-                    . "'>" . $transferredFrom->FirstName . ' ' . $transferredFrom->LastName . '</a>. <br>';
+            if ($transferredFrom) {
+                $registration->setTransferedto($transferredFrom->getRegistrationId());
+                $history .= " Transferred From <a href='/view_registration/" . $transferredFrom->getRegistrationId()
+                    . "'>" . $transferredFrom->getFirstname() . ' ' . $transferredFrom->getLastname() . '</a>. <br>';
             }
 
-            $registration->save();
+            $entityManager->persist($registration);
+            $entityManager->flush();
 
-            if ($transferredFrom instanceof Registration) {
-                $TransferredRegistrationStatus = RegistrationStatus::load_from_status('Transferred');
-                $transferredFrom->RegistrationStatus_ID = $TransferredRegistrationStatus->RegistrationStatus_ID;
-                $transferredFrom->save();
+            if ($transferredFrom) {
+                $transferredRegistrationStatus = $this->get('repository_registrationstatus')
+                    ->getRegistrationStatusFromStatus('Transferred');
+                $transferredFrom->setRegistrationstatus($transferredRegistrationStatus->RegistrationStatus_ID);
+                $entityManager->persist($transferredFrom);
 
-                $RegistrationRegGroups = $transferredFrom->findAllRegistrationRegGroups();
-                foreach ($RegistrationRegGroups as $RegistrationRegGroup) {
-                    $tmpRegGroup = $RegistrationRegGroup->get_reggroup();
-                    $TransferredFromHistory = "Group Removed: {$tmpRegGroup->Name}<br>";
-                    $RegistrationRegGroup->delete();
+                $transferredFromHistory = '';
+                $registrationRegGroups = $this->get('repository_registrationreggroup')
+                    ->getRegistrationRegGroupFromRegistration($transferredFrom);
+                foreach ($registrationRegGroups as $registrationRegGroup) {
+                    $tmpRegGroup = $registrationRegGroup->getReggroup();
+                    $transferredFromHistory .= "Group Removed: {$tmpRegGroup->getName()}<br>";
+                    $entityManager->remove($registrationRegGroup);
                 }
 
-                $RegistrationHistory = new RegistrationHistory();
-                $RegistrationHistory->Registration_ID = $transferredFrom->Registration_ID;
+                $registrationHistory = new RegistrationHistory();
+                $registrationHistory->setRegistration($transferredFrom);
                 $transferredToText= "<br>Registration Transferred to "
-                    ."<a href='/view_registration/{$registration->Registration_ID}'>"
-                    ."{$registration->FirstName} {$registration->LastName}</a>";
-                $RegistrationHistory->ChangeText = $TransferredFromHistory . $transferredToText;
-                $RegistrationHistory->save();
+                    ."<a href='/view_registration/{$registration->getRegistrationId()}'>"
+                    ."{$registration->getFirstname()} {$registration->getLastname()}</a>";
+                $registrationHistory->setChangetext($transferredFromHistory . $transferredToText);
+                $entityManager->persist($registrationHistory);
+                $entityManager->flush();
             }
 
-            if ($RegGroup instanceof RegGroup) {
-                $RegGroups = $registration->find_all_reggroups();
-                $group_found = false;
-                foreach ($RegGroups as $OldRegGroup) {
-                    /* @var RegGroup $OldRegGroup */
-                    if ($OldRegGroup->RegGroup_ID == $RegGroup->RegGroup_ID) {
-                        $group_found = true;
+            if ($regGroup) {
+                $oldRegistrationRegGroups = $this->get('repository_registrationreggroup')->getRegistrationRegGroupFromRegistration($registration);
+                $groupFound = false;
+                foreach ($oldRegistrationRegGroups as $oldRegistrationRegGroup) {
+                    if ($oldRegistrationRegGroup->getReggroup()->getReggroupId() == $regGroup->getReggroupId()) {
+                        $groupFound = true;
                     }
                 }
-                if (!$group_found) {
-                    $RegistrationRegGroups = $registration->findAllRegistrationRegGroups();
-                    foreach ($RegistrationRegGroups as $RegistrationRegGroup) {
-                        $tmpRegGroup = $RegistrationRegGroup->get_reggroup();
-                        $history .= "Group Removed: {$tmpRegGroup->Name}<br>";
-                        $RegistrationRegGroup->delete();
+                if (!$groupFound) {
+                    foreach ($oldRegistrationRegGroups as $oldRegistrationRegGroup) {
+                        $tmpRegGroup = $oldRegistrationRegGroup->getReggroup();
+                        $history .= "Group Removed: {$tmpRegGroup->getName()}<br>";
+                        $entityManager->remove($oldRegistrationRegGroup);
                     }
-                    $RegistrationRegGroup = new RegistrationRegGroup();
-                    $RegistrationRegGroup->Registration_ID = $registration->Registration_ID;
-                    $RegistrationRegGroup->RegGroup_ID = $RegGroup->RegGroup_ID;
-                    $RegistrationRegGroup->save();
+                    $registrationRegGroup = new Registrationreggroup();
+                    $registrationRegGroup->setRegistration($registration);
+                    $registrationRegGroup->setReggroup($regGroup);
+                    $entityManager->persist($registrationRegGroup);
 
-                    $history .= "Group Added: {$RegGroup->Name}<br>";
+                    $history .= "Group Added: {$regGroup->getName()}<br>";
+                    $entityManager->flush();
                 }
             }
 
-            if ($registration->Registration_ID && (count($to_delete) > 0 || !$badgetype_found)) {
-                foreach ($to_delete as $Badge) {
-                    /* @var $Badge Badge */
-                    $Badge->delete();
+            if ($registration->getRegistrationId() && (count($toDelete) > 0 || !$badgetypeFound)) {
+                foreach ($toDelete as $badge) {
+                    $entityManager->remove($badge);
                 }
 
-                $BadgeStatus = BadgeStatus::load_from_status('NEW');
-                $BadgeType = BadgeType::load_from_type($regtype);
-                $Badge = new Badge();
-                $Badge->Registration_ID = $registration->Registration_ID;
-                $Badge->BadgeType_ID = $BadgeType->BadgeType_ID;
-                $Badge->BadgeStatus_ID = $BadgeStatus->BadgeStatus_ID;
-                $Badge->generate_number();
-                $history .= 'BadgeType: Added Badge Type: ' . $BadgeType->Name . '<br>';
-                $Badge->save();
+                $badgeStatus = $this->get('repository_badgestatus')->getBadgeStatusFromStatus('NEW');
+                $badgeType = $this->get('repository_badgetype')->getBadgeTypeFromType($regtype);
+                $badge = new Badge();
+                $badge->setRegistration($registration);
+                $badge->setBadgetype($badgeType);
+                $badge->setBadgestatus($badgeStatus);
+                $badge->setNumber($this->get('repository_badge')->generateNumber());
+                $history .= "BadgeType: Added Badge Type: {$badgeType->getName()}<br>";
+                $entityManager->persist($badge);
+                $entityManager->flush();
             }
 
-            $registration->sendConfirmation();
-        }
+            //TODO: FIX ME!!!!!
+            //$registration->sendConfirmation();
 
-        if ($registration->Registration_ID) {
-            $RegistrationHistory = new RegistrationHistory();
-            $RegistrationHistory->Registration_ID = $registration->Registration_ID;
+            $registrationHistory = new RegistrationHistory();
+            $registrationHistory->setRegistration($registration);
 
-            if (array_key_exists('comments', $_REQUEST) && $_REQUEST['comments']) {
+            if ($request->query->has('comments') && $request->query->get('comments')) {
                 if ($history) {
                     $history .= '<br><br>';
                 }
-                $history .= '<b>Comment:</b> ' . nl2br($_REQUEST['comments']);
+                $history .= '<b>Comment:</b> ' . nl2br($request->query->get('comments'));
             }
 
-            $RegistrationHistory->ChangeText = $history;
+            $registrationHistory->setChangetext($history);
 
             if ($history) {
-                $RegistrationHistory->save();
+                $entityManager->persist($registrationHistory);
+                $entityManager->flush();
             }
 
             $returnJson['success'] = true;
             $returnJson['message'] = 'Registration Updated!';
+
+            $returnJson['Registration_ID'] = $registration->getRegistrationId();
+            $returnJson['Number'] = $registration->getNumber();
         }
-        if ($registration instanceof Registration) {
-            $returnJson['Registration_ID'] = $registration->Registration_ID;
-            $returnJson['Number'] = $registration->Number;
-        }
-        $returnJson['Year'] = $event->Year;
 
         return new JsonResponse($returnJson);
     }

@@ -5,6 +5,7 @@ namespace AppBundle\Service\Repository;
 
 use AppBundle\Entity\Badgetype;
 use AppBundle\Entity\Registration;
+use AppBundle\Entity\Registrationreggroup;
 use AppBundle\Entity\Registrationstatus;
 use AppBundle\Entity\Registrationtype;
 use Doctrine\ORM\EntityManager;
@@ -22,6 +23,24 @@ class RegistrationRepository
     {
         $this->eventRepository = $event;
         $this->entityManager = $entityManager;
+    }
+
+    public function generateNumber(Registration $registration)
+    {
+        $event = $this->eventRepository->getSelectedEvent();
+
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+        $count = $queryBuilder->select('count(r.registrationId)')
+            ->from('AppBundle:Registration', 'r')
+            ->where('r.event = :event')
+            ->setParameter('event', $event)
+            ->getQuery()->getSingleScalarResult();
+
+        // Get count from only row returned.
+        $number = ucwords(substr($registration->getLastname(), 0, 1))
+            . str_pad($count + 1, 4, '0', STR_PAD_LEFT);
+
+        return $number;
     }
 
     /**

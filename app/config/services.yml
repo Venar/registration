@@ -37,6 +37,10 @@ services:
         class: AppBundle\Service\Repository\RegistrationRepository
         arguments: [ "@repository_event", "@doctrine.orm.entity_manager"]
 
+    repository_registrationreggroup:
+        class: AppBundle\Service\Repository\RegistrationRegGroupRepository
+        arguments: [ "@doctrine.orm.entity_manager"]
+
     repository_registrationshirt:
         class: AppBundle\Service\Repository\RegistrationShirtRepository
         arguments: [ "@doctrine.orm.entity_manager"]

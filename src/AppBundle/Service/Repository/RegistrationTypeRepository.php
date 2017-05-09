@@ -23,6 +23,18 @@ class RegistrationTypeRepository
         $this->entityManager = $entityManager;
     }
 
+    public function getRegistrationTypeFromType(String $type) : ?Registrationtype
+    {
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+
+        $queryBuilder->select('rt')
+            ->from(self::entityName, 'rt')
+            ->where("rt.name = :type")
+            ->setParameter('type', $type);
+
+        return $queryBuilder->getQuery()->getOneOrNullResult();
+    }
+
     /**
      * @return Registrationtype[]
      */

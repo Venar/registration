@@ -24,7 +24,7 @@ class EventRepository
         $this->entityManager = $entityManager;
     }
 
-    public function getCurrentEvent() : ?Event
+    public function getCurrentEvent(): ?Event
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
 
@@ -36,13 +36,13 @@ class EventRepository
         return $queryBuilder->getQuery()->getOneOrNullResult();
     }
 
-    public function getCurrentEventYear() : String
+    public function getCurrentEventYear(): String
     {
         return $this->getCurrentEvent()->getYear();
     }
 
 
-    public function getEventFromYear(String $year) : ?Event
+    public function getEventFromYear(String $year): ?Event
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
 
@@ -54,7 +54,7 @@ class EventRepository
         return $queryBuilder->getQuery()->getOneOrNullResult();
     }
 
-    public function getSelectedEvent() : ?Event
+    public function getSelectedEvent(): ?Event
     {
         $session = new Session();
         $selectedEvent = $session->get('selectedEvent');
@@ -69,7 +69,7 @@ class EventRepository
     /**
      * @return Event[]
      */
-    public function findAll() : array
+    public function findAll(): array
     {
         return $this->entityManager->getRepository(self::entityName)->findBy([], ['year' => 'DESC']);
     }
