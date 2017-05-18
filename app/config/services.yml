@@ -35,7 +35,8 @@ services:
 
     repository_registration:
         class: AppBundle\Service\Repository\RegistrationRepository
-        arguments: [ "@repository_event", "@doctrine.orm.entity_manager"]
+        arguments: [ "@repository_event", "@doctrine.orm.entity_manager",
+            "@service_container", '@util_email']
 
     repository_registrationreggroup:
         class: AppBundle\Service\Repository\RegistrationRegGroupRepository
@@ -68,6 +69,10 @@ services:
     repository_user:
         class: AppBundle\Service\Repository\UserRepository
         arguments: [ "@doctrine.orm.entity_manager"]
+
+    util_email:
+        class: AppBundle\Service\Util\Email
+        arguments: [ "@templating", '@mailer',  "@repository_badge"]
 
     util_percent:
         class: AppBundle\Service\Util\Percent

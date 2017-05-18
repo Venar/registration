@@ -7,8 +7,8 @@
         <input type="hidden" value="{{ transferredRegistration.registrationId|default('') }}" id="TransferredFrom" name="TransferredFrom">
 
         <h2 id="reg_header">
-            {% if registration is not null and registration.registrationId %}
             <a href="/view_registration/{{ registration.registrationId }}" class="btn btn-primary btn-sm">Back</a>&nbsp;-&nbsp;
+            {% if registration is not null and registration.registrationId %}
             Edit {{ (group.reggroupId is defined) ? 'Group ' : '' }}Membership - {{ registration.event.year }} - {{ registration.number }}
             {% elseif transferredRegistration is not null and transferredRegistration.registrationId %}
             Transfer Membership - {{ transferredRegistration.event.year }}
@@ -566,7 +566,7 @@
             // Submit the AJAX
             $.ajax({
                 type: 'POST',
-                url: '/ajaxeditregistration/',
+                url: '/ajaxeditregistration',
                 dataType: 'json',
                 data: $('#form_editregistration').serialize(),
                 error: function (x, textStatus)

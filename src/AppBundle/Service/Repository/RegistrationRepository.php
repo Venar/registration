@@ -3,14 +3,17 @@
 namespace AppBundle\Service\Repository;
 
 
+use AppBundle\Entity\Badge;
 use AppBundle\Entity\Badgetype;
 use AppBundle\Entity\Registration;
 use AppBundle\Entity\Registrationreggroup;
 use AppBundle\Entity\Registrationstatus;
 use AppBundle\Entity\Registrationtype;
+use AppBundle\Service\Util\Email;
 use Doctrine\ORM\EntityManager;
 use \AppBundle\Entity\Event;
 use Doctrine\ORM\Query\Expr\Join;
+use Symfony\Component\DependencyInjection\Container;
 
 class RegistrationRepository
 {
@@ -18,11 +21,54 @@ class RegistrationRepository
     protected $eventRepository;
     /** @var EntityManager $entityManager */
     protected $entityManager;
+    /** @var Container $container */
+    protected $container;
+    /** @var Email $email */
+    protected $email;
 
-    public function __construct(EventRepository $event, EntityManager $entityManager)
+    public function __construct(EventRepository $event, EntityManager $entityManager, Container $container, $email)
     {
         $this->eventRepository = $event;
         $this->entityManager = $entityManager;
+        $this->container = $container;
+        $this->email = $email;
+    }
+
+    private function generateConfirmationNumber(Registration $registration) : void
+    {
+        if ($registration->getConfirmationnumber()) {
+
+            return; // Already have a number, so we return.
+        }
+        $unique = substr(md5(uniqid(rand(), true)), 16, 16);
+        $confirmationNumber = substr($unique, 0, 8) . substr($registration->getNumber(), 1, 2)
+            . substr($unique, 8, 2) . substr($registration->getNumber(), 3, 2)
+            . substr($unique, 10, 2);
+        $registration->setConfirmationnumber($confirmationNumber);
+        $this->entityManager->persist($registration);
+        $this->entityManager->flush();
+
+        return;
+    }
+
+    /**
+     * @param Registration $registration
+     * @param Badge[] $badges
+     */
+    public function sendConfirmationEmail(Registration $registration, array $badges)
+    {
+        if ($registration->getEmail() == '' || $registration->getConfirmationnumber() != '') {
+
+            return;
+        }
+        $this->generateConfirmationNumber($registration);
+
+        if ($this->container->get('kernel')->getEnvironment() == 'dev') {
+
+            return;
+        }
+
+        $this->email->sendConfirmationEmail($registration);
     }
 
     public function generateNumber(Registration $registration)

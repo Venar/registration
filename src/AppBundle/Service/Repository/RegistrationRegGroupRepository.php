@@ -14,7 +14,7 @@ class RegistrationRegGroupRepository
     /** @var EntityManager $entityManager */
     protected $entityManager;
 
-    const entityName = 'AppBundle:Reggroup';
+    const entityName = 'AppBundle:Registrationreggroup';
 
     public function __construct(EntityManager $entityManager)
     {

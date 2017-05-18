@@ -251,46 +251,46 @@ class editRegistrationController extends Controller
             'Birthday' => 'birthday',
             'Birthyear' => 'birth year',
         );
-        if (!$request->query->has('Registration_ID')) {
+        if (!$request->request->has('Registration_ID')) {
             $all_fields_sent = false;
             $returnJson['message'] = 'Registration_ID was not set.';
         }
-        if (!$request->query->has('regtype')) {
+        if (!$request->request->has('regtype')) {
             $all_fields_sent = false;
             $returnJson['message'] = 'regtype was not set.';
         }
-        if (!$request->query->has('Birthday')) {
+        if (!$request->request->has('Birthday')) {
             $all_fields_sent = false;
             $returnJson['message'] = 'Birthday was not set.';
         }
-        if (!$request->query->has('Birthyear')) {
+        if (!$request->request->has('Birthyear')) {
             $all_fields_sent = false;
             $returnJson['message'] = 'Birthyear was not set.';
         }
-        if (!$request->query->has('RegistrationType')) {
+        if (!$request->request->has('RegistrationType')) {
             $all_fields_sent = false;
             $returnJson['message'] = 'RegistrationType was not set.';
         }
-        if (!$request->query->has('RegistrationStatus')) {
+        if (!$request->request->has('RegistrationStatus')) {
             $all_fields_sent = false;
             $returnJson['message'] = 'RegistrationStatus was not set.';
         }
 
         $registrationType = $this->get('repository_registrationtype')
-            ->getRegistrationTypeFromType($request->query->get('RegistrationType'));
+            ->getRegistrationTypeFromType($request->request->get('RegistrationType'));
         if (!$registrationType) {
             $all_fields_sent = false;
-            $returnJson['message'] = "RegistrationType '{$request->query->get('RegistrationType')}' didn't exist. Configuration Error.";
+            $returnJson['message'] = "RegistrationType '{$request->request->get('RegistrationType')}' didn't exist. Configuration Error.";
         }
 
         $registrationStatus = $this->get('repository_registrationstatus')
-            ->getRegistrationStatusFromStatus($request->query->get('RegistrationStatus'));
+            ->getRegistrationStatusFromStatus($request->request->get('RegistrationStatus'));
         if (!$registrationStatus) {
             $all_fields_sent = false;
-            $returnJson['message'] = "RegistrationStatus '{$request->query->get('RegistrationStatus')}' didn't exist. Configuration Error.";
+            $returnJson['message'] = "RegistrationStatus '{$request->request->get('RegistrationStatus')}' didn't exist. Configuration Error.";
         }
         foreach ($fields as $field => $fieldName) {
-            if (!$request->query->has($field)) {
+            if (!$request->request->has($field)) {
                 $all_fields_sent = false;
                 $returnJson['message'] = $fieldName . ' was not set.';
                 break;
@@ -298,15 +298,15 @@ class editRegistrationController extends Controller
         }
 
         $transferredFrom = null;
-        if ($request->query->has('TransferredFrom')) {
+        if ($request->request->has('TransferredFrom')) {
             $transferredFrom = $this->get('repository_registration')
-                ->getFromRegistrationId($request->query->get('RegistrationStatus'));
+                ->getFromRegistrationId($request->request->get('RegistrationStatus'));
         }
 
         $history = '';
         if ($all_fields_sent) {
             $registration = $this->get('repository_registration')
-                ->getFromRegistrationId($request->query->get('Registration_ID'));
+                ->getFromRegistrationId($request->request->get('Registration_ID'));
 
             if (!$registration) {
                 $registration = new Registration();
@@ -340,9 +340,9 @@ class editRegistrationController extends Controller
 
             $regGroup = null;
             if ($registrationType->getName() == 'Group'
-                && $request->query->has('RegGroup_ID')
+                && $request->request->has('RegGroup_ID')
             ) {
-                $regGroup = $this->get('repository_reggroup')->getFromReggroupId($request->query->get('RegGroup_ID'));
+                $regGroup = $this->get('repository_reggroup')->getFromReggroupId($request->request->get('RegGroup_ID'));
             }
 
             foreach ($fields as $field => $fieldName) {
@@ -351,11 +351,11 @@ class editRegistrationController extends Controller
                     continue;
                 }
                 if ($field == 'Birthday') {
-                    $tmpfield = $request->query->get('Birthday') . '/' . $request->query->get('Birthyear');
+                    $tmpfield = $request->request->get('Birthday') . '/' . $request->request->get('Birthyear');
                     if (!strtotime($tmpfield)) {
                         $tmpfield = str_replace('-', '/', $tmpfield);
                     }
-                    $newDate = new \DateTime(strtotime($tmpfield));
+                    $newDate = new \DateTime($tmpfield);
                     $oldDate = $registration->getBirthday()->format('m/d/y');
                     if ($oldDate != $newDate->format('m/d/y')) {
                         $history .= "$field: $oldDate => {$newDate->format('m/d/y')}<br>";
@@ -364,7 +364,7 @@ class editRegistrationController extends Controller
 
                     continue;
                 }
-                $value = $request->query->get($field);
+                $value = $request->request->get($field);
                 $fieldLowerSet = 'set'.ucfirst(strtolower($field));
                 $fieldLowerGet = 'get'.ucfirst(strtolower($field));
                 if ($registration->$fieldLowerGet() != $_REQUEST[$field]) {
@@ -374,11 +374,11 @@ class editRegistrationController extends Controller
             }
 
             $registration->setContactVolunteer('');
-            if ($request->query->has('volunteer') && $request->query->get('volunteer')) {
+            if ($request->request->has('volunteer') && $request->request->get('volunteer')) {
                 $registration->setContactVolunteer('true');
             }
             $registration->setContactNewsletter('');
-            if ($request->query->has('newsletter') && $request->query->get('newsletter')) {
+            if ($request->request->has('newsletter') && $request->request->get('newsletter')) {
                 $registration->setContactNewsletter('true');
             }
 
@@ -394,7 +394,7 @@ class editRegistrationController extends Controller
 
             $toDelete = [];
             $badgetypeFound = false;
-            $regtype = $request->query->get('regtype');
+            $regtype = $request->request->get('regtype');
             if ($regtype == 'ADREGSTANDARD') {
                 if (strtotime($registration->getBirthday()) > strtotime($event->getStartdate() . " -18 years")) {
                     $regtype = 'MINOR';
@@ -491,17 +491,17 @@ class editRegistrationController extends Controller
                 $entityManager->flush();
             }
 
-            //TODO: FIX ME!!!!!
-            //$registration->sendConfirmation();
+            $badges = $this->get('repository_badge')->getBadgesFromRegistration($registration);
+            $this->get('repository_registration')->sendConfirmationEmail($registration, $badges);
 
             $registrationHistory = new RegistrationHistory();
             $registrationHistory->setRegistration($registration);
 
-            if ($request->query->has('comments') && $request->query->get('comments')) {
+            if ($request->request->has('comments') && $request->request->get('comments')) {
                 if ($history) {
                     $history .= '<br><br>';
                 }
-                $history .= '<b>Comment:</b> ' . nl2br($request->query->get('comments'));
+                $history .= '<b>Comment:</b> ' . nl2br($request->request->get('comments'));
             }
 
             $registrationHistory->setChangetext($history);
