@@ -26,7 +26,7 @@ class ViewRegistrationController extends Controller
         $badges = $this->get('repository_badge')->getBadgesFromRegistration($registration);
 
         $info = '';
-        if ($registrationStatus->getActive() != 'true') {
+        if ($registrationStatus->getActive()) {
             $info = $registrationStatus->getDescription();
             if ($registrationStatus->getStatus() == 'Transfered') {
                 $transferredRegistration = $registration->getTransferedto();

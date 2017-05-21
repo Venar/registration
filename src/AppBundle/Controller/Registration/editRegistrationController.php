@@ -375,11 +375,11 @@ class editRegistrationController extends Controller
 
             $registration->setContactVolunteer('');
             if ($request->request->has('volunteer') && $request->request->get('volunteer')) {
-                $registration->setContactVolunteer('true');
+                $registration->setContactVolunteer(true);
             }
             $registration->setContactNewsletter('');
             if ($request->request->has('newsletter') && $request->request->get('newsletter')) {
-                $registration->setContactNewsletter('true');
+                $registration->setContactNewsletter(true);
             }
 
             $allow_one_badge_types = array(

@@ -231,16 +231,16 @@
                 <div class="row">
                     <div class="col-sm-4">
                         <div class="btn-group" data-toggle="buttons">
-                            <label class="btn btn-primary {{ registration is not null and registration.contactVolunteer == 'true' ? 'active' : '' }}">
-                                <input type="checkbox" name="volunteer" id="volunteer" {{ registration is not null and registration.contactVolunteer == 'true' ? 'Checked' : '' }}>
+                            <label class="btn btn-primary {{ registration is not null and registration.contactVolunteer ? 'active' : '' }}">
+                                <input type="checkbox" name="volunteer" id="volunteer" {{ registration is not null and registration.contactVolunteer ? 'Checked' : '' }}>
                                     Volunteer?
                             </label>
                         </div>
                     </div>
                     <div class="col-sm-4">
                         <div class="btn-group" data-toggle="buttons">
-                            <label class="btn btn-primary {{ registration is not null and registration.contactNewsletter == 'true' ? 'active' : '' }}">
-                                <input type="checkbox" name="newsletter" id="newsletter" {{ registration is not null and registration.contactNewsletter == 'true' ? 'Checked' : '' }}>
+                            <label class="btn btn-primary {{ registration is not null and registration.contactNewsletter ? 'active' : '' }}">
+                                <input type="checkbox" name="newsletter" id="newsletter" {{ registration is not null and registration.contactNewsletter ? 'Checked' : '' }}>
                                     Newsletter?
                             </label>
                         </div>

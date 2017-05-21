@@ -31,7 +31,7 @@ class EventRepository
         $queryBuilder->select('e')
             ->from(self::entityName, 'e')
             ->where("e.active = :active")
-            ->setParameter('active', 'true');
+            ->setParameter('active', true);
 
         return $queryBuilder->getQuery()->getOneOrNullResult();
     }
