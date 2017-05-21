@@ -24,14 +24,14 @@ class User
      *
      * @ORM\Column(name="Login", type="string", length=255, nullable=true)
      */
-    private $login;
+    protected $login;
 
     /**
      * @var string
      *
      * @ORM\Column(name="Email", type="string", length=255, nullable=true)
      */
-    private $email;
+    protected $email;
 
     /**
      * @var string
@@ -45,7 +45,7 @@ class User
      *
      * @ORM\Column(name="Password", type="string", length=255, nullable=false)
      */
-    private $password;
+    protected $password;
 
     /**
      * @var string
