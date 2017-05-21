@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Reggroup
  *
- * @ORM\Table(name="reggroup", indexes={@ORM\Index(name="FK1_RegGroup_CreatedBy", columns={"CreatedBy"}), @ORM\Index(name="FK2_RegGroup_ModifiedBy", columns={"ModifiedBy"})})
+ * @ORM\Table(name="RegGroup", indexes={@ORM\Index(name="FK1_RegGroup_CreatedBy", columns={"CreatedBy"}), @ORM\Index(name="FK2_RegGroup_ModifiedBy", columns={"ModifiedBy"})})
  * @ORM\Entity
  */
 class Reggroup
@@ -97,25 +97,11 @@ class Reggroup
     private $authorizedemail;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="CreatedBy", type="integer", nullable=true)
-     */
-    private $createdby;
-
-    /**
      * @var \DateTime
      *
      * @ORM\Column(name="CreatedDate", type="datetime", nullable=true)
      */
     private $createddate;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="ModifiedBy", type="integer", nullable=true)
-     */
-    private $modifiedby;
 
     /**
      * @var \DateTime
@@ -132,6 +118,26 @@ class Reggroup
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $reggroupId;
+
+    /**
+     * @var \AppBundle\Entity\User
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="CreatedBy", referencedColumnName="User_ID")
+     * })
+     */
+    private $createdby;
+
+    /**
+     * @var \AppBundle\Entity\User
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="ModifiedBy", referencedColumnName="User_ID")
+     * })
+     */
+    private $modifiedby;
 
 
 
@@ -424,30 +430,6 @@ class Reggroup
     }
 
     /**
-     * Set createdby
-     *
-     * @param integer $createdby
-     *
-     * @return Reggroup
-     */
-    public function setCreatedby($createdby)
-    {
-        $this->createdby = $createdby;
-
-        return $this;
-    }
-
-    /**
-     * Get createdby
-     *
-     * @return integer
-     */
-    public function getCreatedby()
-    {
-        return $this->createdby;
-    }
-
-    /**
      * Set createddate
      *
      * @param \DateTime $createddate
@@ -469,30 +451,6 @@ class Reggroup
     public function getCreateddate()
     {
         return $this->createddate;
-    }
-
-    /**
-     * Set modifiedby
-     *
-     * @param integer $modifiedby
-     *
-     * @return Reggroup
-     */
-    public function setModifiedby($modifiedby)
-    {
-        $this->modifiedby = $modifiedby;
-
-        return $this;
-    }
-
-    /**
-     * Get modifiedby
-     *
-     * @return integer
-     */
-    public function getModifiedby()
-    {
-        return $this->modifiedby;
     }
 
     /**
@@ -527,5 +485,53 @@ class Reggroup
     public function getReggroupId()
     {
         return $this->reggroupId;
+    }
+
+    /**
+     * Set createdby
+     *
+     * @param \AppBundle\Entity\User $createdby
+     *
+     * @return Reggroup
+     */
+    public function setCreatedby(\AppBundle\Entity\User $createdby = null)
+    {
+        $this->createdby = $createdby;
+
+        return $this;
+    }
+
+    /**
+     * Get createdby
+     *
+     * @return \AppBundle\Entity\User
+     */
+    public function getCreatedby()
+    {
+        return $this->createdby;
+    }
+
+    /**
+     * Set modifiedby
+     *
+     * @param \AppBundle\Entity\User $modifiedby
+     *
+     * @return Reggroup
+     */
+    public function setModifiedby(\AppBundle\Entity\User $modifiedby = null)
+    {
+        $this->modifiedby = $modifiedby;
+
+        return $this;
+    }
+
+    /**
+     * Get modifiedby
+     *
+     * @return \AppBundle\Entity\User
+     */
+    public function getModifiedby()
+    {
+        return $this->modifiedby;
     }
 }

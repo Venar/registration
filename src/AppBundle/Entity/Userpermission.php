@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Userpermission
  *
- * @ORM\Table(name="userpermission", indexes={@ORM\Index(name="User_ID", columns={"User_ID"}), @ORM\Index(name="Permission_ID", columns={"Permission_ID"}), @ORM\Index(name="FK1_UserPermission_CreatedBy", columns={"CreatedBy"}), @ORM\Index(name="FK2_UserPermission_ModifiedBy", columns={"ModifiedBy"})})
+ * @ORM\Table(name="UserPermission", indexes={@ORM\Index(name="User_ID", columns={"User_ID"}), @ORM\Index(name="Permission_ID", columns={"Permission_ID"}), @ORM\Index(name="FK1_UserPermission_CreatedBy", columns={"CreatedBy"}), @ORM\Index(name="FK2_UserPermission_ModifiedBy", columns={"ModifiedBy"})})
  * @ORM\Entity
  */
 class Userpermission

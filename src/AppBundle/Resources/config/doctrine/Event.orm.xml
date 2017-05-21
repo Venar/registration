@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
-  <entity name="AppBundle\Entity\Event" table="event">
+  <entity name="AppBundle\Entity\Event" table="Event">
     <indexes>
       <index name="Year" columns="Year"/>
       <index name="Active" columns="Active,Public"/>
@@ -27,16 +27,14 @@
         <option name="unsigned">1</option>
       </options>
     </field>
-    <field name="active" type="string" column="Active" length="255" nullable="false">
+    <field name="active" type="boolean" column="Active" nullable="false">
       <options>
-        <option name="fixed"/>
-        <option name="default">false</option>
+        <option name="default">0</option>
       </options>
     </field>
-    <field name="public" type="string" column="Public" length="255" nullable="false">
+    <field name="public" type="boolean" column="Public" nullable="false">
       <options>
-        <option name="fixed"/>
-        <option name="default">false</option>
+        <option name="default">0</option>
       </options>
     </field>
     <field name="finalattendance" type="integer" column="FinalAttendance" nullable="false">

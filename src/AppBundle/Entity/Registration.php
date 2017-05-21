@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Registration
  *
- * @ORM\Table(name="registration", indexes={@ORM\Index(name="FK1_Registration_CreatedBy", columns={"CreatedBy"}), @ORM\Index(name="FK2_Registration_ModifiedBy", columns={"ModifiedBy"}), @ORM\Index(name="FK2_Registration_RegistrationType_ID", columns={"RegistrationType_ID"}), @ORM\Index(name="FK2_Registration_RegistrationStatus_ID", columns={"RegistrationStatus_ID"}), @ORM\Index(name="FK2_Registration_Event_ID", columns={"Event_ID"}), @ORM\Index(name="FK3_TransferedTo", columns={"TransferedTo"})})
+ * @ORM\Table(name="Registration", indexes={@ORM\Index(name="FK1_Registration_CreatedBy", columns={"CreatedBy"}), @ORM\Index(name="FK2_Registration_ModifiedBy", columns={"ModifiedBy"}), @ORM\Index(name="FK2_Registration_RegistrationType_ID", columns={"RegistrationType_ID"}), @ORM\Index(name="FK2_Registration_RegistrationStatus_ID", columns={"RegistrationStatus_ID"}), @ORM\Index(name="FK2_Registration_Event_ID", columns={"Event_ID"}), @ORM\Index(name="FK3_TransferedTo", columns={"TransferedTo"})})
  * @ORM\Entity
  */
 class Registration
@@ -111,18 +111,18 @@ class Registration
     private $badgename;
 
     /**
-     * @var string
+     * @var boolean
      *
-     * @ORM\Column(name="contact_volunteer", type="string", length=255, nullable=false)
+     * @ORM\Column(name="contact_volunteer", type="boolean", nullable=false)
      */
-    private $contactVolunteer = 'false';
+    private $contactVolunteer = '0';
 
     /**
-     * @var string
+     * @var boolean
      *
-     * @ORM\Column(name="contact_newsletter", type="string", length=255, nullable=false)
+     * @ORM\Column(name="contact_newsletter", type="boolean", nullable=false)
      */
-    private $contactNewsletter = 'false';
+    private $contactNewsletter = '0';
 
     /**
      * @var string
@@ -555,7 +555,7 @@ class Registration
     /**
      * Set contactVolunteer
      *
-     * @param string $contactVolunteer
+     * @param boolean $contactVolunteer
      *
      * @return Registration
      */
@@ -569,7 +569,7 @@ class Registration
     /**
      * Get contactVolunteer
      *
-     * @return string
+     * @return boolean
      */
     public function getContactVolunteer()
     {
@@ -579,7 +579,7 @@ class Registration
     /**
      * Set contactNewsletter
      *
-     * @param string $contactNewsletter
+     * @param boolean $contactNewsletter
      *
      * @return Registration
      */
@@ -593,7 +593,7 @@ class Registration
     /**
      * Get contactNewsletter
      *
-     * @return string
+     * @return boolean
      */
     public function getContactNewsletter()
     {

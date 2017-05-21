@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Failedlogin
  *
- * @ORM\Table(name="failedlogin", indexes={@ORM\Index(name="FK1_FailedLogin_CreatedBy", columns={"CreatedBy"}), @ORM\Index(name="FK2_FailedLogin_ModifiedBy", columns={"ModifiedBy"})})
+ * @ORM\Table(name="FailedLogin", indexes={@ORM\Index(name="FK1_FailedLogin_CreatedBy", columns={"CreatedBy"}), @ORM\Index(name="FK2_FailedLogin_ModifiedBy", columns={"ModifiedBy"})})
  * @ORM\Entity
  */
 class Failedlogin
@@ -79,7 +79,7 @@ class Failedlogin
 
 
     /**
-     * Set Login
+     * Set login
      *
      * @param string $login
      *
@@ -93,7 +93,7 @@ class Failedlogin
     }
 
     /**
-     * Get Login
+     * Get login
      *
      * @return string
      */

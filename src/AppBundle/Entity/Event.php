@@ -5,9 +5,9 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * EventRepository
+ * Event
  *
- * @ORM\Table(name="event", indexes={@ORM\Index(name="Year", columns={"Year"}), @ORM\Index(name="Active", columns={"Active", "Public"}), @ORM\Index(name="FK1_Event_CreatedBy", columns={"CreatedBy"}), @ORM\Index(name="FK2_Event_ModifiedBy", columns={"ModifiedBy"})})
+ * @ORM\Table(name="Event", indexes={@ORM\Index(name="Year", columns={"Year"}), @ORM\Index(name="Active", columns={"Active", "Public"}), @ORM\Index(name="FK1_Event_CreatedBy", columns={"CreatedBy"}), @ORM\Index(name="FK2_Event_ModifiedBy", columns={"ModifiedBy"})})
  * @ORM\Entity
  */
 class Event
@@ -48,18 +48,18 @@ class Event
     private $attendancecap;
 
     /**
-     * @var string
+     * @var boolean
      *
-     * @ORM\Column(name="Active", type="string", length=255, nullable=false)
+     * @ORM\Column(name="Active", type="boolean", nullable=false)
      */
-    private $active = 'false';
+    private $active = '0';
 
     /**
-     * @var string
+     * @var boolean
      *
-     * @ORM\Column(name="Public", type="string", length=255, nullable=false)
+     * @ORM\Column(name="Public", type="boolean", nullable=false)
      */
-    private $public = 'false';
+    private $public = '0';
 
     /**
      * @var integer
@@ -236,7 +236,7 @@ class Event
     /**
      * Set active
      *
-     * @param string $active
+     * @param boolean $active
      *
      * @return Event
      */
@@ -250,7 +250,7 @@ class Event
     /**
      * Get active
      *
-     * @return string
+     * @return boolean
      */
     public function getActive()
     {
@@ -260,7 +260,7 @@ class Event
     /**
      * Set public
      *
-     * @param string $public
+     * @param boolean $public
      *
      * @return Event
      */
@@ -274,7 +274,7 @@ class Event
     /**
      * Get public
      *
-     * @return string
+     * @return boolean
      */
     public function getPublic()
     {

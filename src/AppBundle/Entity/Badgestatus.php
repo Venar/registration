@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Badgestatus
  *
- * @ORM\Table(name="badgestatus", indexes={@ORM\Index(name="FK1_BadgeStatus_CreatedBy", columns={"CreatedBy"}), @ORM\Index(name="FK2_BadgeStatus_ModifiedBy", columns={"ModifiedBy"})})
+ * @ORM\Table(name="BadgeStatus", indexes={@ORM\Index(name="FK1_BadgeStatus_CreatedBy", columns={"CreatedBy"}), @ORM\Index(name="FK2_BadgeStatus_ModifiedBy", columns={"ModifiedBy"})})
  * @ORM\Entity
  */
 class Badgestatus
@@ -27,11 +27,11 @@ class Badgestatus
     private $description;
 
     /**
-     * @var string
+     * @var boolean
      *
-     * @ORM\Column(name="Active", type="string", length=255, nullable=false)
+     * @ORM\Column(name="Active", type="boolean", nullable=false)
      */
-    private $active = 'false';
+    private $active = '0';
 
     /**
      * @var \DateTime
@@ -129,7 +129,7 @@ class Badgestatus
     /**
      * Set active
      *
-     * @param string $active
+     * @param boolean $active
      *
      * @return Badgestatus
      */
@@ -143,7 +143,7 @@ class Badgestatus
     /**
      * Get active
      *
-     * @return string
+     * @return boolean
      */
     public function getActive()
     {
