@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Registrationreggroup
  *
- * @ORM\Table(name="registrationreggroup", indexes={@ORM\Index(name="FK1_RegistrationRegGroup_CreatedBy", columns={"CreatedBy"}), @ORM\Index(name="FK2_RegistrationRegGroup_ModifiedBy", columns={"ModifiedBy"}), @ORM\Index(name="FK2_RegistrationRegGroup_Registration_ID", columns={"Registration_ID"}), @ORM\Index(name="FK2_RegistrationRegGroup_RegGroup_ID", columns={"RegGroup_ID"})})
+ * @ORM\Table(name="RegistrationRegGroup", indexes={@ORM\Index(name="FK1_RegistrationRegGroup_CreatedBy", columns={"CreatedBy"}), @ORM\Index(name="FK2_RegistrationRegGroup_ModifiedBy", columns={"ModifiedBy"}), @ORM\Index(name="FK2_RegistrationRegGroup_Registration_ID", columns={"Registration_ID"}), @ORM\Index(name="FK2_RegistrationRegGroup_RegGroup_ID", columns={"RegGroup_ID"})})
  * @ORM\Entity
  */
 class Registrationreggroup

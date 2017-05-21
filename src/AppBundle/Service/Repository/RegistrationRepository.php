@@ -239,11 +239,11 @@ class RegistrationRepository
                 $tmp['group'] = 'X';
             }
             $tmp['Volunteer'] = '';
-            if ($result['contactVolunteer'] == 'true') {
+            if ($result['contactVolunteer']) {
                 $tmp['Volunteer'] = 'X';
             }
             $tmp['Newsletter'] = '';
-            if ($result['contactNewsletter'] == 'true') {
+            if ($result['contactNewsletter']) {
                 $tmp['Newsletter'] = 'X';
             }
 

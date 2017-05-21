@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * User
  *
- * @ORM\Table(name="user", uniqueConstraints={@ORM\UniqueConstraint(name="Login", columns={"Login"}), @ORM\UniqueConstraint(name="Nickname", columns={"Nickname"})}, indexes={@ORM\Index(name="FK1_User_CreatedBy", columns={"CreatedBy"}), @ORM\Index(name="FK2_User_ModifiedBy", columns={"ModifiedBy"})})
+ * @ORM\Table(name="User", uniqueConstraints={@ORM\UniqueConstraint(name="Login", columns={"Login"}), @ORM\UniqueConstraint(name="Nickname", columns={"Nickname"})}, indexes={@ORM\Index(name="FK1_User_CreatedBy", columns={"CreatedBy"}), @ORM\Index(name="FK2_User_ModifiedBy", columns={"ModifiedBy"})})
  * @ORM\Entity
  */
 class User
@@ -76,11 +76,11 @@ class User
     private $description;
 
     /**
-     * @var string
+     * @var boolean
      *
-     * @ORM\Column(name="Disabled", type="string", length=255, nullable=false)
+     * @ORM\Column(name="Disabled", type="boolean", nullable=false)
      */
-    private $disabled = 'false';
+    private $disabled = '0';
 
     /**
      * @var string
@@ -159,7 +159,7 @@ class User
     }
 
     /**
-     * Set Login
+     * Set login
      *
      * @param string $login
      *
@@ -173,7 +173,7 @@ class User
     }
 
     /**
-     * Get Login
+     * Get login
      *
      * @return string
      */
@@ -353,7 +353,7 @@ class User
     /**
      * Set disabled
      *
-     * @param string $disabled
+     * @param boolean $disabled
      *
      * @return User
      */
@@ -367,7 +367,7 @@ class User
     /**
      * Get disabled
      *
-     * @return string
+     * @return boolean
      */
     public function getDisabled()
     {

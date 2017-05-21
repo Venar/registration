@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Registrationstatus
  *
- * @ORM\Table(name="registrationstatus", indexes={@ORM\Index(name="FK1_RegistrationStatus_CreatedBy", columns={"CreatedBy"}), @ORM\Index(name="FK2_RegistrationStatus_ModifiedBy", columns={"ModifiedBy"})})
+ * @ORM\Table(name="RegistrationStatus", indexes={@ORM\Index(name="FK1_RegistrationStatus_CreatedBy", columns={"CreatedBy"}), @ORM\Index(name="FK2_RegistrationStatus_ModifiedBy", columns={"ModifiedBy"})})
  * @ORM\Entity
  */
 class Registrationstatus
@@ -27,11 +27,11 @@ class Registrationstatus
     private $description;
 
     /**
-     * @var string
+     * @var boolean
      *
-     * @ORM\Column(name="Active", type="string", length=255, nullable=false)
+     * @ORM\Column(name="Active", type="boolean", nullable=false)
      */
-    private $active = 'false';
+    private $active = '0';
 
     /**
      * @var \DateTime
@@ -129,7 +129,7 @@ class Registrationstatus
     /**
      * Set active
      *
-     * @param string $active
+     * @param boolean $active
      *
      * @return Registrationstatus
      */
@@ -143,7 +143,7 @@ class Registrationstatus
     /**
      * Get active
      *
-     * @return string
+     * @return boolean
      */
     public function getActive()
     {

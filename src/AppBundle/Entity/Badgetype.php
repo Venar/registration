@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Badgetype
  *
- * @ORM\Table(name="badgetype", indexes={@ORM\Index(name="FK1_BadgeType_CreatedBy", columns={"CreatedBy"}), @ORM\Index(name="FK2_BadgeType_ModifiedBy", columns={"ModifiedBy"})})
+ * @ORM\Table(name="BadgeType", indexes={@ORM\Index(name="FK1_BadgeType_CreatedBy", columns={"CreatedBy"}), @ORM\Index(name="FK2_BadgeType_ModifiedBy", columns={"ModifiedBy"})})
  * @ORM\Entity
  */
 class Badgetype

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Registrationerror
  *
- * @ORM\Table(name="registrationerror", indexes={@ORM\Index(name="FK1_Badge_CreatedBy", columns={"CreatedBy"}), @ORM\Index(name="FK2_Badge_ModifiedBy", columns={"ModifiedBy"})})
+ * @ORM\Table(name="RegistrationError", indexes={@ORM\Index(name="FK1_Badge_CreatedBy", columns={"CreatedBy"}), @ORM\Index(name="FK2_Badge_ModifiedBy", columns={"ModifiedBy"})})
  * @ORM\Entity
  */
 class Registrationerror

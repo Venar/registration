@@ -37,7 +37,7 @@ class ValidateController extends Controller
             $returnJson['status'] = 'inactive';
             $returnJson['active'] = false;
             $registrationStatus = $registration->getRegistrationstatus();
-            if ($registrationStatus->getActive() == 'true') {
+            if ($registrationStatus->getActive()) {
                 $returnJson['status'] = 'active';
                 $returnJson['active'] = true;
             }
