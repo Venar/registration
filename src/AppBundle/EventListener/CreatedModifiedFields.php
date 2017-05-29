@@ -3,10 +3,19 @@
 namespace AppBundle\EventListener;
 
 
+use AppBundle\Entity\User;
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class CreatedModifiedFields
 {
+    protected $container;
+
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+    }
+
     public function prePersist(LifecycleEventArgs $args) {
         $entity = $args->getEntity();
 
@@ -15,7 +24,7 @@ class CreatedModifiedFields
         }
 
         $userId = 1; // Default to 1 if not logged in. So the APIs that insert users will have an id.
-        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $user = $this->container->get('security.token_storage')->getToken()->getUser();
         if ($user instanceof User) {
             $userId = $user->getId();
         }
@@ -38,7 +47,7 @@ class CreatedModifiedFields
         }
 
         $userId = 1; // Default to 1 if not logged in. So the APIs that insert users will have an id.
-        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $user = $this->container->get('security.token_storage')->getToken()->getUser();
         if ($user instanceof User) {
             $userId = $user->getId();
         }

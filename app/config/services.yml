@@ -5,10 +5,12 @@ parameters:
 
 services:
     my.set_created:
+        arguments: ['@service_container']
         class: AppBundle\EventListener\CreatedModifiedFields
         tags:
             - { name: doctrine.event_listener, event: prePersist }
     my.set_updated:
+        arguments: ['@service_container']
         class: AppBundle\EventListener\CreatedModifiedFields
         tags:
             - { name: doctrine.event_listener, event: preUpdate }
