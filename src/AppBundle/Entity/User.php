@@ -2,15 +2,24 @@
 
 namespace AppBundle\Entity;
 
+use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * User
  *
- * @ORM\Table(name="User", uniqueConstraints={@ORM\UniqueConstraint(name="Login", columns={"Login"}), @ORM\UniqueConstraint(name="Nickname", columns={"Nickname"})}, indexes={@ORM\Index(name="FK1_User_CreatedBy", columns={"CreatedBy"}), @ORM\Index(name="FK2_User_ModifiedBy", columns={"ModifiedBy"})})
+ * @ORM\Table(name="`User`", uniqueConstraints={@ORM\UniqueConstraint(name="Login", columns={"Login"}), @ORM\UniqueConstraint(name="Nickname", columns={"Nickname"})}, indexes={@ORM\Index(name="FK1_User_CreatedBy", columns={"CreatedBy"}), @ORM\Index(name="FK2_User_ModifiedBy", columns={"ModifiedBy"})})
  * @ORM\Entity
+ * @ORM\AttributeOverrides({
+ *      @ORM\AttributeOverride(name="username",
+ *          column=@ORM\Column(
+ *              name     = "Login",
+ *              type = "string"
+ *          )
+ *      )
+ * })
  */
-class User
+class User extends BaseUser
 {
     /**
      * @var string
@@ -19,19 +28,6 @@ class User
      */
     private $openidIdentity;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="Login", type="string", length=255, nullable=true)
-     */
-    protected $login;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="Email", type="string", length=255, nullable=true)
-     */
-    protected $email;
 
     /**
      * @var string
@@ -39,13 +35,6 @@ class User
      * @ORM\Column(name="Nickname", type="string", length=255, nullable=true)
      */
     private $nickname;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="Password", type="string", length=255, nullable=false)
-     */
-    protected $password;
 
     /**
      * @var string
@@ -104,20 +93,18 @@ class User
     private $modifieddate;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="User_ID", type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $userId;
+    protected $id;
 
     /**
      * @var \AppBundle\Entity\User
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="CreatedBy", referencedColumnName="User_ID")
+     *   @ORM\JoinColumn(name="CreatedBy", referencedColumnName="id")
      * })
      */
     private $createdby;
@@ -127,7 +114,7 @@ class User
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="ModifiedBy", referencedColumnName="User_ID")
+     *   @ORM\JoinColumn(name="ModifiedBy", referencedColumnName="id")
      * })
      */
     private $modifiedby;
@@ -453,7 +440,16 @@ class User
      */
     public function getUserId()
     {
-        return $this->userId;
+        return $this->id;
+    }
+    /**
+     * Get userId
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
     /**
