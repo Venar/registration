@@ -1,13 +1,13 @@
 <div class="row" style="height: 40px;">
     <nav id="main_nav">
+        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
         <ul class="sf-menu">
             {{ render(controller('AppBundle:Template/Menu:menuRouting')) }}
         </ul>
-        <!-- BEGIN: eventyear -->
         <ul class="sf-menu" id="year_menu" style="float: right;">
             {{ render(controller('AppBundle:Template/Menu:switchYears')) }}
         </ul>
-        <!-- END: eventyear -->
+        {% endif %}
     </nav>
     <script>
         jQuery(document).ready(function($){
