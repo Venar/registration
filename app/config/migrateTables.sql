@@ -227,10 +227,20 @@ ALTER TABLE Shirt MODIFY ModifiedBy INT(11);
 /**
  * User
  */
-ALTER TABLE User MODIFY User_ID INT(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `User` CHANGE `User_ID` `id` INT(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE User MODIFY Disabled TINYINT NOT NULL DEFAULT 0;
+ALTER TABLE `User` CHANGE `Disabled` `enabled` TINYINT NOT NULL DEFAULT 0;
+UPDATE User SET enabled = 0 WHERE enabled = 1;
+UPDATE User SET enabled = 1 WHERE enabled = 2;
 ALTER TABLE User MODIFY CreatedBy INT(11);
 ALTER TABLE User MODIFY ModifiedBy INT(11);
+ALTER TABLE `User` ADD COLUMN `username_canonical` varchar(180) COLLATE utf8_unicode_ci NOT NULL AFTER `Login`;
+ALTER TABLE `User` ADD COLUMN `email_canonical` varchar(180) COLLATE utf8_unicode_ci NOT NULL AFTER `Email`;
+ALTER TABLE `User` ADD COLUMN `roles` longtext COLLATE utf8_unicode_ci NOT NULL COMMENT '(DC2Type:array)';
+UPDATE User SET Login = Nickname WHERE Login IS NULL;
+UPDATE User SET roles = 'a:0:{}';
+UPDATE User SET username_canonical = LOWER(Login);
+UPDATE User SET email_canonical = LOWER(email);
 
 /**
  * UserGroup
@@ -262,45 +272,45 @@ ADD CONSTRAINT FK1_Badge_BadgeStatus_ID
 FOREIGN KEY (BadgeStatus_ID) REFERENCES BadgeStatus (BadgeStatus_ID);
 ALTER TABLE Badge
 ADD CONSTRAINT FK1_Badge_CreatedBy
-FOREIGN KEY (CreatedBy) REFERENCES User (User_ID);
+FOREIGN KEY (CreatedBy) REFERENCES User (id);
 ALTER TABLE Badge
 ADD CONSTRAINT FK2_Badge_ModifiedBy
-FOREIGN KEY (ModifiedBy) REFERENCES User (User_ID);
+FOREIGN KEY (ModifiedBy) REFERENCES User (id);
 
 ALTER TABLE BadgeStatus
 ADD CONSTRAINT FK1_BadgeStatus_CreatedBy
-FOREIGN KEY (CreatedBy) REFERENCES User (User_ID);
+FOREIGN KEY (CreatedBy) REFERENCES User (id);
 ALTER TABLE BadgeStatus
 ADD CONSTRAINT FK2_BadgeStatus_ModifiedBy
-FOREIGN KEY (ModifiedBy) REFERENCES User (User_ID);
+FOREIGN KEY (ModifiedBy) REFERENCES User (id);
 
 ALTER TABLE BadgeType
 ADD CONSTRAINT FK1_BadgeType_CreatedBy
-FOREIGN KEY (CreatedBy) REFERENCES User (User_ID);
+FOREIGN KEY (CreatedBy) REFERENCES User (id);
 ALTER TABLE BadgeType
 ADD CONSTRAINT FK2_BadgeType_ModifiedBy
-FOREIGN KEY (ModifiedBy) REFERENCES User (User_ID);
+FOREIGN KEY (ModifiedBy) REFERENCES User (id);
 
 ALTER TABLE Event
 ADD CONSTRAINT FK1_Event_CreatedBy
-FOREIGN KEY (CreatedBy) REFERENCES User (User_ID);
+FOREIGN KEY (CreatedBy) REFERENCES User (id);
 ALTER TABLE Event
 ADD CONSTRAINT FK2_Event_ModifiedBy
-FOREIGN KEY (ModifiedBy) REFERENCES User (User_ID);
+FOREIGN KEY (ModifiedBy) REFERENCES User (id);
 
 ALTER TABLE FailedLogin
 ADD CONSTRAINT FK1_FailedLogin_CreatedBy
-FOREIGN KEY (CreatedBy) REFERENCES User (User_ID);
+FOREIGN KEY (CreatedBy) REFERENCES User (id);
 ALTER TABLE FailedLogin
 ADD CONSTRAINT FK2_FailedLogin_ModifiedBy
-FOREIGN KEY (ModifiedBy) REFERENCES User (User_ID);
+FOREIGN KEY (ModifiedBy) REFERENCES User (id);
 
 ALTER TABLE `Group`
 ADD CONSTRAINT FK1_Group_CreatedBy
-FOREIGN KEY (CreatedBy) REFERENCES User (User_ID);
+FOREIGN KEY (CreatedBy) REFERENCES User (id);
 ALTER TABLE `Group`
 ADD CONSTRAINT FK2_Group_ModifiedBy
-FOREIGN KEY (ModifiedBy) REFERENCES User (User_ID);
+FOREIGN KEY (ModifiedBy) REFERENCES User (id);
 
 ALTER TABLE GroupPermission
 ADD CONSTRAINT FK_GroupPermission_Group_ID
@@ -310,24 +320,24 @@ ADD CONSTRAINT FK_GroupPermission_Permission_ID
 FOREIGN KEY (Permission_ID) REFERENCES Permission (Permission_ID);
 ALTER TABLE GroupPermission
 ADD CONSTRAINT FK1_GroupPermission_CreatedBy
-FOREIGN KEY (CreatedBy) REFERENCES User (User_ID);
+FOREIGN KEY (CreatedBy) REFERENCES User (id);
 ALTER TABLE GroupPermission
 ADD CONSTRAINT FK2_GroupPermission_ModifiedBy
-FOREIGN KEY (ModifiedBy) REFERENCES User (User_ID);
+FOREIGN KEY (ModifiedBy) REFERENCES User (id);
 
 ALTER TABLE Permission
 ADD CONSTRAINT FK1_Permission_CreatedBy
-FOREIGN KEY (CreatedBy) REFERENCES User (User_ID);
+FOREIGN KEY (CreatedBy) REFERENCES User (id);
 ALTER TABLE Permission
 ADD CONSTRAINT FK2_Permission_ModifiedBy
-FOREIGN KEY (ModifiedBy) REFERENCES User (User_ID);
+FOREIGN KEY (ModifiedBy) REFERENCES User (id);
 
 ALTER TABLE RegGroup
 ADD CONSTRAINT FK1_RegGroup_CreatedBy
-FOREIGN KEY (CreatedBy) REFERENCES User (User_ID);
+FOREIGN KEY (CreatedBy) REFERENCES User (id);
 ALTER TABLE RegGroup
 ADD CONSTRAINT FK2_RegGroup_ModifiedBy
-FOREIGN KEY (ModifiedBy) REFERENCES User (User_ID);
+FOREIGN KEY (ModifiedBy) REFERENCES User (id);
 
 ALTER TABLE Registration
 ADD CONSTRAINT FK1_Registration_RegistrationType_ID
@@ -343,27 +353,27 @@ ADD CONSTRAINT FK1_Registration_TransferedTo
 FOREIGN KEY (TransferedTo) REFERENCES Registration (Registration_ID);
 ALTER TABLE Registration
 ADD CONSTRAINT FK1_Registration_CreatedBy
-FOREIGN KEY (CreatedBy) REFERENCES User (User_ID);
+FOREIGN KEY (CreatedBy) REFERENCES User (id);
 ALTER TABLE Registration
 ADD CONSTRAINT FK2_Registration_ModifiedBy
-FOREIGN KEY (ModifiedBy) REFERENCES User (User_ID);
+FOREIGN KEY (ModifiedBy) REFERENCES User (id);
 
 ALTER TABLE RegistrationError
 ADD CONSTRAINT FK1_RegistrationError_CreatedBy
-FOREIGN KEY (CreatedBy) REFERENCES User (User_ID);
+FOREIGN KEY (CreatedBy) REFERENCES User (id);
 ALTER TABLE RegistrationError
 ADD CONSTRAINT FK2_RegistrationError_ModifiedBy
-FOREIGN KEY (ModifiedBy) REFERENCES User (User_ID);
+FOREIGN KEY (ModifiedBy) REFERENCES User (id);
 
 ALTER TABLE RegistrationHistory
 ADD CONSTRAINT FK1_RegistrationHistory_Registration_ID
 FOREIGN KEY (Registration_ID) REFERENCES Registration (Registration_ID);
 ALTER TABLE RegistrationHistory
 ADD CONSTRAINT FK2_RegistrationHistory_CreatedBy
-FOREIGN KEY (CreatedBy) REFERENCES User (User_ID);
+FOREIGN KEY (CreatedBy) REFERENCES User (id);
 ALTER TABLE RegistrationHistory
 ADD CONSTRAINT FK3_RegistrationHistory_ModifiedBy
-FOREIGN KEY (ModifiedBy) REFERENCES User (User_ID);
+FOREIGN KEY (ModifiedBy) REFERENCES User (id);
 
 ALTER TABLE RegistrationRegGroup
 ADD CONSTRAINT FK2_RegistrationRegGroup_Registration_ID
@@ -373,10 +383,10 @@ ADD CONSTRAINT FK2_RegistrationRegGroup_RegGroup_ID
 FOREIGN KEY (RegGroup_ID) REFERENCES RegGroup (RegGroup_ID);
 ALTER TABLE RegistrationRegGroup
 ADD CONSTRAINT FK1_RegistrationRegGroup_CreatedBy
-FOREIGN KEY (CreatedBy) REFERENCES User (User_ID);
+FOREIGN KEY (CreatedBy) REFERENCES User (id);
 ALTER TABLE RegistrationRegGroup
 ADD CONSTRAINT FK2_RegistrationRegGroup_ModifiedBy
-FOREIGN KEY (ModifiedBy) REFERENCES User (User_ID);
+FOREIGN KEY (ModifiedBy) REFERENCES User (id);
 
 ALTER TABLE RegistrationShirt
 ADD CONSTRAINT FK2_RegistrationShirt_Registration_ID
@@ -386,63 +396,63 @@ ADD CONSTRAINT FK2_RegistrationShirt_Shirt_ID
 FOREIGN KEY (Shirt_ID) REFERENCES Shirt (Shirt_ID);
 ALTER TABLE RegistrationShirt
 ADD CONSTRAINT FK1_RegistrationShirt_CreatedBy
-FOREIGN KEY (CreatedBy) REFERENCES User (User_ID);
+FOREIGN KEY (CreatedBy) REFERENCES User (id);
 ALTER TABLE RegistrationShirt
 ADD CONSTRAINT FK2_RegistrationShirt_ModifiedBy
-FOREIGN KEY (ModifiedBy) REFERENCES User (User_ID);
+FOREIGN KEY (ModifiedBy) REFERENCES User (id);
 
 ALTER TABLE RegistrationStatus
 ADD CONSTRAINT FK1_RegistrationStatus_CreatedBy
-FOREIGN KEY (CreatedBy) REFERENCES User (User_ID);
+FOREIGN KEY (CreatedBy) REFERENCES User (id);
 ALTER TABLE RegistrationStatus
 ADD CONSTRAINT FK2_RegistrationStatus_ModifiedBy
-FOREIGN KEY (ModifiedBy) REFERENCES User (User_ID);
+FOREIGN KEY (ModifiedBy) REFERENCES User (id);
 
 ALTER TABLE RegistrationType
 ADD CONSTRAINT FK1_RegistrationType_CreatedBy
-FOREIGN KEY (CreatedBy) REFERENCES User (User_ID);
+FOREIGN KEY (CreatedBy) REFERENCES User (id);
 ALTER TABLE RegistrationType
 ADD CONSTRAINT FK2_RegistrationType_ModifiedBy
-FOREIGN KEY (ModifiedBy) REFERENCES User (User_ID);
+FOREIGN KEY (ModifiedBy) REFERENCES User (id);
 
 ALTER TABLE Shirt
 ADD CONSTRAINT FK1_Shirt_CreatedBy
-FOREIGN KEY (CreatedBy) REFERENCES User (User_ID);
+FOREIGN KEY (CreatedBy) REFERENCES User (id);
 ALTER TABLE Shirt
 ADD CONSTRAINT FK2_Shirt_ModifiedBy
-FOREIGN KEY (ModifiedBy) REFERENCES User (User_ID);
+FOREIGN KEY (ModifiedBy) REFERENCES User (id);
 
 ALTER TABLE User
 ADD CONSTRAINT FK1_User_CreatedBy
-FOREIGN KEY (CreatedBy) REFERENCES User (User_ID);
+FOREIGN KEY (CreatedBy) REFERENCES User (id);
 ALTER TABLE User
 ADD CONSTRAINT FK2_User_ModifiedBy
-FOREIGN KEY (ModifiedBy) REFERENCES User (User_ID);
+FOREIGN KEY (ModifiedBy) REFERENCES User (id);
 
 ALTER TABLE UserGroup
 ADD CONSTRAINT FK_UserGroup_User_ID
-FOREIGN KEY (User_ID) REFERENCES User (User_ID);
+FOREIGN KEY (User_ID) REFERENCES User (id);
 ALTER TABLE UserGroup
 ADD CONSTRAINT FK_UserGroup_Group_ID
 FOREIGN KEY (Group_ID) REFERENCES `Group` (Group_ID);
 ALTER TABLE UserGroup
 ADD CONSTRAINT FK1_UserGroup_CreatedBy
-FOREIGN KEY (CreatedBy) REFERENCES User (User_ID);
+FOREIGN KEY (CreatedBy) REFERENCES User (id);
 ALTER TABLE UserGroup
 ADD CONSTRAINT FK2_UserGroup_ModifiedBy
-FOREIGN KEY (ModifiedBy) REFERENCES User (User_ID);
+FOREIGN KEY (ModifiedBy) REFERENCES User (id);
 
 ALTER TABLE UserPermission
 ADD CONSTRAINT FK_UserPermission_User_ID
-FOREIGN KEY (User_ID) REFERENCES User (User_ID);
+FOREIGN KEY (User_ID) REFERENCES User (id);
 ALTER TABLE UserPermission
 ADD CONSTRAINT FK_UserPermission_Permission_ID
 FOREIGN KEY (Permission_ID) REFERENCES Permission (Permission_ID);
 ALTER TABLE UserPermission
 ADD CONSTRAINT FK1_UserPermission_CreatedBy
-FOREIGN KEY (CreatedBy) REFERENCES User (User_ID);
+FOREIGN KEY (CreatedBy) REFERENCES User (id);
 ALTER TABLE UserPermission
 ADD CONSTRAINT FK2_UserPermission_ModifiedBy
-FOREIGN KEY (ModifiedBy) REFERENCES User (User_ID);
+FOREIGN KEY (ModifiedBy) REFERENCES User (id);
 
 SET FOREIGN_KEY_CHECKS = 1;

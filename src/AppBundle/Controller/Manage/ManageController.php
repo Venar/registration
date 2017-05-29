@@ -7,11 +7,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class ManageController extends Controller
 {
     /**
      * @Route("/manage/")
+     * @Security("has_role('ROLE_ADMIN')")
      *
      * @param Request $request
      * @return Response

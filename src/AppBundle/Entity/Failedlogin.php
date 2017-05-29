@@ -22,7 +22,7 @@ class Failedlogin
     /**
      * @var integer
      *
-     * @ORM\Column(name="IPAddress", type="integer", nullable=false)
+     * @ORM\Column(name="IPAddress", type="integer", nullable=false, options={"unsigned"=true})
      */
     private $ipaddress;
 
@@ -61,7 +61,7 @@ class Failedlogin
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="CreatedBy", referencedColumnName="User_ID")
+     *   @ORM\JoinColumn(name="CreatedBy", referencedColumnName="id")
      * })
      */
     private $createdby;
@@ -71,7 +71,7 @@ class Failedlogin
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="ModifiedBy", referencedColumnName="User_ID")
+     *   @ORM\JoinColumn(name="ModifiedBy", referencedColumnName="id")
      * })
      */
     private $modifiedby;
