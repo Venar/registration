@@ -9,6 +9,11 @@ class CreatedModifiedFields
 {
     public function prePersist(LifecycleEventArgs $args) {
         $entity = $args->getEntity();
+
+        if (!method_exists($entity, 'setCreateddate')) {
+            return;
+        }
+
         $user = $args->getEntityManager()->getRepository('AppBundle:User')->find(1);
 
         //$user = $this->userRepository->getFromUserId(1); // TODO Get current user
@@ -23,6 +28,10 @@ class CreatedModifiedFields
     public function preUpdate(LifecycleEventArgs $args)
     {
         $entity = $args->getEntity();
+
+        if (!method_exists($entity, 'setModifieddate')) {
+            return;
+        }
 
         $user = $args->getEntityManager()->getRepository('AppBundle:User')->find(1);
         //$user = $this->userRepository->getFromUserId(1); // TODO Get current user

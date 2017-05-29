@@ -22,7 +22,7 @@ class Failedlogin
     /**
      * @var integer
      *
-     * @ORM\Column(name="IPAddress", type="integer", nullable=false)
+     * @ORM\Column(name="IPAddress", type="integer", nullable=false, options={"unsigned"=true})
      */
     private $ipaddress;
 

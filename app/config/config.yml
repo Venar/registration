@@ -33,6 +33,7 @@ framework:
     assets: ~
     php_errors:
         log: true
+    translator: { fallback: en }
 
 # Twig Configuration
 twig:
@@ -63,7 +64,6 @@ doctrine:
         dql:
             string_functions:
                 group_concat: DoctrineExtensions\Query\Mysql\GroupConcat
-                group_concat: DoctrineExtensions\Query\Mysql\
 
 # Swiftmailer Configuration
 swiftmailer:
