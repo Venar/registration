@@ -14,9 +14,13 @@ class CreatedModifiedFields
             return;
         }
 
-        $user = $args->getEntityManager()->getRepository('AppBundle:User')->find(1);
+        $userId = 1; // Default to 1 if not logged in. So the APIs that insert users will have an id.
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        if ($user instanceof User) {
+            $userId = $user->getId();
+        }
 
-        //$user = $this->userRepository->getFromUserId(1); // TODO Get current user
+        $user = $args->getEntityManager()->getRepository('AppBundle:User')->find($userId);
 
         $entity->setCreateddate(new \DateTime("now"));
         $entity->setCreatedby($user);
@@ -33,8 +37,13 @@ class CreatedModifiedFields
             return;
         }
 
-        $user = $args->getEntityManager()->getRepository('AppBundle:User')->find(1);
-        //$user = $this->userRepository->getFromUserId(1); // TODO Get current user
+        $userId = 1; // Default to 1 if not logged in. So the APIs that insert users will have an id.
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        if ($user instanceof User) {
+            $userId = $user->getId();
+        }
+
+        $user = $args->getEntityManager()->getRepository('AppBundle:User')->find($userId);
 
         $entity->setModifieddate(new \DateTime("now"));
         $entity->setModifiedby($user);
