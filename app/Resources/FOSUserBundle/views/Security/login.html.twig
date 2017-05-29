@@ -10,7 +10,7 @@
     <form action="{{ path("fos_user_security_check") }}" method="post">
            <input type="hidden" name="_csrf_token" value="{{ csrf_token }}"/>
         <div class="formgroup">
-               <label for="username">{{ 'security.login.username'|trans }}</label>
+               <label for="username">Email</label>
                <input class="form-control" type="text" id="username" name="_username" value="{{ last_username }}"
                       required="required"/>
         </div>
@@ -27,6 +27,8 @@
 
        <input class="btn btn-success" type="submit" id="_submit" name="_submit"
               value="{{ 'security.login.submit'|trans }}"/>
+
+        <input type="hidden" name="_csrf_token" value="{{ fos_csrf_provider.refreshToken('authenticate') }}" />
 
     </form>
 
