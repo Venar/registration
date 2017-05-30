@@ -13,7 +13,7 @@ class ManageController extends Controller
 {
     /**
      * @Route("/manage/")
-     * @Security("has_role('ROLE_ADMIN')")
+     * @Security("has_role('ROLE_USER')")
      *
      * @param Request $request
      * @return Response
@@ -85,6 +85,7 @@ class ManageController extends Controller
 
     /**
      * @Route("/registrationlist")
+     * @Security("has_role('ROLE_USER')")
      *
      * @param Request $request
      * @return JsonResponse

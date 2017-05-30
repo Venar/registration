@@ -14,7 +14,7 @@ class MenuController extends Controller
                 'items' => [
                     [
                         'title' => 'Groups',
-                        'url' => 'reggrouplist',
+                        'url' => 'group/list',
                     ],
                 ]
             ],

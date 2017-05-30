@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class editRegistrationController extends Controller
 {
@@ -20,6 +21,7 @@ class editRegistrationController extends Controller
      * @Route("/editregistration/{registrationID}")
      * @Route("/editregistration/{registrationID}/{regGroupId}")
      * @Route("/editregistration/{registrationID}/{regGroupId}/{transferredFrom}")
+     * @Security("has_role('ROLE_USER')")
      *
      * @param String $registrationID
      * @param String $regGroupId
@@ -71,6 +73,7 @@ class editRegistrationController extends Controller
 
     /**
      * @Route("/getregshirtlist/{registrationID}")
+     * @Security("has_role('ROLE_USER')")
      *
      * @param String $registrationID
      * @return JsonResponse
@@ -96,6 +99,7 @@ class editRegistrationController extends Controller
 
     /**
      * @Route("/ajaxstaffmodify/{registrationID}/{action}")
+     * @Security("has_role('ROLE_USER')")
      *
      * @param String $registrationID
      * @return JsonResponse
@@ -147,6 +151,7 @@ class editRegistrationController extends Controller
 
     /**
      * @Route("/editregshirtlist/{registrationID}/{action}")
+     * @Security("has_role('ROLE_USER')")
      *
      * @param Request $request
      * @param String $registrationID
@@ -222,6 +227,7 @@ class editRegistrationController extends Controller
 
     /**
      * @Route("/ajaxeditregistration")
+     * @Security("has_role('ROLE_USER')")
      *
      * @param Request $request
      * @return JsonResponse
