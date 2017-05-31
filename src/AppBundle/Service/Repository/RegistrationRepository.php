@@ -5,6 +5,7 @@ namespace AppBundle\Service\Repository;
 
 use AppBundle\Entity\Badge;
 use AppBundle\Entity\Badgetype;
+use AppBundle\Entity\Reggroup;
 use AppBundle\Entity\Registration;
 use AppBundle\Entity\Registrationreggroup;
 use AppBundle\Entity\Registrationstatus;
@@ -152,6 +153,31 @@ class RegistrationRepository
             ->setParameter('event', $event->getEventId());
 
         return $queryBuilder->getQuery()->getOneOrNullResult();
+    }
+
+    /**
+     * @param Reggroup $regGroup
+     * @param Event $event
+     * @return Registration[]
+     */
+    public function getRegistrationsFromRegGroup(Reggroup $regGroup, Event $event = null) : array
+    {
+        if (!$event) {
+            $event = $this->eventRepository->getSelectedEvent();
+        }
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+
+        $queryBuilder->select('r')
+            ->from('AppBundle:Registration', 'r')
+            ->innerJoin('AppBundle\Entity\Registrationreggroup', 'rrg', Join::WITH, 'rrg.registration = r.registrationId')
+            ->innerJoin('AppBundle\Entity\Reggroup', 'rg', Join::WITH, 'rg.reggroupId = rrg.reggroup')
+            ->where("rg.reggroupId = :reggroupId")
+            ->andWhere("r.event = :event")
+            ->setParameter('reggroupId', $regGroup)
+            ->setParameter('event', $event)
+        ;
+
+        return $queryBuilder->getQuery()->getResult();
     }
 
     public function searchFromManageRegistrations(

@@ -3,6 +3,8 @@
 namespace AppBundle\Service\Repository;
 
 
+use AppBundle\Entity\Event;
+use AppBundle\Entity\Reggroup;
 use AppBundle\Entity\Registrationreggroup;
 use AppBundle\Entity\Registration;
 use Doctrine\ORM\EntityManager;
@@ -22,22 +24,22 @@ class RegistrationRegGroupRepository
     }
 
     /**
-     * @param String $RegistrationreggroupId
+     * @param String $registrationRegGroupId
      * @return Registrationreggroup|null
      */
-    public function getFromRegistrationreggroupId($RegistrationreggroupId)
+    public function getFromRegistrationreggroupId($registrationRegGroupId)
     {
-        if (!$RegistrationreggroupId) {
+        if (!$registrationRegGroupId) {
 
             return null;
         }
 
-        $Registrationreggroup = $this->entityManager
+        $registrationRegGroup = $this->entityManager
             ->getRepository('AppBundle:Registrationreggroup')
-            ->find($RegistrationreggroupId)
+            ->find($registrationRegGroupId)
         ;
 
-        if (!$Registrationreggroup) {
+        if (!$registrationRegGroup) {
             /*
             throw $this->createNotFoundException(
                 'No registration group found for id '.$reggroupId
@@ -45,7 +47,7 @@ class RegistrationRegGroupRepository
             */
         }
 
-        return $Registrationreggroup;
+        return $registrationRegGroup;
     }
 
     /**
@@ -59,13 +61,33 @@ class RegistrationRegGroupRepository
             return [];
         }
 
-        $Registrationreggroup = $this->entityManager
+        $registrationRegGroup = $this->entityManager
             ->getRepository(self::entityName)
             ->findBy(
                 array('registration' => $registration)
             );
 
-        return $Registrationreggroup;
+        return $registrationRegGroup;
+    }
+
+    /**
+     * @param Reggroup $regGroup
+     * @return Registrationreggroup[]
+     */
+    public function getRegistrationRegGroupFromRegGroup(Reggroup $regGroup) : array
+    {
+        if (!$regGroup) {
+
+            return [];
+        }
+
+        $registrationRegGroup = $this->entityManager
+            ->getRepository(self::entityName)
+            ->findBy(
+                array('reggroup' => $regGroup)
+            );
+
+        return $registrationRegGroup;
     }
 
     /**

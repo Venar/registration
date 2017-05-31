@@ -50,6 +50,24 @@ class RegGroupRepository
     }
 
     /**
+     * @param String $school
+     * @return Reggroup[]
+     */
+    public function findFromSchool(String $school = '') : array
+    {
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+        $queryBuilder->select('rg')
+            ->from('AppBundle:Reggroup', 'rg');
+
+        if ($school != '') {
+            $queryBuilder->where($queryBuilder->expr()->like('rg.school', ':school'))
+                ->setParameter('school', "%$school%");
+        }
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+    /**
      * @param Registration $registration
      * @return Reggroup
      */
@@ -67,6 +85,7 @@ class RegGroupRepository
 
         return $queryBuilder->getQuery()->getOneOrNullResult();
     }
+
     /**
      * @return Reggroup[]
      */

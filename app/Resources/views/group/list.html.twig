@@ -1,0 +1,107 @@
+{% extends 'detour.html.twig' %}
+
+{% block body %}
+<h2>Group Registrations</h2>
+<div class="row">
+    <div class="col-sm-3">
+        <a class="btn btn-primary" href="/group/edit">New Group</a>
+    </div>
+    <div class="col-sm-3">
+        &nbsp;
+    </div>
+    <div class="col-sm-3">
+        <input type="checkbox" id="showEmptyGroups" name="showEmptyGroups" {{ showEmptyChecked ? 'checked' : ''}}>
+        <label for="showEmptyGroups">Show Empty Groups</label>
+    </div>
+    <div class="col-sm-3">
+        <form class="form-search">
+            <div class="input-append">
+                <input type="text" id="search" name="search" value="{{ searchText }}"
+                       onKeyPress="return searchenter(this,event)" placeholder="Search">
+                <button type="button" class="btn btn-primary" id="searchButton">Search</button>
+                <script>
+                    $('#searchButton').click(function() {
+                        search();
+                    });
+                </script>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <table class="table table-striped table-condensed">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>School</th>
+                <th>Leader</th>
+                <th>Members</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for regGroup in regGroups %}
+            <tr>
+                <td><a href="/group/edit/{{ regGroup.regGroup.reggroupId }}">{{ regGroup.regGroup.name }}</a></td>
+                <td>{{ regGroup.regGroup.school }}</td>
+                <td>{{ regGroup.regGroup.leader }}</td>
+                <td>{{ regGroup.count }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script language="javascript" type="text/javascript">
+    var showEmptyGroups = 0;
+    var searchText = "{{ searchText }}";
+    var listpage = "group/list";
+    var editpage = "reggroupedit";
+
+    function search()
+    {
+        searchText = document.getElementById('search').value;
+        if(document.getElementById('showEmptyGroups').checked) {
+            showEmptyGroups = 1;
+        } else {
+            showEmptyGroups = 0;
+        }
+        newloc = "/" + listpage + "?showEmptyGroups="+showEmptyGroups+"&searchText=" + searchText;
+        window.location = newloc;
+    }
+
+    function changeLimit(limit)
+    {
+        if(document.getElementById('showEmptyGroups').checked) {
+            showEmptyGroups = 1;
+        } else {
+            showEmptyGroups = 0;
+        }
+        newloc = "/" + listpage + "?showEmptyGroups="+showEmptyGroups+"&searchText=" + searchText;
+        window.location = newloc;
+    }
+
+    function searchenter(myfield, e)
+    {
+        var keycode;
+        if (window.event) {
+            keycode = window.event.keyCode;
+        } else {
+            if (e) {
+                keycode = e.which;
+            } else {
+                return true;
+            }
+        }
+
+        if (keycode == 13) {
+            search();
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+</script>
+{% endblock %}
