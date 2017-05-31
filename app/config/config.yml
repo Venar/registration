@@ -83,3 +83,11 @@ fos_user:
     from_email:
         address: "%mailer_user%"
         sender_name: "%mailer_user%"
+
+white_october_tcpdf:
+    class: 'AppBundle\Service\TCPDF\RegistrationPDF'
+    tcpdf:
+        k_tcpdf_external_config: true
+        k_path_fonts: '../app/Resources/fonts/'
+        pdf_page_format: 'LETTER'
+        pdf_unit: 'pt'
