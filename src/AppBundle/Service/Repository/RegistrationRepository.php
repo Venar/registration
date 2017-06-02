@@ -156,6 +156,88 @@ class RegistrationRepository
     }
 
     /**
+     * @param String $firstName
+     * @param String $lastName
+     * @param String $birthYear
+     * @param Event $event
+     * @return Registration[]
+     */
+    public function getFromFirstLastBirthyear(String $firstName, String $lastName, String $birthYear, Event $event) : array
+    {
+        if (!$event) {
+            $event = $this->eventRepository->getSelectedEvent();
+        }
+
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+
+        $queryBuilder->select('r')
+            ->from('AppBundle:Registration', 'r')
+            ->where("r.firstname = :firstname")
+            ->andWhere('r.lastname = :lastname')
+            ->andWhere('YEAR(r.birthday) = :birthyear')
+            ->andWhere('r.event = :event')
+            ->setParameter('firstname', $firstName)
+            ->setParameter('lastname', $lastName)
+            ->setParameter('birthyear', $birthYear)
+            ->setParameter('event', $event->getEventId());
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+    /**
+     * @param String $firstName
+     * @param String $lastName
+     * @param String $email
+     * @param Event $event
+     * @return Registration[]
+     */
+    public function getFromFirstLastEmail(String $firstName, String $lastName, String $email, Event $event) : array
+    {
+        if (!$event) {
+            $event = $this->eventRepository->getSelectedEvent();
+        }
+
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+
+        $queryBuilder->select('r')
+            ->from('AppBundle:Registration', 'r')
+            ->where("r.firstname = :firstname")
+            ->andWhere('r.lastname = :lastname')
+            ->andWhere('r.email = :email')
+            ->andWhere('r.event = :event')
+            ->setParameter('firstname', $firstName)
+            ->setParameter('lastname', $lastName)
+            ->setParameter('email', $email)
+            ->setParameter('event', $event->getEventId());
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+    /**
+     * @param Event $event
+     * @return Registration[]
+     */
+    public function getRegistrationsLessThanAYearOld(Event $event) : array
+    {
+        if (!$event) {
+            $event = $this->eventRepository->getSelectedEvent();
+        }
+
+        $birthday = date("Y-m-d", strtotime($event->getStartdate()->format('Y-m-d') . " - 1 year"));
+
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+
+        $queryBuilder->select('r')
+            ->from('AppBundle:Registration', 'r')
+            ->where("r.birthday > :birthday")
+            ->andWhere('r.event = :event')
+            ->setParameter('birthday', $birthday)
+            ->setParameter('event', $event->getEventId());
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+    /**
      * @param Reggroup $regGroup
      * @param Event $event
      * @return Registration[]

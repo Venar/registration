@@ -66,6 +66,8 @@ doctrine:
         dql:
             string_functions:
                 group_concat: DoctrineExtensions\Query\Mysql\GroupConcat
+            datetime_functions:
+                year: DoctrineExtensions\Query\Mysql\Year
 
 # Swiftmailer Configuration
 swiftmailer:

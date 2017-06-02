@@ -57,7 +57,7 @@ class MenuController extends Controller
                     ],
                     [
                         'title' => 'Error Finder',
-                        'url' => 'errorfinder',
+                        'url' => 'error/finder',
                     ],
                 ]
             ],
