@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace AppBundle\Service\Repository;
 
@@ -53,7 +53,7 @@ class RegGroupRepository
      * @param String $school
      * @return Reggroup[]
      */
-    public function findFromSchool(String $school = '') : array
+    public function findFromSchool($school = '')
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
         $queryBuilder->select('rg')
@@ -71,7 +71,7 @@ class RegGroupRepository
      * @param Registration $registration
      * @return Reggroup
      */
-    public function getRegGroupFromRegistration(Registration $registration) : ?Reggroup
+    public function getRegGroupFromRegistration(Registration $registration)
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
 
@@ -89,7 +89,7 @@ class RegGroupRepository
     /**
      * @return Reggroup[]
      */
-    public function findAll() : array
+    public function findAll()
     {
         return $this->entityManager->getRepository(self::entityName)->findAll();
     }

@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace AppBundle\Service\Repository;
 
@@ -19,7 +19,11 @@ class BadgeStatusRepository
         $this->entityManager = $entityManager;
     }
 
-    public function getBadgeStatusFromStatus(String $status) : ?Badgestatus
+    /**
+     * @param String $status
+     * @return Badgestatus|null
+     */
+    public function getBadgeStatusFromStatus($status)
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
 
@@ -34,7 +38,7 @@ class BadgeStatusRepository
     /**
      * @return Badgestatus[]
      */
-    public function findAll() : array
+    public function findAll()
     {
         return $this->entityManager->getRepository(self::entityName)->findAll();
     }

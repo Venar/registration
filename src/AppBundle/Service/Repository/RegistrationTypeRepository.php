@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Created by PhpStorm.
  * User: John J. Koniges
@@ -23,7 +23,11 @@ class RegistrationTypeRepository
         $this->entityManager = $entityManager;
     }
 
-    public function getRegistrationTypeFromType(String $type) : ?Registrationtype
+    /**
+     * @param String $type
+     * @return Registrationtype|null
+     */
+    public function getRegistrationTypeFromType($type)
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
 
@@ -38,7 +42,7 @@ class RegistrationTypeRepository
     /**
      * @return Registrationtype[]
      */
-    public function findAll() : array
+    public function findAll()
     {
         return $this->entityManager->getRepository(self::entityName)->findAll();
     }

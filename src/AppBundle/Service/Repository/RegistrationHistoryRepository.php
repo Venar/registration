@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace AppBundle\Service\Repository;
 
@@ -24,7 +24,7 @@ class RegistrationHistoryRepository
      * @param Registration $registration
      * @return Registrationhistory[]
      */
-    public function getHistoryFromRegistration(Registration $registration) : array
+    public function getHistoryFromRegistration(Registration $registration)
     {
         $history = $this->entityManager
             ->getRepository(self::entityName)
@@ -38,7 +38,7 @@ class RegistrationHistoryRepository
     /**
      * @return Registrationhistory[]
      */
-    public function findAll() : array
+    public function findAll()
     {
         return $this->entityManager->getRepository(self::entityName)->findAll();
     }

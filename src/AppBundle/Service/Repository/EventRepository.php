@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Created by PhpStorm.
  * User: John J. Koniges
@@ -24,7 +24,10 @@ class EventRepository
         $this->entityManager = $entityManager;
     }
 
-    public function getCurrentEvent(): ?Event
+    /**
+     * @return Event|null
+     */
+    public function getCurrentEvent()
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
 
@@ -36,13 +39,19 @@ class EventRepository
         return $queryBuilder->getQuery()->getOneOrNullResult();
     }
 
-    public function getCurrentEventYear(): String
+    /**
+     * @return String
+     */
+    public function getCurrentEventYear()
     {
         return $this->getCurrentEvent()->getYear();
     }
 
-
-    public function getEventFromYear(String $year): ?Event
+    /**
+     * @param String $year
+     * @return Event|null
+     */
+    public function getEventFromYear($year)
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
 
@@ -54,7 +63,10 @@ class EventRepository
         return $queryBuilder->getQuery()->getOneOrNullResult();
     }
 
-    public function getSelectedEvent(): ?Event
+    /**
+     * @return Event|null
+     */
+    public function getSelectedEvent()
     {
         $session = new Session();
         $selectedEvent = $session->get('selectedEvent');
@@ -69,7 +81,7 @@ class EventRepository
     /**
      * @return Event[]
      */
-    public function findAll(): array
+    public function findAll()
     {
         return $this->entityManager->getRepository(self::entityName)->findBy([], ['year' => 'DESC']);
     }

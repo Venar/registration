@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Created by PhpStorm.
  * User: John J. Koniges
@@ -24,7 +24,7 @@ class BadgeTypeRepository
         $this->entityManager = $entityManager;
     }
 
-    public function getBadgeTypeFromType(String $type) : ?Badgetype
+    public function getBadgeTypeFromType($type)
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
 
@@ -39,7 +39,7 @@ class BadgeTypeRepository
     /**
      * @return Badgetype[]
      */
-    public function findAll() : array
+    public function findAll()
     {
         return $this->entityManager->getRepository(self::entityName)->findAll();
     }

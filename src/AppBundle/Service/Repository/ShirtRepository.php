@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace AppBundle\Service\Repository;
 
@@ -21,7 +21,12 @@ class ShirtRepository
         $this->entityManager = $entityManager;
     }
 
-    public function getShirtFromTypeAndSize(String $type, String $size) : ?Shirt
+    /**
+     * @param String $type
+     * @param String $size
+     * @return Shirt|null
+     */
+    public function getShirtFromTypeAndSize($type, $size)
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
 
@@ -39,7 +44,7 @@ class ShirtRepository
      * @param Registration $registration
      * @return Shirt[]
      */
-    public function getShirtsFromRegistration(Registration $registration) : array
+    public function getShirtsFromRegistration(Registration $registration)
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
 
@@ -56,7 +61,7 @@ class ShirtRepository
     /**
      * @return Shirt[]
      */
-    public function findAll() : array
+    public function findAll()
     {
         return $this->entityManager->getRepository(self::entityName)->findAll();
     }

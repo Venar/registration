@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Created by PhpStorm.
  * User: John J. Koniges
@@ -32,7 +32,7 @@ class Percent
     /**
      * @return float
      */
-    public function getPercent() : float
+    public function getPercent()
     {
         $event = $this->event->getCurrentEvent();
         $remaining = $event->getAttendancecap();

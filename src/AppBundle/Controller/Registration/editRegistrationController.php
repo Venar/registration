@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace AppBundle\Controller\Registration;
 
@@ -232,7 +232,7 @@ class editRegistrationController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function ajaxEditRegistration(Request $request) : JsonResponse
+    public function ajaxEditRegistration(Request $request)
     {
         $entityManager = $this->get('doctrine.orm.entity_manager');
         $event = $this->get('repository_event')->getSelectedEvent();

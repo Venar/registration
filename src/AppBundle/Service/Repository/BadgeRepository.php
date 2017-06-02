@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Created by PhpStorm.
  * User: John J. Koniges
@@ -35,7 +35,7 @@ class BadgeRepository
      * @param null|Registration $registration
      * @return Badge[]
      */
-    public function getBadgesFromRegistration(?Registration $registration) : array
+    public function getBadgesFromRegistration(?Registration $registration)
     {
         if (!$registration) {
 
@@ -66,7 +66,7 @@ class BadgeRepository
     /**
      * @return Badge[]
      */
-    public function findAll() : array
+    public function findAll()
     {
         return $this->entityManager->getRepository(self::entityName)->findAll();
     }

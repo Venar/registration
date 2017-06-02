@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace AppBundle\Controller\Manage;
 
@@ -90,7 +90,7 @@ class ManageController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function ajaxRegistrationList(Request $request) : JsonResponse
+    public function ajaxRegistrationList(Request $request)
     {
         $returnJson = [];
 

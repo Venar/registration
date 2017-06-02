@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace AppBundle\Service\Repository;
 
@@ -35,7 +35,10 @@ class RegistrationRepository
         $this->email = $email;
     }
 
-    private function generateConfirmationNumber(Registration $registration) : void
+    /**
+     * @param Registration $registration
+     */
+    private function generateConfirmationNumber(Registration $registration)
     {
         if ($registration->getConfirmationnumber()) {
 
@@ -137,7 +140,12 @@ class RegistrationRepository
         return $registration;
     }
 
-    public function getFromConfirmation(String $confirmation, Event $event) : ?Registration
+    /**
+     * @param String $confirmation
+     * @param Event $event
+     * @return Registration|null
+     */
+    public function getFromConfirmation($confirmation, Event $event)
     {
         if (!$event) {
             $event = $this->eventRepository->getCurrentEvent();
@@ -162,7 +170,7 @@ class RegistrationRepository
      * @param Event $event
      * @return Registration[]
      */
-    public function getFromFirstLastBirthyear(String $firstName, String $lastName, String $birthYear, Event $event) : array
+    public function getFromFirstLastBirthyear($firstName, $lastName, $birthYear, Event $event)
     {
         if (!$event) {
             $event = $this->eventRepository->getSelectedEvent();
@@ -191,7 +199,7 @@ class RegistrationRepository
      * @param Event $event
      * @return Registration[]
      */
-    public function getFromFirstLastEmail(String $firstName, String $lastName, String $email, Event $event) : array
+    public function getFromFirstLastEmail($firstName, $lastName, $email, Event $event)
     {
         if (!$event) {
             $event = $this->eventRepository->getSelectedEvent();
@@ -217,7 +225,7 @@ class RegistrationRepository
      * @param Event $event
      * @return Registration[]
      */
-    public function getRegistrationsLessThanAYearOld(Event $event) : array
+    public function getRegistrationsLessThanAYearOld(Event $event)
     {
         if (!$event) {
             $event = $this->eventRepository->getSelectedEvent();
@@ -242,7 +250,7 @@ class RegistrationRepository
      * @param Event $event
      * @return Registration[]
      */
-    public function getRegistrationsFromRegGroup(Reggroup $regGroup, Event $event = null) : array
+    public function getRegistrationsFromRegGroup(Reggroup $regGroup, Event $event = null)
     {
         if (!$event) {
             $event = $this->eventRepository->getSelectedEvent();
@@ -262,13 +270,21 @@ class RegistrationRepository
         return $queryBuilder->getQuery()->getResult();
     }
 
+    /**
+     * @param String $searchText
+     * @param String $page
+     * @param Registrationtype|null $registrationType
+     * @param Registrationstatus|null $registrationStatus
+     * @param Badgetype|null $badgeType
+     * @return Registration[]
+     */
     public function searchFromManageRegistrations(
-        String $searchText,
+        $searchText,
         $page,
         ?Registrationtype $registrationType,
         ?Registrationstatus $registrationStatus,
         ?Badgetype $badgeType
-        ) : array
+        )
     {
         $event = $this->eventRepository->getCurrentEvent();
         $page = (int) $page;

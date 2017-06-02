@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace AppBundle\Service\Repository;
 
@@ -51,7 +51,7 @@ class RegistrationShirtRepository
      * @param Registration $registration
      * @return Registrationshirt[]
      */
-    public function getRegistrationShirtsFromRegistration(Registration $registration) : array
+    public function getRegistrationShirtsFromRegistration(Registration $registration)
     {
         $registrationShirts = $this->entityManager
             ->getRepository(self::entityName)
@@ -64,7 +64,7 @@ class RegistrationShirtRepository
     /**
      * @return Registrationshirt[]
      */
-    public function findAll() : array
+    public function findAll()
     {
         return $this->entityManager->getRepository(self::entityName)->findAll();
     }

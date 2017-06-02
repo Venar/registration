@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace AppBundle\Service\Repository;
 
@@ -18,7 +18,11 @@ class RegistrationStatusRepository
         $this->entityManager = $entityManager;
     }
 
-    public function getRegistrationStatusFromStatus(String $status) : ?Registrationstatus
+    /**
+     * @param String $status
+     * @return Registrationstatus|null
+     */
+    public function getRegistrationStatusFromStatus($status)
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
 
@@ -33,7 +37,7 @@ class RegistrationStatusRepository
     /**
      * @return Registrationstatus[]
      */
-    public function findAll() : array
+    public function findAll()
     {
         return $this->entityManager->getRepository(self::entityName)->findAll();
     }

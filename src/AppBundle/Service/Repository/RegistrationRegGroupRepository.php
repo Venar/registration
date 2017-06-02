@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace AppBundle\Service\Repository;
 
@@ -54,7 +54,7 @@ class RegistrationRegGroupRepository
      * @param Registration $registration
      * @return Registrationreggroup[]
      */
-    public function getRegistrationRegGroupFromRegistration(Registration $registration) : array
+    public function getRegistrationRegGroupFromRegistration(Registration $registration)
     {
         if (!$registration) {
 
@@ -74,7 +74,7 @@ class RegistrationRegGroupRepository
      * @param Reggroup $regGroup
      * @return Registrationreggroup[]
      */
-    public function getRegistrationRegGroupFromRegGroup(Reggroup $regGroup) : array
+    public function getRegistrationRegGroupFromRegGroup(Reggroup $regGroup)
     {
         if (!$regGroup) {
 
@@ -93,7 +93,7 @@ class RegistrationRegGroupRepository
     /**
      * @return Registrationreggroup[]
      */
-    public function findAll() : array
+    public function findAll()
     {
         return $this->entityManager->getRepository(self::entityName)->findAll();
     }
