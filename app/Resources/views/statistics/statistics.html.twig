@@ -1,0 +1,175 @@
+{% extends 'detour.html.twig' %}
+
+{% block body %}
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+
+<div id="registrations_compare_year" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+<br>
+<div id="registrations_by_type" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+<br>
+<div id="pie_chart" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+
+<script>
+    $(function () {
+        var total = 0;
+        $('#pie_chart').highcharts({
+            credits: {
+                enabled: false
+            },
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: 1,//null,
+                plotShadow: false,
+                events: {
+                    load: function(event) {
+                        $('.highcharts-legend-item').last().append('<br/><div style="width:200px"><hr/> <span style="float:left"> Total </span><span style="float:right"> ' + total + '</span> </div>')
+                    }
+                }
+            },
+            title: {
+                text: 'Total Registrations, {year}'
+            },
+            tooltip: {
+                pointFormat: '\{series.name\}: <b>{point.percentage:.1f}%</b>'
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        format: '<b>\{point.name\}</b>: (\{y\}) \{point.percentage:.1f\}%',
+                        style: {
+                            color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                        }
+                    },
+                    showInLegend: true
+                }
+            },
+            legend: {
+                enabled: true,
+                layout: 'vertical',
+                align: 'right',
+                width: 220,
+                verticalAlign: 'top',
+                borderWidth: 0,
+                useHTML: true,
+                labelFormatter: function() {
+                    total += this.y;
+                    return '<div style="width:200px"><span style="float:left">' + this.name + '</span><span style="float:right">' + this.y + '</span></div>';
+                },
+                title: {
+                    text: 'Primary',
+                    style: {
+                        fontWeight: 'bold'
+                    }
+                }
+            },
+            colors: ['#FE7F00', '#FFFF00', '#0000FF', '#551a8b', '#FF0000', '#d3d3d3'],
+            series: [{
+                type: 'pie',
+                name: 'Registrations',
+                data: [
+                    ['Standard', {{ standard_percent|raw }}],
+                    ['Minor', {{ minor_percent|raw }}],
+                    ['Sponsor', {{ sponsor_percent|raw }}],
+                    ['Community Sponsor', {{ community_percent|raw }}],
+                    ['Staff', {{ staff_percent|raw }}],
+                    ['Availiable', {{ avail_percent|raw }}]
+                ]
+            }]
+        });
+    });
+    $(function () {
+        $('#registrations_compare_year').highcharts({
+            credits: {
+                enabled: false
+            },
+            title: {
+                text: 'Total Registrations by month against other years'
+            },
+            subtitle: {
+                text: 'Source: registration database'
+            },
+            xAxis: {
+                //categories: {months},
+                //tickmarkPlacement: 'on',
+                title: {
+                    enabled: false
+                },
+                type: 'datetime',
+                dateTimeLabelFormats: { // don't display the dummy year
+                    month: '%e. %b',
+                    year: '%b'
+                }
+            },
+            yAxis: {
+                title: {
+                    text: 'Memberships'
+                },
+                labels: {
+                    formatter: function () {
+                        return this.value;
+                    }
+                }
+            },
+            tooltip: {
+                shared: true,
+                valueSuffix: ' memberships'
+            },
+            series: {{ data_by_year|raw }}
+        });
+    });
+    $(function () {
+        $('#registrations_by_type').highcharts({
+            credits: {
+                enabled: false
+            },
+            colors: ['#FE7F00', '#FFFF00', '#0000FF', '#551a8b', '#00FF00', '#FF9655', '#FF0000', '#d3d3d3'],
+            chart: {
+                type: 'area'
+            },
+            title: {
+                text: '{{ year }} Registrations by Type'
+            },
+            subtitle: {
+                text: 'Source: registration database'
+            },
+            xAxis: {
+                categories: {{ categories|raw }},
+                tickmarkPlacement: 'on',
+                title: {
+                    enabled: false
+                }
+            },
+            yAxis: {
+                title: {
+                    text: 'Memberships'
+                },
+                labels: {
+                    formatter: function () {
+                        return this.value;
+                    }
+                }
+            },
+            tooltip: {
+                shared: true,
+                valueSuffix: ' memberships'
+            },
+            plotOptions: {
+                area: {
+                    stacking: 'normal',
+                    lineColor: '#666666',
+                    lineWidth: 1,
+                    marker: {
+                        lineWidth: 1,
+                        lineColor: '#666666'
+                    }
+                }
+            },
+            series: {{ data_by_type|raw }}
+        });
+    });
+</script>
+{% endblock %}

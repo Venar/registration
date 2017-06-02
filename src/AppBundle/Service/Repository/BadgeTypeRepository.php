@@ -24,6 +24,10 @@ class BadgeTypeRepository
         $this->entityManager = $entityManager;
     }
 
+    /**
+     * @param $type
+     * @return Badgetype
+     */
     public function getBadgeTypeFromType($type)
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
