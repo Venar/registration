@@ -79,3 +79,7 @@ services:
     util_percent:
         class: AppBundle\Service\Util\Percent
         arguments: [ "@repository_event", "@repository_badgetype", "@doctrine.orm.entity_manager"]
+
+    repository_tcpdf:
+        class: AppBundle\Service\TCPDF\PDFRepository
+        arguments: [ "@repository_event"]

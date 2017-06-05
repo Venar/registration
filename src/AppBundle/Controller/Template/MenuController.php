@@ -45,7 +45,7 @@ class MenuController extends Controller
                     ],
                     [
                         'title' => 'List Badges to Print',
-                        'url' => 'print_list',
+                        'url' => 'printing/list',
                     ],
                     [
                         'title' => 'Percentage Tools',

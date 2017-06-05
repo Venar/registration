@@ -59,7 +59,7 @@ class StatisticsController extends Controller
                 $end = $endDateTime->format('Y-m-01 H:i:s.u');
 
                 $allBadgesSubQuery = $this->get('doctrine.orm.default_entity_manager')->createQueryBuilder()
-                    ->select('b2.badgeId')
+                    ->select('IDENTITY(b2.registration)')
                     ->from('AppBundle:Badge', 'b2')
                     ->where("b2.badgetype = :type")
                     ->getDQL();
