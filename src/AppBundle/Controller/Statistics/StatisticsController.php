@@ -2,9 +2,12 @@
 
 namespace AppBundle\Controller\Statistics;
 
+ini_set('max_execution_time', 300);
+
 use AppBundle\Entity\Event;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\Response;
 
 class StatisticsController extends Controller
@@ -143,7 +146,10 @@ class StatisticsController extends Controller
         $vars['sponsor_percent'] = $tmpCount;
 
         $tmpBadge   = $this->get('repository_badgetype')->getBadgeTypeFromType('ADREGCOMMSPONSOR');
-        $tmpCount   = (int)$counts[$tmpBadge->getName()];
+        $tmpCount = 0;
+        if (array_key_exists($tmpBadge->getName(), $counts)) {
+            $tmpCount = (int)$counts[$tmpBadge->getName()];
+        }
         $remaining  = $remaining - $tmpCount;
         $vars['community_percent'] = $tmpCount;
 
@@ -165,8 +171,23 @@ class StatisticsController extends Controller
      */
     public function getDataByEventByDay($events) {
         $data = [];
+        $currentEvent = $this->get('repository_event')->getCurrentEvent();
 
         foreach ($events as $event) {
+            $cache = new FilesystemAdapter();
+            $statsField = "stats.cache.eventsByDay.{$event->getEventId()}";
+
+            $cachedData = $cache->getItem($statsField);
+            if ($cachedData->isHit())
+            {
+                $data = $cachedData->get();
+                $tmp['name'] = $event->getYear();
+                $tmp['data'] = unserialize($data);
+                $data[]      = $tmp;
+
+                continue;
+            }
+
             $tmp             = [];
             $tmpData         = [];
 
@@ -194,6 +215,10 @@ class StatisticsController extends Controller
 
             if (array_sum(array_column($tmpData, 1)) == 0) {
                 continue;
+            }
+
+            if ($currentEvent->getEventId() != $event->getEventId()) {
+                $cachedData->set(serialize($tmpData));
             }
 
             $tmp['name'] = $event->getYear();
