@@ -286,7 +286,7 @@ class RegistrationRepository
         ?Badgetype $badgeType
         )
     {
-        $event = $this->eventRepository->getCurrentEvent();
+        $event = $this->eventRepository->getSelectedEvent();
         $page = (int) $page;
 
         $badgeListQueryBuilder = $this->entityManager->createQueryBuilder();
