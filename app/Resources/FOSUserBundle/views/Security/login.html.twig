@@ -30,6 +30,10 @@
 
         <input type="hidden" name="_csrf_token" value="{{ fos_csrf_provider.refreshToken('authenticate') }}" />
 
+        <a href="{{ path('hwi_oauth_service_redirect', {'service': 'google' }) }}">
+            <span>Google</span>
+        </a>
+
     </form>
 
 {% endblock fos_user_content %}

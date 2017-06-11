@@ -23,3 +23,6 @@ parameters:
 
     # Used for security to validate post-back calls from ASecureCart
     postback.sha1_key.asecurecart: ~
+
+    google_client_id: ~
+    google_client_secret: ~
