@@ -17,6 +17,6 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
-        return $this->redirectToRoute('app_manage_manage_ajaxregistrationlist');
+        return $this->redirectToRoute('app_manage_manage_listregistrationspage');
     }
 }
