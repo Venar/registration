@@ -69,7 +69,11 @@ class BadgeRepository
         return $badge;
     }
 
-    public function isStaff(Registration $registration) {
+    /**
+     * @param Registration|null $registration
+     * @return bool
+     */
+    public function isStaff($registration) {
         $badges = $this->getBadgesFromRegistration($registration);
         foreach ($badges as $badge) {
             if ($badge->getBadgetype()->getName() == 'STAFF') {

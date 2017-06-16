@@ -362,9 +362,11 @@ class editRegistrationController extends Controller
                         $tmpfield = str_replace('-', '/', $tmpfield);
                     }
                     $newDate = new \DateTime($tmpfield);
-                    $oldDate = $registration->getBirthday()->format('m/d/y');
-                    if ($oldDate != $newDate->format('m/d/y')) {
-                        $history .= "$field: $oldDate => {$newDate->format('m/d/y')}<br>";
+                    if ($registration->getRegistrationId()) {
+                        $oldDate = $registration->getBirthday()->format('m/d/y');
+                        if ($oldDate != $newDate->format('m/d/y')) {
+                            $history .= "$field: $oldDate => {$newDate->format('m/d/y')}<br>";
+                        }
                     }
                     $registration->setBirthday($newDate);
 
@@ -379,11 +381,11 @@ class editRegistrationController extends Controller
                 $registration->$fieldLowerSet($value);
             }
 
-            $registration->setContactVolunteer('');
+            $registration->setContactVolunteer(false);
             if ($request->request->has('volunteer') && $request->request->get('volunteer')) {
                 $registration->setContactVolunteer(true);
             }
-            $registration->setContactNewsletter('');
+            $registration->setContactNewsletter(false);
             if ($request->request->has('newsletter') && $request->request->get('newsletter')) {
                 $registration->setContactNewsletter(true);
             }
@@ -402,7 +404,7 @@ class editRegistrationController extends Controller
             $badgetypeFound = false;
             $regtype = $request->request->get('regtype');
             if ($regtype == 'ADREGSTANDARD') {
-                if (strtotime($registration->getBirthday()) > strtotime($event->getStartdate() . " -18 years")) {
+                if ($registration->getBirthday()->getTimestamp() > strtotime($event->getStartdate()->format('Y-m-d') . " -18 years")) {
                     $regtype = 'MINOR';
                 }
             }

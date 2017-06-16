@@ -7,7 +7,7 @@
         <input type="hidden" value="{{ transferredRegistration.registrationId|default('') }}" id="TransferredFrom" name="TransferredFrom">
 
         <h2 id="reg_header">
-            <a href="/registration/view/{{ registration.registrationId }}" class="btn btn-primary btn-sm">Back</a>&nbsp;-&nbsp;
+            <a href="/registration/view/{{ registration.registrationId|default('') }}" class="btn btn-primary btn-sm">Back</a>&nbsp;-&nbsp;
             {% if registration is not null and registration.registrationId %}
             Edit {{ (group.reggroupId is defined) ? 'Group ' : '' }}Membership - {{ registration.event.year }} - {{ registration.number }}
             {% elseif transferredRegistration is not null and transferredRegistration.registrationId %}
