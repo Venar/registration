@@ -1,13 +1,13 @@
 {% extends 'detour.html.twig' %}
 
 {% block body %}
-    <form action="/editregistration" method="post" id="form_editregistration">
+    <form action="/registration/edit" method="post" id="form_editregistration">
 
         <input type="hidden" value="{{ registration.registrationId|default('') }}" id="Registration_ID" name="Registration_ID">
         <input type="hidden" value="{{ transferredRegistration.registrationId|default('') }}" id="TransferredFrom" name="TransferredFrom">
 
         <h2 id="reg_header">
-            <a href="/view_registration/{{ registration.registrationId }}" class="btn btn-primary btn-sm">Back</a>&nbsp;-&nbsp;
+            <a href="/registration/view/{{ registration.registrationId }}" class="btn btn-primary btn-sm">Back</a>&nbsp;-&nbsp;
             {% if registration is not null and registration.registrationId %}
             Edit {{ (group.reggroupId is defined) ? 'Group ' : '' }}Membership - {{ registration.event.year }} - {{ registration.number }}
             {% elseif transferredRegistration is not null and transferredRegistration.registrationId %}
@@ -311,18 +311,18 @@
             </div>
             <div class="col-sm-3">
             {% if registration is not null and registration.registrationId %}
-                <a href="/editregistration///{{ registration.registrationId }}" class="btn btn-primary">Transfer Registration</a>
+                <a href="/registration/edit///{{ registration.registrationId }}" class="btn btn-primary">Transfer Registration</a>
                 <br><br>
                 <a href="/rollover/{{ registration.registrationId }}" class="btn btn-primary">Rollover Registration</a>
             {% endif %}
             {% if group is not null %}
                 <br><br>
-                <a href="/editregistration//{{ group.reggroupId }}" class="btn btn-primary">Add another registration to
+                <a href="/registration/edit//{{ group.reggroupId }}" class="btn btn-primary">Add another registration to
                     {{ group.name }}</a>
             {% endif %}
             {% if registration is not null and registration.registrationId %}
                 <br><br>
-                <a href="/editregistration/" class="btn btn-primary">Add another registration</a>
+                <a href="/registration/edit/" class="btn btn-primary">Add another registration</a>
             {% endif %}
             </div>
         </div>
@@ -608,7 +608,7 @@
                             reggroup_id = '/' + reggroup_id;
                         }
                         window.history.pushState("object or string", "Registration " + data['Number'],
-                            "/editregistration/" + data['Registration_ID'] + reggroup_id);
+                            "/registration/edit/" + data['Registration_ID'] + reggroup_id);
                     } else {
                         $('#alert_heading').text('Error');
                         $('#alert_subdiv').addClass('bs-callout-danger');

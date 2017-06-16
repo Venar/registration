@@ -17,10 +17,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class editRegistrationController extends Controller
 {
     /**
-     * @Route("/editregistration/")
-     * @Route("/editregistration/{registrationID}")
-     * @Route("/editregistration/{registrationID}/{regGroupId}")
-     * @Route("/editregistration/{registrationID}/{regGroupId}/{transferredFrom}")
+     * @Route("/registration/edit/")
+     * @Route("/registration/edit/{registrationID}")
+     * @Route("/registration/edit/{registrationID}/{regGroupId}")
+     * @Route("/registration/edit/{registrationID}/{regGroupId}/{transferredFrom}")
      * @Security("has_role('ROLE_USER')")
      *
      * @param String $registrationID
@@ -424,7 +424,7 @@ class editRegistrationController extends Controller
 
             if ($transferredFrom) {
                 $registration->setTransferedto($transferredFrom->getRegistrationId());
-                $history .= " Transferred From <a href='/view_registration/" . $transferredFrom->getRegistrationId()
+                $history .= " Transferred From <a href='/registration/view/" . $transferredFrom->getRegistrationId()
                     . "'>" . $transferredFrom->getFirstname() . ' ' . $transferredFrom->getLastname() . '</a>. <br>';
             }
 
@@ -449,7 +449,7 @@ class editRegistrationController extends Controller
                 $registrationHistory = new RegistrationHistory();
                 $registrationHistory->setRegistration($transferredFrom);
                 $transferredToText= "<br>Registration Transferred to "
-                    ."<a href='/view_registration/{$registration->getRegistrationId()}'>"
+                    ."<a href='/registration/view/{$registration->getRegistrationId()}'>"
                     ."{$registration->getFirstname()} {$registration->getLastname()}</a>";
                 $registrationHistory->setChangetext($transferredFromHistory . $transferredToText);
                 $entityManager->persist($registrationHistory);

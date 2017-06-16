@@ -36,7 +36,7 @@
                     {% for registration in duplicates.registrations %}
                     {# @var registration \AppBundle\Entity\Registration #}
                     <tr>
-                        <td><a href="/view_registration/{{ registration.registrationId }}">{{ registration.number }}</a></td>
+                        <td><a href="/registration/view/{{ registration.registrationId }}">{{ registration.number }}</a></td>
                         <td>{{ registration.badgename }}</td>
                         <td>{{ registration.email }}</td>
                         <td>{{ registration.confirmationnumber }}</td>
@@ -73,7 +73,7 @@
                     {% for registration in duplicates.registrations %}
                         {# @var registration \AppBundle\Entity\Registration #}
                         <tr>
-                            <td><a href="/view_registration/{{ registration.registrationId }}">{{ registration.number }}</a></td>
+                            <td><a href="/registration/view/{{ registration.registrationId }}">{{ registration.number }}</a></td>
                             <td>{{ registration.badgename }}</td>
                             <td>{{ registration.birthday|date('Y-m-d') }}</td>
                             <td>{{ registration.confirmationnumber }}</td>
@@ -109,7 +109,7 @@
             {% for registration in tooYoung %}
                 {# @var registration \AppBundle\Entity\Registration #}
                 <tr>
-                    <td><a href="/view_registration/{{ registration.registrationId }}">{{ registration.number }}</a></td>
+                    <td><a href="/registration/view/{{ registration.registrationId }}">{{ registration.number }}</a></td>
                     <td>{{ registration.lastname }}</td>
                     <td>{{ registration.firstname }}</td>
                     <td>{{ registration.badgename }}</td>

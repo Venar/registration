@@ -2,7 +2,7 @@
 
 {% block body %}
     <h1>Registrations</h1>
-    <a href="/editregistration/" class="btn btn-primary">New Registration</a><br><br>
+    <a href="/registration/edit/" class="btn btn-primary">New Registration</a><br><br>
     <script>
         function changeYear(year) {
             $('#year').val(year);
@@ -214,7 +214,7 @@
                     )
                     .append($('<td>')
                         .append($('<a>')
-                            .attr('href', '/view_registration/'+registration_id)
+                            .attr('href', '/registration/view/'+registration_id)
                             .html(number)
                         )
                     )
@@ -304,7 +304,7 @@
                 {barcode: barcode},
                 function(json) {
                     if ( json.valid ) {
-                        window.location.href = '/view_registration/' + json.registrationID;
+                        window.location.href = '/registration/view/' + json.registrationID;
                     } else {
                         alert('Invalid Barcode');
                     }
