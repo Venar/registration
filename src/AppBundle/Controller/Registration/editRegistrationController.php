@@ -16,6 +16,30 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class editRegistrationController extends Controller
 {
+
+    /**
+     * @Route("/registration/transfer/{transferredFrom}")
+     * @Security("has_role('ROLE_USER')")
+     *
+     * @param String $transferredFrom
+     * @return Response
+     */
+    public function registrationTransfer($transferredFrom)
+    {
+        $registration = $this->get('repository_registration')->getFromRegistrationId($transferredFrom);
+
+        if (!$registration) {
+            return $this->redirectToRoute('app_manage_manage_listregistrationspage');
+        }
+
+        if (!$registration->getRegistrationstatus()->getActive()) {
+            $params = ['registrationId' => $registration->getRegistrationId()];
+            return $this->redirectToRoute('app_registration_editregistration_editregistrationpage', $params);
+        }
+
+        return $this->editRegistrationPage(null, null, $transferredFrom);
+    }
+
     /**
      * @Route("/registration/edit/")
      * @Route("/registration/edit/{registrationID}")
@@ -226,7 +250,7 @@ class editRegistrationController extends Controller
     }
 
     /**
-     * @Route("/ajaxeditregistration")
+     * @Route("/registration/ajax/edit")
      * @Security("has_role('ROLE_USER')")
      *
      * @param Request $request
@@ -261,23 +285,23 @@ class editRegistrationController extends Controller
             $all_fields_sent = false;
             $returnJson['message'] = 'Registration_ID was not set.';
         }
-        if (!$request->request->has('regtype')) {
+        if (!$request->request->has('regtype') || !$request->request->get('regtype')) {
             $all_fields_sent = false;
-            $returnJson['message'] = 'regtype was not set.';
+            $returnJson['message'] = 'Registration Type was not set.';
         }
-        if (!$request->request->has('Birthday')) {
+        if (!$request->request->has('Birthday') || $request->request->get('Birthday') == '') {
             $all_fields_sent = false;
             $returnJson['message'] = 'Birthday was not set.';
         }
-        if (!$request->request->has('Birthyear')) {
+        if (!$request->request->has('Birthyear') || $request->request->get('Birthyear') == '') {
             $all_fields_sent = false;
             $returnJson['message'] = 'Birthyear was not set.';
         }
-        if (!$request->request->has('RegistrationType')) {
+        if (!$request->request->has('RegistrationType') || !$request->request->get('RegistrationType')) {
             $all_fields_sent = false;
             $returnJson['message'] = 'RegistrationType was not set.';
         }
-        if (!$request->request->has('RegistrationStatus')) {
+        if (!$request->request->has('RegistrationStatus') || !$request->request->get('RegistrationStatus')) {
             $all_fields_sent = false;
             $returnJson['message'] = 'RegistrationStatus was not set.';
         }
@@ -306,7 +330,7 @@ class editRegistrationController extends Controller
         $transferredFrom = null;
         if ($request->request->has('TransferredFrom')) {
             $transferredFrom = $this->get('repository_registration')
-                ->getFromRegistrationId($request->request->get('RegistrationStatus'));
+                ->getFromRegistrationId($request->request->get('TransferredFrom'));
         }
 
         $history = '';
@@ -425,7 +449,7 @@ class editRegistrationController extends Controller
             }
 
             if ($transferredFrom) {
-                $registration->setTransferedto($transferredFrom->getRegistrationId());
+                $registration->setTransferedto($transferredFrom);
                 $history .= " Transferred From <a href='/registration/view/" . $transferredFrom->getRegistrationId()
                     . "'>" . $transferredFrom->getFirstname() . ' ' . $transferredFrom->getLastname() . '</a>. <br>';
             }
@@ -436,7 +460,7 @@ class editRegistrationController extends Controller
             if ($transferredFrom) {
                 $transferredRegistrationStatus = $this->get('repository_registrationstatus')
                     ->getRegistrationStatusFromStatus('Transferred');
-                $transferredFrom->setRegistrationstatus($transferredRegistrationStatus->RegistrationStatus_ID);
+                $transferredFrom->setRegistrationstatus($transferredRegistrationStatus);
                 $entityManager->persist($transferredFrom);
 
                 $transferredFromHistory = '';

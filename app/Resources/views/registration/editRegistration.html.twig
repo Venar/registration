@@ -7,11 +7,16 @@
         <input type="hidden" value="{{ transferredRegistration.registrationId|default('') }}" id="TransferredFrom" name="TransferredFrom">
 
         <h2 id="reg_header">
-            <a href="/registration/view/{{ registration.registrationId|default('') }}" class="btn btn-primary btn-sm">Back</a>&nbsp;-&nbsp;
+            {% if registration is not null %}
+                <a href="/registration/view/{{ registration.registrationId|default('') }}" class="btn btn-primary btn-sm">Back</a>&nbsp;-&nbsp;
+            {% else %}
+                <a href="/manage/" class="btn btn-primary btn-sm">Back</a>&nbsp;-&nbsp;
+            {% endif %}
             {% if registration is not null and registration.registrationId %}
             Edit {{ (group.reggroupId is defined) ? 'Group ' : '' }}Membership - {{ registration.event.year }} - {{ registration.number }}
             {% elseif transferredRegistration is not null and transferredRegistration.registrationId %}
-            Transfer Membership - {{ transferredRegistration.event.year }}
+            Transfer Membership from {{ transferredRegistration.firstname }} {{ transferredRegistration.lastname }}
+                &lt;{{ transferredRegistration.number }}&gt; - {{ transferredRegistration.event.year }}
             {% else %}
             New {{ group is not null and group.reggroupId ? 'Group ' : '' }}Membership - {{ event.year }} - New
             {% endif %}
@@ -311,9 +316,9 @@
             </div>
             <div class="col-sm-3">
             {% if registration is not null and registration.registrationId %}
-                <a href="/registration/edit///{{ registration.registrationId }}" class="btn btn-primary">Transfer Registration</a>
+                <a href="/registration/transfer/{{ registration.registrationId }}" class="btn btn-primary">Transfer Registration</a>
                 <br><br>
-                <a href="/rollover/{{ registration.registrationId }}" class="btn btn-primary">Rollover Registration</a>
+                <a href="/registration/rollover/{{ registration.registrationId }}" class="btn btn-primary">Rollover Registration</a>
             {% endif %}
             {% if group is not null %}
                 <br><br>
@@ -566,7 +571,7 @@
             // Submit the AJAX
             $.ajax({
                 type: 'POST',
-                url: '/ajaxeditregistration',
+                url: '/registration/ajax/edit',
                 dataType: 'json',
                 data: $('#form_editregistration').serialize(),
                 error: function (x, textStatus)
@@ -603,7 +608,7 @@
                         }
                         $('#reg_header').html(
                             'Edit ' + group + 'Membership - ' + data['Year'] + ' - ' + data['Number']);
-                        var reggroup_id = '{reggroup_id}';
+                        var reggroup_id = '{{ group.reggroupId|default('') }}';
                         if (reggroup_id != '') {
                             reggroup_id = '/' + reggroup_id;
                         }

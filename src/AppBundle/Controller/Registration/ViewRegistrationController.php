@@ -11,15 +11,15 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class ViewRegistrationController extends Controller
 {
     /**
-     * @Route("/registration/view/{registrationID}", name="1")
+     * @Route("/registration/view/{registrationId}")
      * @Security("has_role('ROLE_USER')")
      *
-     * @param String $registrationID
+     * @param String $registrationId
      * @return Response
      */
-    public function viewRegistrationPage($registrationID)
+    public function viewRegistrationPage($registrationId)
     {
-        $registration = $this->get('repository_registration')->getFromRegistrationId($registrationID);
+        $registration = $this->get('repository_registration')->getFromRegistrationId($registrationId);
 
         $event = $registration->getEvent();
         $registrationType = $registration->getRegistrationtype();

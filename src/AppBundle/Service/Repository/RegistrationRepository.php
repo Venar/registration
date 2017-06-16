@@ -77,7 +77,10 @@ class RegistrationRepository
 
     public function generateNumber(Registration $registration)
     {
-        $event = $this->eventRepository->getSelectedEvent();
+        $event = $registration->getEvent();
+        if (!$event) {
+            $event = $this->eventRepository->getSelectedEvent();
+        }
 
         $queryBuilder = $this->entityManager->createQueryBuilder();
         $count = $queryBuilder->select('count(r.registrationId)')
