@@ -36,6 +36,41 @@ class RegistrationHistoryRepository
     }
 
     /**
+     * @param String $searchText
+     * @param int $limit
+     * @param int $offset
+     * @return Registrationhistory[]
+     */
+    public function getHistoryFromSearch($searchText, $limit = null, $offset = null)
+    {
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+
+        $queryBuilder->select('rh')
+            ->from('AppBundle:Registrationhistory', 'rh')
+            ->innerJoin('rh.createdby', 'cb')
+            ->innerJoin('rh.registration', 'r')
+            ->where("rh.changetext LIKE :changetext")
+            ->orWhere('cb.firstname LIKE :firstname')
+            ->orWhere('cb.lastname LIKE :lastname')
+            ->orWhere('r.registrationId = :registrationId')
+            ->setParameter('registrationId', "$searchText")
+            ->setParameter('changetext', "%$searchText%")
+            ->setParameter('firstname', "%$searchText%")
+            ->setParameter('lastname', "%$searchText%")
+            ->orderBy('rh.createddate', 'DESC')
+        ;
+
+        $query = $queryBuilder->getQuery();
+        if ($limit) {
+            $query = $query->setMaxResults($limit);
+        }
+        if ($offset) {
+            $query = $query->setFirstResult($offset);
+        }
+        return $query->getResult();
+    }
+
+    /**
      * @return Registrationhistory[]
      */
     public function findAll()
