@@ -12,6 +12,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class ManageController extends Controller
 {
     /**
+     * @Route("/", name="homepage")
      * @Route("/manage/")
      * @Security("has_role('ROLE_USER')")
      *
