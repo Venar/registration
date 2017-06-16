@@ -1,7 +1,8 @@
 <?php
 
-namespace AppBundle\Controller;
+namespace AppBundle\Controller\Printing;
 
+use AppBundle\Entity\Badge;
 use AppBundle\Entity\Registration;
 use AppBundle\Service\TCPDF\BadgePDF;
 use Doctrine\ORM\Query\Expr\Join;
@@ -11,7 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Response;
 
-class BulkPrintingController extends Controller
+class PrintingController extends Controller
 {
     /** @var $pdf BadgePDF */
     protected $pdf;
@@ -49,13 +50,39 @@ class BulkPrintingController extends Controller
      * @param String $page
      * @return Response
      */
-    public function printingList($type, $page = '1') {
+    public function printingList($type, $page = '1')
+    {
         if (!is_numeric($page)) {
             $page = 1;
         }
-        $page = (int) $page;
+        $page = (int)$page;
 
         return $this->printBulk($type, $page);
+    }
+
+
+    /**
+     * @Route("/print/single/{registrationId}")
+     * @Route("/print/single/{registrationId}/{badgeId}")
+     * @Security("has_role('ROLE_USER')")
+     *
+     * @param String $registrationId
+     * @param String $badgeId
+     * @return Response
+     */
+    public function printSinglePage($registrationId, $badgeId = '')
+    {
+        $this->setUpPDF();
+
+        $registration = $this->get('repository_registration')->getFromRegistrationId($registrationId);
+        if (!$registration) {
+
+            return;
+        }
+
+        $badge = $this->get('repository_badge')->getFromBadgeId($badgeId);
+
+        return $this->printSingle($registration, $badge);
     }
 
     /**
@@ -105,8 +132,7 @@ class BulkPrintingController extends Controller
 
         $badgesSubQuery = $this->get('doctrine.orm.default_entity_manager')->createQueryBuilder()
             ->select('IDENTITY(b2.registration)')
-            ->from('AppBundle:Badge', 'b2')
-            ;
+            ->from('AppBundle:Badge', 'b2');
 
         for ($i = 0; $i < count($badgeTypes); $i++) {
             if ($i == 0) {
@@ -127,12 +153,20 @@ class BulkPrintingController extends Controller
             ->getDQL();
 
         $queryBuilder
-            ->select(['r.number', 'r.badgename', 'b.number as badgeNumber', 'bt.name as type', 'rg.name as regGroupName', 'r.confirmationnumber'])
+            ->select([
+                'r.number',
+                'r.badgename',
+                'b.number as badgeNumber',
+                'bt.name as type',
+                'rg.name as regGroupName',
+                'r.confirmationnumber'
+            ])
             ->from('AppBundle\Entity\Registration', 'r')
             ->innerJoin('AppBundle\Entity\Badge', 'b', Join::WITH, 'b.registration = r.registrationId')
             ->innerJoin('AppBundle\Entity\Badgestatus', 'bs', Join::WITH, 'bs.badgestatusId = b.badgestatus')
             ->innerJoin('AppBundle\Entity\Badgetype', 'bt', Join::WITH, 'bt.badgetypeId = b.badgetype')
-            ->leftJoin('AppBundle\Entity\Registrationreggroup', 'rrg', Join::WITH, 'rrg.registration = r.registrationId')
+            ->leftJoin('AppBundle\Entity\Registrationreggroup', 'rrg', Join::WITH,
+                'rrg.registration = r.registrationId')
             ->leftJoin('AppBundle\Entity\Reggroup', 'rg', Join::WITH, 'rg.reggroupId = rrg.reggroup')
             ->where($queryBuilder->expr()->in('r.registrationstatus', $registrationStatusSubQueryDQL))
             ->andWhere($queryBuilder->expr()->in('r.registrationId', $badgesSubQueryDQL))
@@ -140,9 +174,7 @@ class BulkPrintingController extends Controller
             ->andWhere('bs.active = :bsactive')
             ->setParameter('event', $event)
             ->setParameter('active', true)
-            ->setParameter('bsactive', true)
-        ;
-
+            ->setParameter('bsactive', true);
 
 
         if ($type != 'staff') {
@@ -154,8 +186,7 @@ class BulkPrintingController extends Controller
                 ->where("b3.badgetype = :stafftype")
                 ->innerJoin('b3.registration', 'b3r')
                 ->andWhere('b3r.event = :b3revent')
-                ->getDQL()
-            ;
+                ->getDQL();
 
             $queryBuilder->andWhere($queryBuilder->expr()->notIn('r.registrationId', $allStaffBadges));
             $queryBuilder->setParameter('stafftype', $staffBadge)
@@ -195,6 +226,50 @@ class BulkPrintingController extends Controller
         }
 
         return $this->pdf->Output("BulkBadge_{$type}_{$limit}_{$offset}.pdf", 'I');
+    }
+
+    /**
+     * @param Registration $registration
+     * @param Badge|null $badge
+     * @return mixed
+     */
+    protected function printSingle($registration, $badge = null)
+    {
+        if ($badge) {
+            $this->addBadgeFromRegistrationAndBadge($registration, $badge);
+        } else {
+            $badges = $this->get('repository_badge')->getBadgesFromRegistration($registration);
+            $badges = array_reverse($badges);
+            /** @var $badges Badge[] */
+            foreach ($badges as $badge) {
+                if (!$badge->getBadgestatus()->getActive()) {
+                    continue;
+                }
+                $this->addBadgeFromRegistrationAndBadge($registration, $badge);
+            }
+        }
+
+        return $this->pdf->Output('Badge' . $registration->getNumber() . '.pdf', 'I');
+    }
+
+    /**
+     * @param Registration $registration
+     * @param Badge $badge
+     */
+    protected function addBadgeFromRegistrationAndBadge($registration, $badge)
+    {
+        $badgeType = $badge->getBadgetype();
+        $registrationNumber = $registration->getNumber();
+        $registrationName = $registration->getBadgename();
+        $badgeNumber = $badge->getNumber();
+        $badgeType = $badgeType->getName();
+        $confirmationNumber = $registration->getConfirmationnumber();
+        $groupName = '';
+        $regGroups = $this->get('repository_reggroup')->getRegGroupFromRegistration($registration);
+        if ($regGroups) {
+            $groupName = $regGroups->getName();
+        }
+        $this->addBadge($registrationNumber, $registrationName, $badgeNumber, $badgeType, $groupName, $confirmationNumber);
     }
 
     /**

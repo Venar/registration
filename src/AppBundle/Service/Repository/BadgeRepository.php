@@ -32,6 +32,24 @@ class BadgeRepository
     }
 
     /**
+     * @param String $badgeId
+     * @return Badge|null
+     */
+    public function getFromBadgeId($badgeId)
+    {
+        if (!$badgeId) {
+
+            return null;
+        }
+
+        $badge = $this->entityManager
+            ->getRepository('AppBundle:Badge')
+            ->find($badgeId)
+        ;
+        return $badge;
+    }
+
+    /**
      * @param null|Registration $registration
      * @return Badge[]
      */

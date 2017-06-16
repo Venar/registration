@@ -1,0 +1,94 @@
+{% extends 'detour.html.twig' %}
+
+{% block body %}
+{% if registration is not null and badge is not null %}
+    <form>
+        <h1>{{ badge.badgetype.description }} Badge - {{ badge.badgestatus.description }} - {{ registration.number }} - {{ badge.number }}</h1>
+        <div class="row">
+            <div class="col-sm-3 registration-info">
+                <h2>Information</h2>
+                <div class="info-row">
+                    <span class="info-label">Full Name</span>
+                    <span class="info-value">{{ registration.lastname }}, {{ registration.firstname }} {{ registration.middlename }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Birthday</span>
+                    <span class="info-value">{{ registration.birthday|date("F j Y") }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Badge Name</span>
+                    <span class="info-value">{{ registration.badgename }}</span>
+                </div>
+            </div>
+            <div class="col-sm-4 registration-info">
+                <h2>Action</h2>
+                <div class="radio {inactiveDisable}">
+                    <label>
+                        <input type="radio" name="badgeAction" id="badgeAction1" value="lost" {{ badge.badgestatus.active ? '' : 'disabled' }}>
+                        <b>Lost</b> Badge (Will generate a new badge)
+                    </label>
+                </div>
+                <div class="radio {inactiveDisable}">
+                    <label>
+                        <input type="radio" name="badgeAction" id="badgeAction2" value="revoked" {{ badge.badgestatus.active ? '' : 'disabled' }}>
+                        <b>Revoke</b> Badge (No new badges will be made)
+                    </label>
+                </div>
+                <div class="radio {activeDisable}">
+                    <label>
+                        <input type="radio" name="badgeAction" id="badgeAction3" value="pickedup" {{ badge.badgestatus.active ? 'disabled' : '' }}>
+                        Re-instate Badge (Only use on revoked badges)
+                    </label>
+                </div>
+            </div>
+            <div class="col-sm-3 registration-info">
+                <h2>Notes</h2>
+                <textarea name="reason" id="reason" class="form-control" rows="5"></textarea>
+                <label></label>
+                <br>
+            </div>
+            <div class="col-sm-2 registration-info">
+                <h2>Action</h2>
+                <a href="javascript:void(0);" id="submit" class="btn btn-primary btn-lg">Save</a>
+                <br><br>
+                <a href="/view_registration/{{ registration.registrationId }}" class="btn btn-warning">Cancel</a>
+            </div>
+        </div>
+    </form>
+
+    <script>
+        var registrationID = {{ registration.registrationId }};
+        var badgeID = {{ badge.badgeId }};
+
+        $('#submit').click(function ()
+        {
+            var action = $('input:radio[name=badgeAction]:checked').val();
+            var note = $('#reason').val();
+            $.ajax({
+                type: 'POST',
+                url: '/badge/modify/' + registrationID + '/' + badgeID + '/' + action,
+                dataType: 'json',
+                data: {
+                    'note': note
+                },
+                error: function (x, textStatus)
+                {
+                    alert(textStatus);
+                }
+            })
+                .done(function (data)
+                {
+                    if (data['success']) {
+                        window.location.href = '/view_registration/{{ registration.registrationId }}';
+                    } else {
+                        alert(data['message']);
+                    }
+                });
+        });
+    </script>
+{% elseif badge is null %}
+    Invalid Badge! <a href="/view_registration/{{ registration.registrationId }}">Back</a>
+{% else %}
+    Invalid Registration! <a href="/manage">Back</a>
+{% endif %}
+{% endblock %}
