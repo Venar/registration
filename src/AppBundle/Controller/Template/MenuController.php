@@ -41,11 +41,11 @@ class MenuController extends Controller
                 'items' => [
                     [
                         'title' => 'Registration Form',
-                        'url' => '/form/registration',
+                        'url' => 'form/registration',
                     ],
                     [
                         'title' => 'Transfer Form',
-                        'url' => '/form/transfer',
+                        'url' => 'form/transfer',
                     ],
                     [
                         'title' => 'List Badges to Print',
