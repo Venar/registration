@@ -58,14 +58,22 @@ class RegistrationRepository
     /**
      * @param Registration $registration
      * @param Badge[] $badges
+     * @param bool $forceResend Resend even if already set
      */
-    public function sendConfirmationEmail(Registration $registration, array $badges)
+    public function sendConfirmationEmail(Registration $registration, array $badges, bool $forceResend = false)
     {
-        if ($registration->getEmail() == '' || $registration->getConfirmationnumber() != '') {
+        if ($registration->getEmail() == ''
+            || ($registration->getConfirmationnumber() != ''
+                && !$forceResend
+            )
+        ) {
 
             return;
         }
-        $this->generateConfirmationNumber($registration);
+
+        if ($registration->getConfirmationnumber() != '') {
+            $this->generateConfirmationNumber($registration);
+        }
 
         if ($this->container->get('kernel')->getEnvironment() == 'dev') {
 

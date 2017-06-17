@@ -17,3 +17,6 @@ parameters:
 
     # A secret key that's used to generate certain security-related tokens
     secret: ThisTokenIsNotSoSecretChangeIt
+
+    # Used for security to validate post-back calls from ASecureCart
+    postback.sha1_key.asecurecart: ~
