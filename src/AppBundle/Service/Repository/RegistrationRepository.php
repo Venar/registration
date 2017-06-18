@@ -75,11 +75,6 @@ class RegistrationRepository
             $this->generateConfirmationNumber($registration);
         }
 
-        if ($this->container->get('kernel')->getEnvironment() == 'dev') {
-
-            return;
-        }
-
         $this->email->sendConfirmationEmail($registration);
     }
 

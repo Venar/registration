@@ -68,9 +68,10 @@ class Email
 
         $message = \Swift_Message::newInstance()
             ->setSubject("Anime Detour {$registration->getEvent()->getYear()} Registration Confirmation")
-            ->setFrom('ad_register@animedetour.com', 'Anime Detour Registration')
+            ->setFrom('noreply@animedetour.com', 'Anime Detour IT')
+            ->setReplyTo('ad_register@animedetour.com', 'Anime Detour Registration')
             ->setTo($registration->getEmail())
-            ->setSender('ad_register@animedetour.com')
+            ->setSender('noreply@animedetour.com')
             ->setBody(
                 $this->templating->render(
                     'email/confirmationemail.html.twig',
@@ -79,6 +80,7 @@ class Email
                 'text/html'
             )
         ;
-        $this->mailer->send($message);
+        $didSend = $this->mailer->send($message);
+        //var_dump($didSend);
     }
 }
