@@ -26,12 +26,12 @@ class ASecureCartController extends Controller
 
         $key = $this->getParameter('postback.sha1_key.asecurecart');
         $xmlPost = '';
-        if ($request->query->has('XML')) {
-            $xmlPost = $request->query->get('XML');
+        if ($request->request->has('XML')) {
+            $xmlPost = $request->request->get('XML');
         }
         $postBackSignature = '';
-        if ($request->query->has('PostbackSignature')) {
-            $postBackSignature = $request->query->get('PostbackSignature');
+        if ($request->request->has('PostbackSignature')) {
+            $postBackSignature = $request->request->get('PostbackSignature');
         }
 
         $generatedHash = base64_encode(hash_hmac('sha1', $xmlPost, $key, true));
