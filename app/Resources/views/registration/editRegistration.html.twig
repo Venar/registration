@@ -38,13 +38,13 @@
             <div class="col-sm-3">
                 <select name="RegistrationType" id="RegistrationType">
                     {% for type in registrationTypes %}
-                    <option value="{{ type.name }}" {{ registration is not null and registration.registrationtype.registrationtypeId == type.registrationtypeId ? 'selected' : '' }}>
+                    <option value="{{ type.name }}" {{ selectedType is not null and selectedType.registrationtypeId == type.registrationtypeId ? 'selected' : '' }}>
                         {{ type.name }}
                     </option>
                     {% endfor %}
                 </select>
                 <select name="RegGroup_ID" id="RegGroup_ID"
-                        style="width: 150px; {{ registration is null or registration.registrationtype.name != 'Group' ? 'display:none;' : '' }}">
+                        style="width: 150px; {{ selectedType is null or selectedType.name != 'Group' ? 'display:none;' : '' }}">
                     <option value=""></option>
                     {% for regGroup in regGroups %}
                         <option value="{{ regGroup.reggroupId }}" {{ (group is not null and group.reggroupId == regGroup.reggroupId) ? 'selected' : '' }}>
@@ -322,7 +322,7 @@
             {% endif %}
             {% if group is not null %}
                 <br><br>
-                <a href="/registration/edit//{{ group.reggroupId }}" class="btn btn-primary">Add another registration to
+                <a href="/registration/group/add/{{ group.reggroupId }}" class="btn btn-primary">Add another registration to
                     {{ group.name }}</a>
             {% endif %}
             {% if registration is not null and registration.registrationId %}

@@ -41,6 +41,24 @@ class editRegistrationController extends Controller
     }
 
     /**
+     * @Route("/registration/group/add/{groupId}")
+     * @Security("has_role('ROLE_USER')")
+     *
+     * @param String $groupId
+     * @return Response
+     */
+    public function registrationGroup($groupId)
+    {
+        $group = $this->get('repository_reggroup')->getFromReggroupId($groupId);
+
+        if (!$group) {
+            return $this->redirectToRoute('app_manage_manage_listregistrationspage');
+        }
+
+        return $this->editRegistrationPage(null, $groupId);
+    }
+
+    /**
      * @Route("/registration/edit/")
      * @Route("/registration/edit/{registrationID}")
      * @Route("/registration/edit/{registrationID}/{regGroupId}")
@@ -78,9 +96,18 @@ class editRegistrationController extends Controller
             $currentBadgeTypes[] = $badge->getBadgetype()->getName();
         }
 
+        $registrationTypes = $this->get('repository_registrationtype')->findAll();
+        $selectedType = null;
+        if ($group) {
+            $selectedType = $this->get('repository_registrationtype')->getRegistrationTypeFromType('Group');
+        } elseif ($registration) {
+            $selectedType = $registration->getRegistrationtype();
+        }
+
         $vars = [
             'event' => $event,
-            'registrationTypes' => $this->get('repository_registrationtype')->findAll(),
+            'registrationTypes' => $registrationTypes,
+            'selectedType' => $selectedType,
             'regGroups' => $this->get('repository_reggroup')->findAll(),
             'registrationStatuses' => $this->get('repository_registrationstatus')->findAll(),
             'registration' => $registration,
