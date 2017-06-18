@@ -284,35 +284,80 @@
 
 
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-5">
                 <h3>T-Shirts</h3>
             </div>
-            <div class="col-sm-3">
-                <h3>Staff:</h3>
+            <div class="col-sm-4">
+                <h3>Extras:</h3>
             </div>
             <div class="col-sm-3">
                 <h3>Advanced Options:</h3>
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-6">
-                <table class="table table-striped" id="table_registrations">
+            <div class="col-sm-5">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-5">
+                            <table class="table table-striped" id="table_registrations">
+                                <thead>
+                                <tr height="15px">
+                                    <th>Type</th>
+                                    <th>Size</th>
+                                    <th class="text-right">Remove</th>
+                                </tr>
+                                </thead>
+                                <tbody id="tshirt">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <select class="form-control" name="shirt_type" id="shirt_type">
+                                    <option value="" default="">Select T-Shirt...</option>
+                                    <option value="MensTee">Men's T-Shirt</option>
+                                    <option value="WomensTee">Women's T-Shirt</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <select class="form-control" name="shirt_size" id="shirt_size">
+                                    <option value="" default="">Select Size...</option>
+                                    <option value="S">S</option>
+                                    <option value="M">M</option>
+                                    <option value="L">L</option>
+                                    <option value="XL">XL</option>
+                                    <option value="XLT">XLT (Mens Only)</option>
+                                    <option value="2XL">2XL</option>
+                                    <option value="2XLT">2XLT (Mens Only)</option>
+                                    <option value="3XL">3XL (Mens Only)</option>
+                                    <option value="3XLT">3XLT (Mens Only)</option>
+                                    <option value="4XL">4XL (Mens Only)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-1">
+                            <div class="form-group">
+                                <button id="add_shirt" type="button" class="btn btn-primary">Add</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <table class="table table-striped" id="table_extras">
                     <thead>
                     <tr height="15px">
                         <th>Type</th>
-                        <th>Size</th>
                         <th class="text-right">Remove</th>
                     </tr>
                     </thead>
-                    <tbody id="tshirt">
+                    <tbody id="extras">
                     </tbody>
                 </table>
-            </div>
-            <div class="col-sm-3">
-                <div class="alert alert-danger" role="alert" id="staffdiv">
-                    <div id="staffmsg">This member is also listed on staff for this year.</div>
-                    <a href="javascript:void(0);" class="btn btn-primary" id="staffmodify">Remove</a>
-                </div>
             </div>
             <div class="col-sm-3">
             {% if registration is not null and registration.registrationId %}
@@ -331,55 +376,41 @@
             {% endif %}
             </div>
         </div>
-
         <div class="row">
-            <div class="col-sm-2">
-                <br>
-                <br>
-
-                <div class="form-group">
-                    <select class="form-control" name="shirt_type" id="shirt_type">
-                        <option value="" default="">Select T-Shirt...</option>
-                        <option value="MensTee">Men's T-Shirt</option>
-                        <option value="WomensTee">Women's T-Shirt</option>
-                    </select>
+            <div class="col-sm-5">
+            </div>
+            <div class="col-sm-4">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <select class="form-control" name="extra" id="extra">
+                            <option value="" default="">Select Extra...</option>
+                            {% for extra in extras %}
+                            <option value="{{ extra.name }}">{{ extra.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <button id="add_extra" type="button" class="btn btn-primary">Add Extra</button>
+                    </div>
                 </div>
             </div>
-            <div class="col-sm-2">
-                <br>
-                <br>
-
-                <div class="form-group">
-                    <select class="form-control" name="shirt_size" id="shirt_size">
-                        <option value="" default="">Select Size...</option>
-                        <option value="S">S</option>
-                        <option value="M">M</option>
-                        <option value="L">L</option>
-                        <option value="XL">XL</option>
-                        <option value="XLT">XLT (Mens Only)</option>
-                        <option value="2XL">2XL</option>
-                        <option value="2XLT">2XLT (Mens Only)</option>
-                        <option value="3XL">3XL (Mens Only)</option>
-                        <option value="3XLT">3XLT (Mens Only)</option>
-                        <option value="4XL">4XL (Mens Only)</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-sm-2">
-                <br>
-                <br>
-
-                <div class="form-group">
-                    <button id="add_shirt" type="button" class="btn btn-primary">Add Shirt</button>
+            <div class="col-sm-3">
+                <h3>Staff:</h3>
+                <div class="alert alert-danger" role="alert" id="staffdiv">
+                    <div id="staffmsg">This member is also listed on staff for this year.</div>
+                    <a href="javascript:void(0);" class="btn btn-primary" id="staffmodify">Remove</a>
                 </div>
             </div>
         </div>
+
 
     </form>
 
 
     <script>
-        var registration_id = {registration_id};
+        var registration_id = {{ registration.registrationId|default('') }};
 
         $(function ()
         {
@@ -392,6 +423,7 @@
         $(document).ready(function ()
         {
             get_regshirtlist();
+            get_regextralist();
         });
 
         function render_shirt(RegistrationShirt_ID, shirt_type, shirt_size)
@@ -447,7 +479,7 @@
                         RegistrationShirt_ID = json['RegistrationShirt_ID'];
                         render_shirt(RegistrationShirt_ID, shirt_type, shirt_size);
                     } else {
-                        alert('Error adding shirt. Contact IT.')
+                        alert('Error adding shirt. '+ json['message'])
                     }
                 }
             );
@@ -468,7 +500,6 @@
             );
             get_regshirtlist();
         }
-        ;
 
         function get_regshirtlist()
         {
@@ -490,6 +521,100 @@
                         var shirt_type = json[i]['shirt_type'];
                         var shirt_size = json[i]['shirt_size'];
                         render_shirt(RegistrationShirt_ID, shirt_type, shirt_size);
+                    }
+                }
+            );
+        }
+
+        function render_extras(RegistrationExtraId, extra_type)
+        {
+            $('#extras')
+                .append($('<tr>')
+                    .attr('id', 'tr_extra_' + RegistrationExtraId)
+                    .append($('<td>')
+                        .text(extra_type)
+                        .append($('<input>')
+                            .attr('type', 'hidden')
+                            .attr('name', 'RegistrationExtraId[]')
+                            .attr('value', RegistrationExtraId)
+                        )
+                    )
+                    .append($('<td>')
+                        .append($('<span>')
+                            .attr('class', 'close-btn')
+                            .append($('<a>')
+                                .attr('id', 'delete_extra_' + RegistrationExtraId)
+                                .attr('href', 'javascript:void(0);')
+                                .html('X')
+                            )
+                        )
+                    )
+                );
+
+            $('#delete_extra_' + RegistrationExtraId).click(function ()
+            {
+                delete_extra(RegistrationExtraId);
+            });
+        }
+
+        $('#add_extra').click(function ()
+        {
+            var extra = $('#extra').val();
+            var reg_id = $('#Registration_ID').val();
+
+            var RegistrationExtraId = 0;
+            $.getJSON('/registration/ajax/extra/'+reg_id+'/add',
+                {
+                    'Registration_ID': reg_id,
+                    'extra': extra
+                },
+                function (json)
+                {
+                    if (json['success'] && json['RegistrationExtraId']) {
+                        RegistrationExtraId = json['RegistrationExtraId'];
+                        render_extras(RegistrationExtraId, extra);
+                    } else {
+                        alert('Error adding extra. '+ json['message'])
+                    }
+                }
+            );
+        });
+
+        function delete_extra(RegistrationExtraId)
+        {
+            var reg_id = $('#Registration_ID').val();
+            $.getJSON('/registration/ajax/extra/'+reg_id+'/delete',
+                {
+                    'Registration_ID': reg_id,
+                    'RegistrationExtraId': RegistrationExtraId
+                },
+                function (json)
+                {
+                    $('#tr_extra_' + RegistrationExtraId).remove();
+                }
+            );
+            get_regextralist();
+        }
+
+        function get_regextralist()
+        {
+            var reg_id = $('#Registration_ID').val();
+            if (reg_id == '') {
+                //alert('You must save the user before you can add extras');
+                return;
+            }
+
+            $.getJSON('/registration/list/extra/' + reg_id,
+                {},
+                function (json)
+                {
+                    $('#extras').empty();
+
+                    var extraCount = json.length;
+                    for (var i = 0; i < extraCount; i++) {
+                        var RegistrationExtraId = json[i]['RegistrationExtraId'];
+                        var extra = json[i]['extra'];
+                        render_extras(RegistrationExtraId, extra);
                     }
                 }
             );

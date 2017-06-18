@@ -5,6 +5,7 @@ namespace AppBundle\Controller\Api\Postback;
 use AppBundle\Entity\Badge;
 use AppBundle\Entity\Registration;
 use AppBundle\Entity\Registrationerror;
+use AppBundle\Entity\Registrationextra;
 use AppBundle\Entity\Registrationshirt;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -105,6 +106,7 @@ class ASecureCartController extends Controller
             // Addon5
             // Addon6 Mens/Womens Shirt
             // size   Shirt Size
+            // Addon9 SponsorBreakfast Extra 'SponsorBreakfast' or 'Decline' or '' if not a sponsor type
 
             // hAddon1 Address 1
             // hAddon2 Adrress 2
@@ -184,6 +186,16 @@ class ASecureCartController extends Controller
                     $this->createRegistrationError($error, $xmlPost);
                 }
             }
+
+            $breakfastOption = (String)$attributes['addon9'];
+            if ($breakfastOption == 'SponsorBreakfast') {
+                $extra = $this->get('repository_extra')->getExtraFromName('SponsorBreakfast');
+                $registrationExtra = new Registrationextra();
+                $registrationExtra->setRegistration($registration);
+                $registrationExtra->setExtra($extra);
+                $entityManager->persist($registrationExtra);
+            }
+
             $entityManager->flush();
 
             $badges = $this->get('repository_badge')->getBadgesFromRegistration($registration);

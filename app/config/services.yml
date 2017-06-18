@@ -35,10 +35,18 @@ services:
         class: AppBundle\Service\Repository\EventRepository
         arguments: [ "@doctrine.orm.entity_manager"]
 
+    repository_extra:
+        class: AppBundle\Service\Repository\ExtraRepository
+        arguments: [ "@doctrine.orm.entity_manager"]
+
     repository_registration:
         class: AppBundle\Service\Repository\RegistrationRepository
         arguments: [ "@repository_event", "@doctrine.orm.entity_manager",
             "@service_container", '@util_email']
+
+    repository_registrationextra:
+        class: AppBundle\Service\Repository\RegistrationExtraRepository
+        arguments: [ "@doctrine.orm.entity_manager"]
 
     repository_registrationreggroup:
         class: AppBundle\Service\Repository\RegistrationRegGroupRepository

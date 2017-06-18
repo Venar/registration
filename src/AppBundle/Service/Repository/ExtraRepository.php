@@ -1,20 +1,26 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: jjkoniges
+ * Date: 6/18/17
+ * Time: 9:33 AM
+ */
 
 namespace AppBundle\Service\Repository;
 
 
 use AppBundle\Entity\Registration;
-use AppBundle\Entity\Shirt;
+use AppBundle\Entity\Extra;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query\Expr\Join;
 
 
-class ShirtRepository
+class ExtraRepository
 {
     /** @var EntityManager $entityManager */
     protected $entityManager;
 
-    const entityName = 'AppBundle:Shirt';
+    const entityName = 'AppBundle:Extra';
 
     public function __construct(EntityManager $entityManager)
     {
@@ -22,36 +28,33 @@ class ShirtRepository
     }
 
     /**
-     * @param String $type
-     * @param String $size
-     * @return Shirt|null
+     * @param String $name
+     * @return Extra|null
      */
-    public function getShirtFromTypeAndSize($type, $size)
+    public function getExtraFromName($name)
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
 
-        $queryBuilder->select('s')
-            ->from('AppBundle:Shirt', 's')
-            ->where("s.shirtsize = :shirtsize")
-            ->andWhere("s.shirttype = :shirttype")
-            ->setParameter('shirtsize', $size)
-            ->setParameter('shirttype', $type);
+        $queryBuilder->select('ex')
+            ->from('AppBundle:Extra', 'ex')
+            ->where("ex.name = :name")
+            ->setParameter('name', $name);
 
         return $queryBuilder->getQuery()->getOneOrNullResult();
     }
 
     /**
      * @param Registration $registration
-     * @return Shirt[]
+     * @return Extra[]
      */
-    public function getShirtsFromRegistration(Registration $registration)
+    public function getExtrasFromRegistration(Registration $registration)
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
 
-        $queryBuilder->select('s')
-            ->from(self::entityName, 's')
-            ->innerJoin('AppBundle\Entity\Registrationshirt', 'rs', Join::WITH, 'rs.shirt = s.shirtId')
-            ->innerJoin('AppBundle\Entity\Registration', 'r', Join::WITH, 'r.registrationId = rs.registration')
+        $queryBuilder->select('ex')
+            ->from(self::entityName, 'ex')
+            ->innerJoin('AppBundle\Entity\Registrationextra', 're', Join::WITH, 're.extra = ex.extraId')
+            ->innerJoin('AppBundle\Entity\Registration', 'r', Join::WITH, 'r.registrationId = re.registration')
             ->where("r.registrationId = :registrationId")
             ->setParameter('registrationId', $registration)
         ;
@@ -59,7 +62,7 @@ class ShirtRepository
         return $queryBuilder->getQuery()->getResult();
     }
     /**
-     * @return Shirt[]
+     * @return Extra[]
      */
     public function findAll()
     {

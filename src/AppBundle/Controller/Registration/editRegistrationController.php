@@ -4,6 +4,7 @@ namespace AppBundle\Controller\Registration;
 
 use AppBundle\Entity\Badge;
 use AppBundle\Entity\Registration;
+use AppBundle\Entity\Registrationextra;
 use AppBundle\Entity\Registrationhistory;
 use AppBundle\Entity\Registrationreggroup;
 use AppBundle\Entity\Registrationshirt;
@@ -104,6 +105,8 @@ class editRegistrationController extends Controller
             $selectedType = $registration->getRegistrationtype();
         }
 
+        $extras = $this->get('repository_extra')->findAll();
+
         $vars = [
             'event' => $event,
             'registrationTypes' => $registrationTypes,
@@ -117,6 +120,7 @@ class editRegistrationController extends Controller
             'group' => $group,
             'transferredRegistration' => $transferredRegistration,
             'transferredBadges' => $transferredBadges,
+            'extras' => $extras,
         ];
 
         return $this->render('registration/editRegistration.html.twig', $vars);
@@ -260,6 +264,113 @@ class editRegistrationController extends Controller
                 $entityManager->flush();
 
                 $returnData['message'] = 'Deleted shirt size ' . $shirt->getShirttype() . ' ' . $shirt->getShirtsize() . ' from registration';
+                $returnData['success'] = true;
+            }
+        }
+
+        if ($registration->getRegistrationId() && $returnData['success']) {
+            $registrationHistory = new RegistrationHistory();
+            $registrationHistory->setRegistration($registration);
+            $registrationHistory->setChangetext($returnData['message']);
+            $entityManager->persist($registrationHistory);
+
+            $entityManager->flush();
+        }
+
+        return new JsonResponse($returnData);
+    }
+
+    /**
+     * @Route("/registration/list/extra/{registrationId}")
+     * @Security("has_role('ROLE_USER')")
+     *
+     * @param String $registrationId
+     * @return JsonResponse
+     */
+    public function getRegistrationExtras($registrationId)
+    {
+        $arrayExtras = [];
+        $registration = $this->get('repository_registration')->getFromRegistrationId($registrationId);
+        if ($registration) {
+            $registrationExtras = $this->get('repository_registrationextra')->getRegistrationExtrasFromRegistration($registration);
+
+            foreach ($registrationExtras as $registrationExtra) {
+                $tmp = array();
+                $tmp['RegistrationExtraId'] = $registrationExtra->getRegistrationextraId();
+                $tmp['extra'] = $registrationExtra->getExtra()->getName();
+                $arrayExtras[] = $tmp;
+            }
+        }
+
+        return new JsonResponse($arrayExtras);
+    }
+
+    /**
+     * @Route("/registration/ajax/extra/{registrationId}/{action}")
+     * @Security("has_role('ROLE_USER')")
+     *
+     * @param Request $request
+     * @param String $registrationId
+     * @param String $action
+     * @return JsonResponse
+     */
+    public function modifyExtras(Request $request, $registrationId, $action)
+    {
+        $entityManager = $this->get('doctrine.orm.entity_manager');
+
+        $returnData = array();
+        $returnData['success'] = false;
+        $returnData['message'] = '';
+
+        $registration = $this->get('repository_registration')->getFromRegistrationId($registrationId);
+        if (!$registration) {
+            $returnData['message'] = 'Invalid Registration ID';
+
+            return new JsonResponse($returnData);
+        }
+
+        if ($action == 'add') {
+            if ($request->query->has('extra')) {
+                $extraName = $request->query->get('extra');
+
+                $extra = $this->get('repository_extra')->getExtraFromName($extraName);
+                if (!$extra) {
+                    $returnData['message'] = 'Error: Invalid Extra';
+
+                    return new JsonResponse($returnData);
+                }
+
+                $extras = $this->get('repository_extra')->getExtrasFromRegistration($registration);
+                foreach ($extras as $foundExtra) {
+                    if ($foundExtra->getExtraId() == $extra->getExtraId()) {
+                        $returnData['message'] = 'Extra already added to Registration!';
+
+                        return new JsonResponse($returnData);
+                    }
+                }
+
+                $registrationExtra = new Registrationextra();
+                $registrationExtra->setRegistration($registration);
+                $registrationExtra->setExtra($extra);
+                $entityManager->persist($registrationExtra);
+                $entityManager->flush();
+
+                if ($registrationExtra->getRegistrationextraId()) {
+                    $returnData['success'] = true;
+                    $returnData['message'] = "Added extra $extraName to registration";
+                    $returnData['RegistrationExtraId'] = $registrationExtra->getRegistrationextraId();
+                }
+            }
+        } elseif ($action == 'delete') {
+            if ($request->query->has('RegistrationExtraId')) {
+                $registrationExtraId = $request->query->get('RegistrationExtraId');
+                $registrationExtra = $this->get('repository_registrationextra')->getFromRegistrationExtraId($registrationExtraId);
+                $extra = $registrationExtra->getExtra();
+
+                $entityManager->remove($registrationExtra);
+                $entityManager->flush();
+
+                $returnData['message'] = "Deleted extra {$extra->getName()} from registration";
                 $returnData['success'] = true;
             }
         }
