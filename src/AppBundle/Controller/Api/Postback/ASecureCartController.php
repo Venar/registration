@@ -187,8 +187,8 @@ class ASecureCartController extends Controller
                 }
             }
 
-            $breakfastOption = (String)$attributes['addon9'];
-            if ($breakfastOption == 'SponsorBreakfast') {
+            $breakfastOption = (String)$attributes['addon5'];
+            if (strpos($breakfastOption, 'SponsorBreakfast') !== false) {
                 $extra = $this->get('repository_extra')->getExtraFromName('SponsorBreakfast');
                 $registrationExtra = new Registrationextra();
                 $registrationExtra->setRegistration($registration);
