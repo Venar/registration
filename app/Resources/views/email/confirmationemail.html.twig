@@ -5,7 +5,7 @@
     <img alt="{{ registration.confirmationnumber }}" src="{{ url }}">
 </p>
 
-<p>Anime Detour will take place from {startDate} to {endDate}.</p>
+<p>Anime Detour will take place from {{ registration.event.startdate|date("F j Y") }} to {{ registration.event.enddate|date("F j Y") }}.</p>
 
 <p>Badges will be issued at the convention. You will need to bring a government issued photo ID with your birth date
     on it (such as a driver's license, or passport) in order to pick up your badge.  We also recommend bringing a copy

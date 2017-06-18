@@ -33,7 +33,7 @@ class Email
     public function sendConfirmationEmail(Registration $registration)
     {
         $atcLogoIMG = 'http://registration.animedetour.com/images/atc_logo_small.png';
-        $url = 'http://registration.animedetour.com/barcode/?text=$AD-C-' . urlencode($registration->getConfirmationnumber());
+        $url = 'http://registration.animedetour.com/api/barcode/$AD-C-' . urlencode($registration->getConfirmationnumber());
 
         $badges = $this->badgeRepository->getBadgesFromRegistration($registration);
         $isMinor = false;

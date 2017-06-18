@@ -35,6 +35,8 @@ class TestingController extends Controller
         $badges = $this->get('repository_badge')->getBadgesFromRegistration($registration);
         $this->get('repository_registration')->sendConfirmationEmail($registration, $badges, true);
 
-        die();
+        return $this->render('default/index.html.twig', [
+            'base_dir' => realpath($this->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR,
+        ]);
     }
 }

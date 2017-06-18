@@ -31,4 +31,4 @@ monolog:
         #    level: info
 
 swiftmailer:
-    delivery_addresses: ['john+testing.koniges@animedetour.com']
+    delivery_addresses: ['john.koniges+testing@animedetour.com']
