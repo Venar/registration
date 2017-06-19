@@ -57,7 +57,8 @@ class RegGroupRepository
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
         $queryBuilder->select('rg')
-            ->from('AppBundle:Reggroup', 'rg');
+            ->from('AppBundle:Reggroup', 'rg')
+            ->orderBy('rg.name', 'ASC');
 
         if ($school != '') {
             $queryBuilder->where($queryBuilder->expr()->like('rg.school', ':school'))
