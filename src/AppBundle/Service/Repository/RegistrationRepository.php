@@ -71,7 +71,7 @@ class RegistrationRepository
             return;
         }
 
-        if ($registration->getConfirmationnumber() != '') {
+        if ($registration->getConfirmationnumber() == '') {
             $this->generateConfirmationNumber($registration);
         }
 
