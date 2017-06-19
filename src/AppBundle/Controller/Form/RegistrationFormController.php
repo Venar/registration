@@ -44,7 +44,7 @@ class RegistrationFormController extends Controller
 
         $pdf->SetFont('Bauhaus LT Medium', 'B', 14);
         //$pdf->RadioButton('membershiptype', 16);
-        $pdf->Cell(155, 16, 'Standard ($50) Until 2/28');
+        $pdf->Cell(155, 16, 'Standard ($50) Until 1/31');
         $pdf->CheckBox('reg_standard', 16);
         $pdf->cell('15');
         //$pdf->RadioButton('membershiptype', 16);
@@ -57,7 +57,7 @@ class RegistrationFormController extends Controller
         $pdf->Ln(16);
 
         //$pdf->RadioButton('membershiptype', 16);
-        $pdf->Cell(140, 16, 'Standard ($55) 3/1+');
+        $pdf->Cell(140, 16, 'Standard ($55) 2/1+');
         $pdf->CheckBox('reg_standard_late', 16);
         $pdf->cell('60');
         //$pdf->RadioButton('membershiptype', 16);
