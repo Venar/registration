@@ -152,6 +152,30 @@ class User extends BaseUser
     }
 
     /**
+     * Set GoogleID
+     *
+     * @param string $googleId
+     *
+     * @return User
+     */
+    public function setGoogleID($googleId)
+    {
+        $this->googleID = $googleId;
+
+        return $this;
+    }
+
+    /**
+     * Get GoogleID
+     *
+     * @return string
+     */
+    public function getGoogleID()
+    {
+        return $this->googleID;
+    }
+
+    /**
      * Set login
      *
      * @param string $login

@@ -25,9 +25,9 @@ security:
             logout:       true
             anonymous:    true
             oauth:
-                failure_path: your_path
-                login_path: your_path
-                check_path: /connect_check
+                failure_path: '/login'
+                login_path: '/login'
+                check_path: '/connect_check'
                 provider: fos_userbundle
                 resource_owners:
                     google: "/login/check-google"
