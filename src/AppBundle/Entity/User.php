@@ -28,6 +28,12 @@ class User extends BaseUser
      */
     private $openidIdentity;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="google_id", type="string", nullable=true)
+     */
+    private $googleID;
 
     /**
      * @var string

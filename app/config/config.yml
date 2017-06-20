@@ -96,3 +96,17 @@ white_october_tcpdf:
         k_path_fonts: '../app/Resources/fonts/'
         pdf_page_format: 'LETTER'
         pdf_unit: 'pt'
+
+hwi_oauth:
+    # name of the firewall in which this bundle is active, this setting MUST be set
+    firewall_names: [main]
+    connect:
+        account_connector: app.provider.oauth
+    resource_owners:
+        google:
+            type:               google
+            client_id:          "%google_client_id%"
+            client_secret:      "%google_client_secret%"
+            scope:              "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile"
+            paths:
+                email: email
