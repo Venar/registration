@@ -91,11 +91,11 @@ class StatisticsController extends Controller
                 $tmpData[] = $count;
             }
 
+            $counts[$badgeType->getName()] = $total_count;
+
             if (array_sum($tmpData) == 0) {
                 continue;
             }
-
-            $counts[$badgeType->getName()] = $total_count;
 
             $tmp['name'] = $badgeType->getDescription();
             $tmp['data'] = $tmpData;
