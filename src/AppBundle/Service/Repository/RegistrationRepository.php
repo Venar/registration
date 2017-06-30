@@ -416,6 +416,7 @@ class RegistrationRepository
             }
             $return_results[] = $tmp;
         }
+        $returnJson['page'] = $page;
         $returnJson['results'] = $return_results;
 
         return $returnJson;

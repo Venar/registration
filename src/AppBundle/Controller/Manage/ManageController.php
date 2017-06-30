@@ -116,7 +116,6 @@ class ManageController extends Controller
         if ($page <= 1 || !is_numeric($page)) {
             $page = 1;
         }
-        $returnJson['page'] = $page;
 
         $returnJson = $this->get('repository_registration')->searchFromManageRegistrations(
             $searchText,
