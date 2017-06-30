@@ -143,8 +143,10 @@ class ASecureCartController extends Controller
             $registration->setState(trim($address[1]));
             $registration->setZip(trim($address[2]));
             $registration->setPhone((String)$attributes['haddon4']);
-            $registration->setContactNewsletter((bool)$attributes['haddon5']);
-            $registration->setContactVolunteer((bool)$attributes['haddon6']);
+            $contactNewsletter = (String) $attributes['haddon5'];
+            $registration->setContactNewsletter((bool) $contactNewsletter);
+            $contactVolunteer = (String) $attributes['haddon5'];
+            $registration->setContactVolunteer((bool) $contactVolunteer);
             $number = $this->get('repository_registration')->generateNumber($registration);
             $registration->setNumber($number);
 
