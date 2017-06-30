@@ -338,7 +338,7 @@ class RegistrationRepository
 
         $queryBuilder
             ->orderBy('r.lastname', 'ASC')
-            ->orderBy('r.firstname' , 'ASC')
+            ->addOrderBy('r.firstname' , 'ASC')
             ->groupBy('r.registrationId')
         ;
 
