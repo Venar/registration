@@ -59,6 +59,10 @@ class ASecureCartController extends Controller
                 continue;
             }
 
+            if (strpos($regType, 'ADREGSTANDARD') !== false) {
+                $regType = 'ADREGSTANDARD';
+            }
+
             $badgeType = $this->get('repository_badgetype')->getBadgeTypeFromType($regType);
             if (!$badgeType) {
                 $error = "BadgeType didn't load correctly: '" . $regType . "'";
