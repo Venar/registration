@@ -59,7 +59,7 @@ class RegistrationPDF extends \TCPDF
 
         // Logo
         $this->SetY($this->GetY() + 5);
-        $this->Image('images/adlogo.png', 150, $this->GetY(), 330);
+        $this->Image('images/adlogo.jpg', 150, $this->GetY(), 330);
 
         $this->ln(50);
         $this->SetFont('Bauhaus LT Medium', 'B', 16);
@@ -101,7 +101,7 @@ class RegistrationPDF extends \TCPDF
         */
 
         $this->SetY($this->GetY()+5);
-        $this->Image('images/atc_logo_small.png', 10, $this->GetY(), 60);
+        $this->Image('images/atc_logo_small.jpg', 10, $this->GetY(), 60);
 
         $this->SetXY(205, $this->GetY()+3);
         // Page Number
