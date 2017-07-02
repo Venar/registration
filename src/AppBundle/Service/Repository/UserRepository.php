@@ -52,6 +52,9 @@ class UserRepository
      */
     public function findAll()
     {
-        return $this->entityManager->getRepository(self::entityName)->findAll();
+        return $this
+            ->entityManager
+            ->getRepository(self::entityName)
+            ->findBy([], ['lastname' => 'ASC', 'firstname' => 'ASC']);
     }
 }
