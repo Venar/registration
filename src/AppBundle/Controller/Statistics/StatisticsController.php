@@ -7,7 +7,7 @@ ini_set('max_execution_time', 300);
 use AppBundle\Entity\Event;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\Cache\Simple\FilesystemCache;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
@@ -176,15 +176,14 @@ class StatisticsController extends Controller
         $currentEvent = $this->get('repository_event')->getCurrentEvent();
 
         foreach ($events as $event) {
-            $cache = new FilesystemAdapter();
+            $cache = new FilesystemCache();
             $statsField = "stats.cache.eventsByDay.{$event->getEventId()}";
 
-            $cachedData = $cache->getItem($statsField);
-            if ($cachedData->isHit())
+            if ($cache->has($statsField))
             {
-                $data = $cachedData->get();
+                $tmpData = $cache->get($statsField);
                 $tmp['name'] = $event->getYear();
-                $tmp['data'] = unserialize($data);
+                $tmp['data'] = unserialize($tmpData);
                 $data[]      = $tmp;
 
                 continue;
@@ -220,7 +219,7 @@ class StatisticsController extends Controller
             }
 
             if ($currentEvent->getEventId() != $event->getEventId()) {
-                $cachedData->set(serialize($tmpData));
+                $cache->set($statsField, serialize($tmpData));
             }
 
             $tmp['name'] = $event->getYear();
