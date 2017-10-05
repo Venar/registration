@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 class TransferController extends Controller
 {
     /**
-     * @Route("/form/transfer")
+     * @Route("/form/transfer", name="form_transfer")
      *
      * @return StreamedResponse
      */

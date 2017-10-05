@@ -12,9 +12,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class GroupController extends Controller
 {
     /**
-     * @Route("/group/list")
-     * @Route("/group/list/")
-     * @Route("/group/list/{curPageNum}")
+     * @Route("/group/list", name="group_list")
+     * @Route("/group/list/", name="group_list_slash")
+     * @Route("/group/list/{curPageNum}", name="group_list_withPageNum")
      * @Security("has_role('ROLE_USER')")
      *
      * @param Request $request

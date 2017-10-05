@@ -13,7 +13,7 @@ class ManageController extends Controller
 {
     /**
      * @Route("/", name="homepage")
-     * @Route("/manage/")
+     * @Route("/manage/", name="registration_list")
      * @Security("has_role('ROLE_USER')")
      *
      * @param Request $request

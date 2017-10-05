@@ -8,7 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 class LegalController extends Controller
 {
     /**
-     * @Route("/privacy")
+     * @Route("/privacy", name="privacy")
      */
     public function showLogin()
     {

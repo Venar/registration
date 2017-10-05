@@ -13,9 +13,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class HistoryController extends Controller
 {
     /**
-     * @Route("/history/")
-     * @Route("/history/{curPageNum}")
-     * @Route("/history/{curPageNum}/")
+     * @Route("/history/", name="edit_history")
+     * @Route("/history/{curPageNum}", name="edit_history_WithPageNum")
+     * @Route("/history/{curPageNum}/", name="edit_history_WithPageNum_slash")
      * @Security("has_role('ROLE_USER')")
      *
      * @param Request $request

@@ -10,7 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class ErrorLocatorController extends Controller
 {
     /**
-     * @Route("/error/finder")
+     * @Route("/error/finder", name="error_finder")
      * @Security("has_role('ROLE_USER')")
      */
     public function get_errorFinder() {
