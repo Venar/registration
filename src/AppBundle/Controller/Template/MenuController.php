@@ -14,7 +14,7 @@ class MenuController extends Controller
                 'items' => [
                     [
                         'title' => 'Groups',
-                        'url' => 'group/list',
+                        'url' => 'group_list',
                     ],
                 ]
             ],
@@ -23,7 +23,7 @@ class MenuController extends Controller
                 'items' => [
                     [
                         'title' => 'Manage Registrations',
-                        'url' => 'manage',
+                        'url' => 'registration_list',
                     ],
                 ]
             ],
@@ -32,7 +32,7 @@ class MenuController extends Controller
                 'items' => [
                     [
                         'title' => 'Statistics',
-                        'url' => 'stats',
+                        'url' => 'statistics',
                     ],
                 ]
             ],
@@ -41,27 +41,27 @@ class MenuController extends Controller
                 'items' => [
                     [
                         'title' => 'Registration Form',
-                        'url' => 'form/registration',
+                        'url' => 'form_registration',
                     ],
                     [
                         'title' => 'Transfer Form',
-                        'url' => 'form/transfer',
+                        'url' => 'form_transfer',
                     ],
                     [
                         'title' => 'List Badges to Print',
-                        'url' => 'printing/list',
+                        'url' => 'printing_list',
                     ],
                     [
-                        'title' => 'Percentage Tools',
-                        'url' => 'percentagetools',
+                        'title' => 'T-Shirt Orders',
+                        'url' => 'shirt_list',
                     ],
                     [
                         'title' => 'Edit History',
-                        'url' => 'history',
+                        'url' => 'edit_history',
                     ],
                     [
                         'title' => 'Error Finder',
-                        'url' => 'error/finder',
+                        'url' => 'error_finder',
                     ],
                 ]
             ],

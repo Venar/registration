@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 class ASecureCartController extends Controller
 {
     /**
-     * @Route("/api/postback/asecurecart")
+     * @Route("/api/postback/asecurecart", name="api_postback_asecurecart")
      *
      * @param Request $request
      * @return Response

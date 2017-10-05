@@ -49,6 +49,7 @@ class TShirtOrdersController extends Controller
         }
 
         $vars['totalCount'] = $totalTShirts;
+        $vars['event'] = $event;
         $vars['data'] = $data;
         $vars['dataJson'] = json_encode($data);
 

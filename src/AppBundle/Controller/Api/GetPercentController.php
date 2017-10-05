@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 class GetPercentController extends Controller
 {
     /**
-     * @Route("/api/percent")
+     * @Route("/api/percent", name="api_percent")
      */
     public function numberAction()
     {

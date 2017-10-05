@@ -14,10 +14,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class StatisticsController extends Controller
 {
     /**
-     * @Route("/stats")
+     * @Route("/stats", name="statistics")
      * @Security("has_role('ROLE_USER')")
      */
-    public function numberAction()
+    public function showStatisticsForCurrentYear()
     {
         $vars = [];
         $event = $this->get('repository_event')->getSelectedEvent();

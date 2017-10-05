@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 class RegistrationFormController extends Controller
 {
     /**
-     * @Route("/form/registration")
+     * @Route("/form/registration", name="form_registration")
      *
      * @return StreamedResponse
      */

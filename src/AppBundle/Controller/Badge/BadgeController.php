@@ -14,7 +14,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class BadgeController extends Controller
 {
     /**
-     * @Route("/badge/status/{registrationId}/{badgeId}")
+     * @Route("/badge/status/{registrationId}/{badgeId}", name="badge_status")
      * @Security("has_role('ROLE_USER')")
      *
      *
@@ -40,7 +40,7 @@ class BadgeController extends Controller
 
 
     /**
-     * @Route("/badge/modify/{registrationId}/{badgeId}/{action}")
+     * @Route("/badge/modify/{registrationId}/{badgeId}/{action}", name="badge_modify")
      * @Security("has_role('ROLE_USER')")
      *
      * @param Request $request

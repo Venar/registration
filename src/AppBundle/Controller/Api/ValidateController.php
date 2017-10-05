@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 class ValidateController extends Controller
 {
     /**
-     * @Route("/api/validate/confirmation/{confirmation}/{lastname}")
+     * @Route("/api/validate/confirmation/{confirmation}/{lastname}", name="api_validate_confirmation")
      *
      * @param String $confirmation Confirmation Code for Registration
      * @param String $lastname Lastname that should match the Registration

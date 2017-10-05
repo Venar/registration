@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 class PrintingListController extends Controller
 {
     /**
-     * @Route("/printing/list")
+     * @Route("/printing/list", name="printing_list")
      * @Security("has_role('ROLE_USER')")
      *
      * @return Response

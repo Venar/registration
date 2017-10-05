@@ -42,8 +42,8 @@ class PrintingController extends Controller
     }
 
     /**
-     * @Route("/print/bulk/{type}")
-     * @Route("/print/bulk/{type}/{page}")
+     * @Route("/print/bulk/{type}", name="printing_bulk_WithType")
+     * @Route("/print/bulk/{type}/{page}", name="printing_bulk_WithType_WithPage")
      * @Security("has_role('ROLE_USER')")
      *
      * @param String $type
@@ -62,8 +62,8 @@ class PrintingController extends Controller
 
 
     /**
-     * @Route("/print/single/{registrationId}")
-     * @Route("/print/single/{registrationId}/{badgeId}")
+     * @Route("/print/single/{registrationId}", name="printing_single")
+     * @Route("/print/single/{registrationId}/{badgeId}", name="printing_single_WithSingleBadge")
      * @Security("has_role('ROLE_USER')")
      *
      * @param String $registrationId
