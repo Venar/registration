@@ -41,7 +41,7 @@ services:
 
     repository_registration:
         class: AppBundle\Service\Repository\RegistrationRepository
-        arguments: [ "@repository_event", "@doctrine.orm.entity_manager",
+        arguments: [ "@repository_event", "@repository_badgetype", "@doctrine.orm.entity_manager",
             "@service_container", '@util_email']
 
     repository_registrationextra:

@@ -46,7 +46,7 @@ class StatisticsController extends Controller
         $staffBadge = $this->get('repository_badgetype')->getBadgeTypeFromType('STAFF');
 
         $allStaffBadges = $this->get('doctrine.orm.default_entity_manager')->createQueryBuilder()
-            ->select('b.badgeId')
+            ->select('IDENTITY(b.registration)')
             ->from('AppBundle:Badge', 'b')
             ->where("b.badgetype = :stafftype")
             ->getDQL();

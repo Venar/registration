@@ -20,6 +20,8 @@ class RegistrationRepository
 {
     /** @var EventRepository $event */
     protected $eventRepository;
+    /** @var BadgeTypeRepository $event */
+    protected $badgeTypeRepository;
     /** @var EntityManager $entityManager */
     protected $entityManager;
     /** @var Container $container */
@@ -27,9 +29,11 @@ class RegistrationRepository
     /** @var Email $email */
     protected $email;
 
-    public function __construct(EventRepository $event, EntityManager $entityManager, Container $container, $email)
+    public function __construct(EventRepository $event, BadgeTypeRepository $badgeTypeRepository,
+        EntityManager $entityManager, Container $container, Email $email)
     {
         $this->eventRepository = $event;
+        $this->badgeTypeRepository = $badgeTypeRepository;
         $this->entityManager = $entityManager;
         $this->container = $container;
         $this->email = $email;
@@ -272,6 +276,42 @@ class RegistrationRepository
             ->setParameter('reggroupId', $regGroup)
             ->setParameter('event', $event)
         ;
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+    /**
+     * @param bool $showStaff
+     * @param Event|null $event
+     * @return Registration[]
+     */
+    public function findRegistrationsWithShirts($showStaff = false, Event $event = null) : array
+    {
+        if (!$event) {
+            $event = $this->eventRepository->getSelectedEvent();
+        }
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+
+        $queryBuilder->select('r')
+            ->from('AppBundle:Registration', 'r')
+            ->innerJoin('AppBundle\Entity\Registrationshirt', 'rs', Join::WITH, 'rs.registration = r.registrationId')
+            ->where("rs.registrationshirtId IS NOT NULL")
+            ->andWhere("r.event = :event")
+            ->setParameter('event', $event)
+        ;
+
+        if (!$showStaff) {
+            $staffBadge = $this->badgeTypeRepository->getBadgeTypeFromType('STAFF');
+            $allStaffBadges = $this->entityManager->createQueryBuilder()
+                ->select('IDENTITY(b.registration)')
+                ->from('AppBundle:Badge', 'b')
+                ->where("b.badgetype = :stafftype")
+                ->getDQL();
+
+            $queryBuilder
+                ->andWhere($queryBuilder->expr()->notIn('r.registrationId', $allStaffBadges))
+                ->setParameter('stafftype', $staffBadge->getBadgetypeId());
+        }
 
         return $queryBuilder->getQuery()->getResult();
     }
