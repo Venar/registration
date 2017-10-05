@@ -1,0 +1,81 @@
+{% extends 'detour.html.twig' %}
+
+{% block body %}
+<script src="{{ asset('/libraries/highcharts/highcharts.js') }}"></script>
+<script src="{{ asset('/libraries/highcharts/modules/exporting.js') }}"></script>
+
+<div class="row">
+    <div class="col-lg-6">
+        <h2>T-Shirt Orders</h2>
+        <table class="small table">
+            <thead>
+            <tr>
+                <td>#</td>
+                <td>Size</td>
+            </tr>
+            </thead>
+            <tbody>
+            {% for shirt in data %}
+            <tr>
+                <td>{{ shirt[1] }}</td>
+                <td>{{ shirt[0] }}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="2">
+                    <hr>
+                </td>
+            </tr>
+            <tr>
+                <td>{{ totalCount }}</td>
+                <td>Total</td>
+            </tr>
+            </tbody>
+        </table>
+        <br>
+        <a href="{{ path('shirt_csv') }}">Download CSV File</a>
+        <br>
+    </div>
+    <div class="col-lg-6">
+        <div id="pie_chart" style="min-width: 500px; height: 400px; max-width: 600px; margin: 0 auto; float: left"></div>
+    </div>
+</div>
+<script>
+    $(function () {
+        $('#pie_chart').highcharts({
+            credits: {
+                enabled: false
+            },
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: 1,//null,
+                plotShadow: false
+            },
+            title: {
+                text: 'Total Shirts Ordered, 2015'
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        format: '<b>\{point.name\}</b>: \{y\}',
+                        style: {
+                            color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                        }
+                    }
+                }
+            },
+            series: [{
+                type: 'pie',
+                name: 'T-Shirt Orders',
+                data: {{ dataJson|raw }}
+            }]
+        });
+    });
+</script>
+{% endblock %}
