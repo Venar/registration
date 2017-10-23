@@ -260,10 +260,13 @@ class RegistrationRepository
      * @param Event $event
      * @return Registration[]
      */
-    public function getRegistrationsFromRegGroup(Reggroup $regGroup, Event $event = null)
+    public function getRegistrationsFromRegGroup(Reggroup $regGroup = null, Event $event = null)
     {
         if (!$event) {
             $event = $this->eventRepository->getSelectedEvent();
+        }
+        if (!$regGroup) {
+            return [];
         }
         $queryBuilder = $this->entityManager->createQueryBuilder();
 
