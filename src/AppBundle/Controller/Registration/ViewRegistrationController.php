@@ -11,7 +11,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class ViewRegistrationController extends Controller
 {
     /**
-     * @Route("/registration/view/{registrationId}")
+     * @Route("/registration/view/{registrationId}", name="viewRegistration")
      * @Security("has_role('ROLE_USER')")
      *
      * @param String $registrationId
@@ -32,8 +32,9 @@ class ViewRegistrationController extends Controller
             $info = $registrationStatus->getDescription();
             if ($registrationStatus->getStatus() == 'Transfered') {
                 $transferredRegistration = $registration->getTransferedto();
-                $info .= " Transferred to <a href='/registration/view/" . $transferredRegistration->getRegistrationId()
-                    . "'>" . $transferredRegistration->getFirstname() . ' ' . $transferredRegistration->getLastname() . '</a>. ';
+                $url = $this->generateUrl('viewRegistration', ['registrationId' => $transferredRegistration->getRegistrationId()]);
+                $info .= " Transferred to <a href='$url'>" . $transferredRegistration->getFirstname()
+                    . ' ' . $transferredRegistration->getLastname() . '</a>. ';
             }
         }
 

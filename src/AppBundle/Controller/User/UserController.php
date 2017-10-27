@@ -12,9 +12,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class UserController extends Controller
 {
     /**
-     * @Route("/user/list")
-     * @Route("/user/list/")
-     * @Route("/user/list/{curPageNum}")
+     * @Route("/user/list", name="listUsers")
+     * @Route("/user/list/", name="listUsers_withSlash")
+     * @Route("/user/list/{curPageNum}", name="listUsers_withPageNum")
      * @Security("has_role('ROLE_ADMIN')")
      *
      * @param Request $request
