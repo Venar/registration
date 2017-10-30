@@ -17,6 +17,7 @@ class GetPercentController extends Controller
 {
     /**
      * @Route("/api/percent", name="api_percent")
+     * @Route("/api/percent/", name="api_percent")
      */
     public function numberAction()
     {

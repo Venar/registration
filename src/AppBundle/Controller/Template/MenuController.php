@@ -23,7 +23,7 @@ class MenuController extends Controller
                 'items' => [
                     [
                         'title' => 'Manage Registrations',
-                        'url' => 'registration_list',
+                        'url' => 'listRegistrations',
                     ],
                 ]
             ],
