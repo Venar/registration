@@ -61,12 +61,15 @@ class Percent
             $queryBuilder
                 ->select('count(r.registrationId)')
                 ->from('AppBundle:Registration', 'r')
+                ->innerJoin('r.registrationstatus', 'rs')
                 ->where($queryBuilder->expr()->notIn('r.registrationId', $allStaffBadges))
                 ->andWhere($queryBuilder->expr()->in('r.registrationId', $allBadgesSubQuery))
                 ->andWhere('r.event = :event')
+                ->andWhere('rs.active = :active')
                 ->setParameter('stafftype', $badgeTypeStaff->getBadgetypeId())
                 ->setParameter('type', $badgeType->getBadgetypeId())
                 ->setParameter('event', $event->getEventId())
+                ->setParameter('active', true)
             ;
 
             $count = $queryBuilder->getQuery()->getSingleScalarResult();
