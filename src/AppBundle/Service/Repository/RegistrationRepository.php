@@ -79,7 +79,11 @@ class RegistrationRepository
             $this->generateConfirmationNumber($registration);
         }
 
-        $this->email->sendConfirmationEmail($registration);
+        try {
+            $this->email->sendConfirmationEmail($registration);
+        } catch (\Exception $e) {
+            $this->email->sendErrorMessageToRegistration($e->getMessage(), $registration);
+        }
     }
 
     public function generateNumber(Registration $registration)

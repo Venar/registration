@@ -83,4 +83,31 @@ class Email
         $didSend = $this->mailer->send($message);
         //var_dump($didSend);
     }
+
+    /**
+     * @param $error
+     * @param Registration|null $registration
+     */
+    public function sendErrorMessageToRegistration($error, Registration $registration = null) {
+        $options = [
+            'registration' => $registration,
+            'error' => $error,
+        ];
+
+        $message = \Swift_Message::newInstance()
+            ->setSubject("Registration Ingest Error")
+            ->setFrom('noreply@animedetour.com', 'Anime Detour IT')
+            ->setReplyTo('ad_register@animedetour.com', 'Anime Detour Registration')
+            ->setTo(['ad_register@animedetour.com', 'it@animedetour.com'])
+            ->setSender('noreply@animedetour.com')
+            ->setBody(
+                $this->templating->render(
+                    'email/emailError.html.twig',
+                    $options
+                ),
+                'text/html'
+            )
+        ;
+        $didSend = $this->mailer->send($message);
+    }
 }
