@@ -14,7 +14,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class rolloverController extends Controller
 {
     /**
-     * @Route("/registration/rollover/{registrationId}")
+     * @Route("/registration/rollover/{registrationId}", name="rolloverRegistration")
      * @Security("has_role('ROLE_USER')")
      *
      * @param String $registrationId
@@ -49,7 +49,7 @@ class rolloverController extends Controller
     }
 
     /**
-     * @Route("registration/rollover/confirm/{registrationId}")
+     * @Route("registration/rollover/confirm/{registrationId}", name="rolloverRegistrationConfirm")
      * @Security("has_role('ROLE_USER')")
      *
      * @param String $registrationId
@@ -134,7 +134,8 @@ class rolloverController extends Controller
 
         $registrationHistory = new RegistrationHistory();
         $registrationHistory->setRegistration($registration);
-        $history = " Transferred From <a href='/registration/view/{$oldRegistration->getRegistrationId()}'>"
+        $url = $this->generateUrl('viewRegistration', ['registrationId' => $oldRegistration->getRegistrationId()]);
+        $history = " Transferred From <a href='$url'>"
             . $oldRegistration->getEvent()->getYear() . '</a>. <br>';
         $registrationHistory->setChangetext($history . '<br>Registration created from Rolled-over');
         $entityManager->persist($registrationHistory);
@@ -146,7 +147,8 @@ class rolloverController extends Controller
 
         $registrationHistory = new RegistrationHistory();
         $registrationHistory->setRegistration($oldRegistration);
-        $oldHistory .= " Transferred To <a href='/registration/view/{$registration->getRegistrationId()}'>"
+        $url = $this->generateUrl('viewRegistration', ['registrationId' => $registration->getRegistrationId()]);
+        $oldHistory .= " Transferred To <a href='$url'>"
             . $registration->getEvent()->getYear() . '</a>. <br>';
         $registrationHistory->setChangetext($oldHistory . '<br>Registration Rolled-over');
         $entityManager->persist($registrationHistory);

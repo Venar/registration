@@ -51,7 +51,7 @@
                 <h2>Action</h2>
                 <a href="javascript:void(0);" id="submit" class="btn btn-primary btn-lg">Save</a>
                 <br><br>
-                <a href="/registration/view/{{ registration.registrationId }}" class="btn btn-warning">Cancel</a>
+                <a href="{{ path('viewRegistration', {'registrationId':registration.registrationId}) }}" class="btn btn-warning">Cancel</a>
             </div>
         </div>
     </form>
@@ -79,7 +79,7 @@
                 .done(function (data)
                 {
                     if (data['success']) {
-                        window.location.href = '/registration/view/{{ registration.registrationId }}';
+                        window.location.href = '{{ path('viewRegistration', {'registrationId':registration.registrationId}) }}';
                     } else {
                         alert(data['message']);
                     }
@@ -87,8 +87,8 @@
         });
     </script>
 {% elseif badge is null %}
-    Invalid Badge! <a href="/registration/view/{{ registration.registrationId }}">Back</a>
+    Invalid Badge! <a href="{{ path('viewRegistration', {'registrationId':registration.registrationId}) }}">Back</a>
 {% else %}
-    Invalid Registration! <a href="/manage">Back</a>
+    Invalid Registration! <a href="{{ url('listRegistrations') }}">Back</a>
 {% endif %}
 {% endblock %}

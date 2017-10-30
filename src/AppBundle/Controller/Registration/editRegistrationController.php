@@ -19,7 +19,7 @@ class editRegistrationController extends Controller
 {
 
     /**
-     * @Route("/registration/transfer/{transferredFrom}")
+     * @Route("/registration/transfer/{transferredFrom}", name="registrationTransfer")
      * @Security("has_role('ROLE_USER')")
      *
      * @param String $transferredFrom
@@ -30,7 +30,7 @@ class editRegistrationController extends Controller
         $registration = $this->get('repository_registration')->getFromRegistrationId($transferredFrom);
 
         if (!$registration) {
-            return $this->redirectToRoute('app_manage_manage_listregistrationspage');
+            return $this->redirectToRoute('listRegistrations');
         }
 
         if (!$registration->getRegistrationstatus()->getActive()) {
@@ -53,7 +53,7 @@ class editRegistrationController extends Controller
         $group = $this->get('repository_reggroup')->getFromReggroupId($groupId);
 
         if (!$group) {
-            return $this->redirectToRoute('app_manage_manage_listregistrationspage');
+            return $this->redirectToRoute('listRegistrations');
         }
 
         return $this->editRegistrationPage(null, $groupId);
@@ -588,8 +588,9 @@ class editRegistrationController extends Controller
 
             if ($transferredFrom) {
                 $registration->setTransferedto($transferredFrom);
-                $history .= " Transferred From <a href='/registration/view/" . $transferredFrom->getRegistrationId()
-                    . "'>" . $transferredFrom->getFirstname() . ' ' . $transferredFrom->getLastname() . '</a>. <br>';
+                $url = $this->generateUrl('viewRegistration', ['registrationId' => $transferredFrom->getRegistrationId()]);
+                $history .= " Transferred From <a href='$url'>" . $transferredFrom->getFirstname()
+                    . ' ' . $transferredFrom->getLastname() . '</a>. <br>';
             }
 
             $entityManager->persist($registration);
@@ -612,8 +613,9 @@ class editRegistrationController extends Controller
 
                 $registrationHistory = new RegistrationHistory();
                 $registrationHistory->setRegistration($transferredFrom);
+                $url = $this->generateUrl('viewRegistration', ['registrationId' => $registration->getRegistrationId()]);
                 $transferredToText= "<br>Registration Transferred to "
-                    ."<a href='/registration/view/{$registration->getRegistrationId()}'>"
+                    ."<a href='$url'>"
                     ."{$registration->getFirstname()} {$registration->getLastname()}</a>";
                 $registrationHistory->setChangetext($transferredFromHistory . $transferredToText);
                 $entityManager->persist($registrationHistory);
