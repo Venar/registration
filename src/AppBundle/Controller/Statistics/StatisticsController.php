@@ -366,10 +366,11 @@ class StatisticsController extends Controller
         $rawData = [];
 
         foreach ($zipData as $zip) {
-            if (!array_key_exists($zip['zip'], $fipsZipArray)) {
+            $zipcode = substr(trim($zip['zip']),0, 5);
+            if (!array_key_exists($zipcode, $fipsZipArray)) {
                 continue;
             }
-            $fipsId = $fipsZipArray[$zip['zip']];
+            $fipsId = $fipsZipArray[$zipcode];
 
             $stateCode = substr($fipsId, 0, 2);
             $stateLetters = strtolower($fipsStateArray[$stateCode]);
@@ -379,12 +380,12 @@ class StatisticsController extends Controller
             if (!array_key_exists($index, $rawData)) {
                 $rawData[$index] = [
                     'code' => $index,
-                    'name' => $zip['zip'],
+                    'name' => $zipcode,
                     'value' => 0,
                 ];
-
-                $rawData[$index]['value'] += $zip['zipCount'];
             }
+
+            $rawData[$index]['value'] += $zip['zipCount'];
         }
 
         return array_values($rawData);
