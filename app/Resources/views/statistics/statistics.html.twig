@@ -4,13 +4,57 @@
 <script src="{{ asset('/libraries/highcharts/highcharts.js') }}"></script>
 <script src="{{ asset('/libraries/highcharts/modules/exporting.js') }}"></script>
 
-<div id="registrations_compare_year" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
-<br>
-<div id="registrations_by_type" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
-<br>
-<div id="pie_chart" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <h2>Anime Detour Registration Statistics for {{ year }}</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+            <h3>Graphs</h3>
+            <ul>
+                <li><a href="#registrations_compare_year">Compare Registrations by Year</a></li>
+                <li><a href="#registrations_by_type">{{ year }} Registrations by Type</a></li>
+            </ul>
+        </div>
+        <div class="col-sm-9">
+            <div id="pie_chart" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div id="registrations_compare_year" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div id="registrations_by_type" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div id="agePieChart"></div>
+        </div>
+        <div class="col-sm-6">
+            <div id="zipMap">
+                Downloading map...
+            </div>
+
+            <script src="http://code.highcharts.com/maps/modules/map.js"></script>
+            <script src="https://code.highcharts.com/maps/modules/data.js"></script>
+            <script src="https://code.highcharts.com/mapdata/countries/us/us-all-all.js"></script>
+        </div>
+    </div>
+</div>
 
 <script>
+    Highcharts.setOptions({
+        lang: {
+            thousandsSep: ','
+        }
+    });
+
     $(function () {
         var total = 0;
         $('#pie_chart').highcharts({
@@ -38,7 +82,7 @@
                     allowPointSelect: true,
                     cursor: 'pointer',
                     dataLabels: {
-                        enabled: true,
+                        enabled: false, // This just got too busy
                         format: '<b>\{point.name\}</b>: (\{y\}) \{point.percentage:.1f\}%',
                         style: {
                             color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
@@ -55,6 +99,8 @@
                 verticalAlign: 'top',
                 borderWidth: 0,
                 useHTML: true,
+                x: 0,
+                y: 40,
                 labelFormatter: function() {
                     total += this.y;
                     return '<div style="width:200px"><span style="float:left">' + this.name + '</span><span style="float:right">' + this.y + '</span></div>';
@@ -78,6 +124,59 @@
                     ['Staff', {{ staff_percent|raw }}],
                     ['Availiable', {{ avail_percent|raw }}]
                 ]
+            }]
+        });
+    });
+    $(function () {
+        var total = 0;
+        $('#agePieChart').highcharts({
+            credits: {
+                enabled: false
+            },
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: 1,//null,
+                plotShadow: false,
+                type: 'pie'
+            },
+            title: {
+                text: '{{ year }} Registrations by Age'
+            },
+            legend: {
+                enabled: true,
+                layout: 'vertical',
+                align: 'right',
+                width: 220,
+                verticalAlign: 'top',
+                borderWidth: 0,
+                useHTML: true,
+                x: 0,
+                y: 40,
+                labelFormatter: function() {
+                    total += this.y;
+                    return '<div style="width:200px"><span style="float:left">' + this.name + '</span><span style="float:right">' + this.y + '</span></div>';
+                },
+                title: {
+                    text: 'Primary',
+                    style: {
+                        fontWeight: 'bold'
+                    }
+                }
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: false
+                    },
+                    showInLegend: true
+                }
+            },
+            series: [{
+                name: 'Ages',
+                colorByPoint: true,
+                data: {{ graphByAge|json_encode|raw }}
             }]
         });
     });
@@ -171,5 +270,114 @@
             series: {{ data_by_type|raw }}
         });
     });
+
+
+    $(function () {
+        var countiesMap = Highcharts.geojson(Highcharts.maps['countries/us/us-all-all']),
+            lines = Highcharts.geojson(Highcharts.maps['countries/us/us-all-all'], 'mapline'),
+            options;
+
+        // Add state acronym for tooltip
+        Highcharts.each(countiesMap, function (mapPoint) {
+            mapPoint.name = mapPoint.name + ', ' + mapPoint.properties['hc-key'].substr(3, 2).toUpperCase();
+        });
+
+        options = {
+            chart: {
+                borderWidth: 1,
+                marginRight: 50 // for the legend
+            },
+
+            title: {
+                text: 'Anime Detour {{ year }} Registrations by Region'
+            },
+
+            legend: {
+                title: {
+                    text: 'Registrations',
+                    style: {
+                        color: (Highcharts.theme && Highcharts.theme.textColor) || 'black'
+                    }
+                },
+                layout: 'vertical',
+                align: 'right',
+                floating: true,
+                valueDecimals: 0,
+                backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || 'rgba(255, 255, 255, 0.85)',
+                symbolRadius: 0,
+                symbolHeight: 14
+            },
+
+            mapNavigation: {
+                enabled: true
+            },
+
+            colorAxis: {
+                dataClasses: [{
+                    from: 0,
+                    to: 1,
+                    color: "#F1EEF6"
+                }, {
+                    from: 1,
+                    to: 5,
+                    color: "#FED8B1"
+                }, {
+                    from: 6,
+                    to: 10,
+                    color: "#FDBCB4"
+                }, {
+                    from: 10,
+                    to: 15,
+                    color: "#FF9966"
+                }, {
+                    from: 15,
+                    to: 20,
+                    color: "#ED9121"
+                }, {
+                    from: 20,
+                    to: 30,
+                    color: "#FF9F00"
+                }, {
+                    from: 30,
+                    color: "#FE7F00"
+                }]
+            },
+
+            plotOptions: {
+                mapline: {
+                    showInLegend: false,
+                    enableMouseTracking: false
+                }
+            },
+
+            series: [{
+                mapData: countiesMap,
+                data: {{ graphByZip|json_encode|raw }},
+                joinBy: ['hc-key', 'code'],
+                name: 'Registrations',
+                borderWidth: 0.5,
+                states: {
+                    hover: {
+                        color: '#FE5A1D'
+                    }
+                }
+            }, {
+                type: 'mapline',
+                name: 'State borders',
+                data: [lines[0]],
+                color: 'black'
+            }, {
+                type: 'mapline',
+                name: 'Separator',
+                data: [lines[1]],
+                color: 'gray'
+            }]
+        };
+
+        // Instanciate the map
+        $('#zipMap').highcharts('Map', options);
+    });
+
+
 </script>
 {% endblock %}
