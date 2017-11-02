@@ -107,8 +107,8 @@ class StatisticsController extends Controller
 
         $events = $this->get('repository_event')->findAll();
         $eventNames = [];
-        foreach ($events as $event) {
-            $eventNames[] = $event->getYear();
+        foreach ($events as $loopEvent) {
+            $eventNames[] = $loopEvent->getYear();
         }
         $monthsWithoutYear = [
             'March',
@@ -162,6 +162,9 @@ class StatisticsController extends Controller
 
         $vars['data_by_year'] = json_encode($dataByYear);
         $vars['months'] = json_encode($monthsWithoutYear);
+
+        $vars['graphByAge'] = $this->graphByAge($event);
+        $vars['graphByZip'] = $this->graphByZip($event);
 
         return $this->render('statistics/statistics.html.twig', $vars);
     }
@@ -251,14 +254,139 @@ class StatisticsController extends Controller
             ->setParameter('start', $start)
             ->setParameter('end', $end)
         ;
-        $sql   = 'SELECT COUNT(`Registration`.Registration_ID) as count'
-            .' FROM `Registration`'
-            .' WHERE'
-            .' `Registration`.Event_ID = '.$event->getEventId()
-            .' AND `Registration`.CreatedDate > \''.$start.'\''
-            .' AND `Registration`.CreatedDate < \''.$end.'\''
-        ;
 
         return (int) $queryBuilder->getQuery()->getSingleScalarResult();
+    }
+
+    /**
+     * @param Event $event
+     * @return int[]
+     */
+    public function graphByAge($event) {
+        $queryBuilder = $this->get('doctrine.orm.default_entity_manager')->createQueryBuilder();
+        $queryBuilder
+            ->select('(year(CURRENT_TIMESTAMP()) - YEAR(r.birthday)) as age, count(r.registrationId) as ageCount')
+            ->from('AppBundle:Registration', 'r')
+            ->where('r.event = :event')
+            ->setParameter('event', $event)
+            ->groupBy('age')
+        ;
+
+        $ageData = $queryBuilder->getQuery()->getArrayResult();
+
+        $cleanedData = [
+            ['name' => '1-5', 'y' => 0],
+            ['name' => '6-9', 'y' => 0],
+            ['name' => '10-12', 'y' => 0],
+            ['name' => '13-17', 'y' => 0],
+            ['name' => '18-20', 'y' => 0],
+            ['name' => '21-25', 'y' => 0],
+            ['name' => '25-29', 'y' => 0],
+            ['name' => '30-39', 'y' => 0],
+            ['name' => '40-49', 'y' => 0],
+            ['name' => '50-59', 'y' => 0],
+            ['name' => '60+', 'y' => 0],
+        ];
+        foreach ($ageData as $age) {
+            $ageInt = (int) $age['age'];
+            switch (true) {
+                case $ageInt <= 1:
+                    break;
+                case $ageInt <= 5:
+                    $cleanedData[0]['y'] += $age['ageCount'];
+                    break;
+                case $ageInt <= 9:
+                    $cleanedData[1]['y'] += $age['ageCount'];
+                    break;
+                case $ageInt <= 12:
+                    $cleanedData[2]['y'] += $age['ageCount'];
+                    break;
+                case $ageInt <= 17:
+                    $cleanedData[3]['y'] += $age['ageCount'];
+                    break;
+                case $ageInt <= 20:
+                    $cleanedData[4]['y'] += $age['ageCount'];
+                    break;
+                case $ageInt <= 25:
+                    $cleanedData[5]['y'] += $age['ageCount'];
+                    break;
+                case $ageInt <= 29:
+                    $cleanedData[6]['y'] += $age['ageCount'];
+                    break;
+                case $ageInt <= 39:
+                    $cleanedData[7]['y'] += $age['ageCount'];
+                    break;
+                case $ageInt <= 49:
+                    $cleanedData[8]['y'] += $age['ageCount'];
+                    break;
+                case $ageInt <= 59:
+                    $cleanedData[9]['y'] += $age['ageCount'];
+                    break;
+                default:
+                    $cleanedData[10]['y'] += $age['ageCount'];
+                    break;
+            }
+        }
+
+        return $cleanedData;
+    }
+
+    /**
+     * @param Event $event
+     * @return int[]
+     */
+    public function graphByZip($event) {
+        $queryBuilder = $this->get('doctrine.orm.default_entity_manager')->createQueryBuilder();
+        $queryBuilder
+            ->select('r.zip, count(r.zip) as zipCount')
+            ->from('AppBundle:Registration', 'r')
+            ->where('r.event = :event')
+            ->andWhere("r.zip != ''")
+            ->setParameter('event', $event)
+            ->groupBy('r.zip')
+        ;
+
+        $zipData = $queryBuilder->getQuery()->getArrayResult();
+
+        $fipsFolder = $this->get('kernel')->getRootDir() . DIRECTORY_SEPARATOR . 'Resources' . DIRECTORY_SEPARATOR
+                . 'data' . DIRECTORY_SEPARATOR . 'fips' . DIRECTORY_SEPARATOR;
+
+        $fipsStateJson = @file_get_contents($fipsFolder . 'stateFips.json', 'r');
+        $fipsZipJson = @file_get_contents($fipsFolder . 'zip2fips.json', 'r');
+        $fipsStateArray = json_decode($fipsStateJson, true);
+        $fipsZipArray = json_decode($fipsZipJson, true);
+        if ($fipsStateArray === false) {
+            return [];
+        }
+        if ($fipsZipArray === false) {
+            return [];
+        }
+        $fipsStateArray = array_flip($fipsStateArray);
+
+        $rawData = [];
+
+        foreach ($zipData as $zip) {
+            if (!array_key_exists($zip['zip'], $fipsZipArray)) {
+                continue;
+            }
+            $fipsId = $fipsZipArray[$zip['zip']];
+
+            $stateCode = substr($fipsId, 0, 2);
+            $stateLetters = strtolower($fipsStateArray[$stateCode]);
+            $subCode = substr($fipsId, 2);
+
+            $index = "us-$stateLetters-$subCode";
+            if (!array_key_exists($index, $rawData)) {
+                $rawData[$index] = [
+                    'code' => $index,
+                    'name' => $zip['zip'],
+                    'value' => 0,
+                ];
+
+                $rawData[$index]['value'] += $zip['zipCount'];
+            }
+        }
+
+        return array_values($rawData);
     }
 }
