@@ -146,7 +146,7 @@
                 enabled: true,
                 layout: 'vertical',
                 align: 'right',
-                width: 220,
+                width: 120,
                 verticalAlign: 'top',
                 borderWidth: 0,
                 useHTML: true,
@@ -154,7 +154,7 @@
                 y: 40,
                 labelFormatter: function() {
                     total += this.y;
-                    return '<div style="width:200px"><span style="float:left">' + this.name + '</span><span style="float:right">' + this.y + '</span></div>';
+                    return '<div style="width:100px"><span style="float:left">' + this.name + '</span><span style="float:right">' + this.y + '</span></div>';
                 },
                 title: {
                     text: 'Primary',
@@ -284,8 +284,11 @@
 
         options = {
             chart: {
-                borderWidth: 1,
+                borderWidth: 0,
                 marginRight: 50 // for the legend
+            },
+            credits: {
+                enabled: false
             },
 
             title: {
@@ -316,30 +319,38 @@
                 dataClasses: [{
                     from: 0,
                     to: 1,
-                    color: "#F1EEF6"
+                    color: "#FFFFFF"
                 }, {
                     from: 1,
-                    to: 50,
-                    color: "#FED8B1"
+                    to: 9,
+                    color: "#FFF0EB"
                 }, {
-                    from: 50,
+                    from: 9,
+                    to: 15,
+                    color: "#FFD2C2"
+                }, {
+                    from: 15,
+                    to: 30,
+                    color: "#FEB49A"
+                }, {
+                    from: 30,
                     to: 100,
-                    color: "#FDBCB4"
+                    color: "#FE9771"
                 }, {
                     from: 100,
                     to: 250,
-                    color: "#FF9966"
+                    color: "#FE7948"
                 }, {
                     from: 250,
                     to: 500,
-                    color: "#ED9121"
+                    color: "#FE5A1D"
                 }, {
                     from: 500,
                     to: 1000,
-                    color: "#FE7F00"
+                    color: "#F44201"
                 }, {
                     from: 1000,
-                    color: "#FE5A1D"
+                    color: "#CB3701"
                 }]
             },
 
@@ -370,7 +381,7 @@
                 type: 'mapline',
                 name: 'Separator',
                 data: [lines[1]],
-                color: 'gray'
+                color: 'light gray'
             }]
         };
 
