@@ -1,0 +1,31 @@
+easy_admin:
+    entities:
+        Event:
+            class: AppBundle\Entity\Event
+            disabled_actions: ['delete']
+            label: 'List of Years'
+            list:
+                fields:
+                    - { property: 'year' }
+                    - { property: 'startdate', format: 'M jS Y', type_options: { required: true } }
+                    - { property: 'enddate', format: 'M jS Y', type_options: { required: true } }
+                    - { property: 'theme' }
+                    - { property: 'attendancecap' }
+            form:
+                actions:
+                    - { name: 'makeActive', icon: 'plus-square' }
+                fields:
+                    - { property: 'year' }
+                    - {
+                        property: 'startdate',
+                        format: 'n/j/Y',
+                        type: 'date'
+                      }
+                    - {
+                        property: 'enddate',
+                        format: 'n/j/Y',
+                        type: 'date'
+                      }
+                    - { property: 'theme' }
+                    - { property: 'attendancecap' }
+                    - { property: 'finalattendance' }
