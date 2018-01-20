@@ -65,6 +65,15 @@ class MenuController extends Controller
                     ],
                 ]
             ],
+            [
+                'name' => 'Admin',
+                'items' => [
+                    [
+                        'title' => 'Admin',
+                        'url' => 'admin',
+                    ],
+                ]
+            ],
         ];
 
         return $this->render('template/menu.sub.html.twig', array('sections' => $sections));
