@@ -12,3 +12,7 @@ hwi_oauth_connect:
 hwi_oauth_login:
     resource: "@HWIOAuthBundle/Resources/config/routing/login.xml"
     prefix:   /login
+easy_admin_bundle:
+    resource: "@EasyAdminBundle/Controller/AdminController.php"
+    type:     annotation
+    prefix:   /admin

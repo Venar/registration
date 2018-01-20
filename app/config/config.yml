@@ -2,6 +2,7 @@ imports:
     - { resource: parameters.yml }
     - { resource: security.yml }
     - { resource: services.yml }
+    - { resource: easyadmin/ }
 
 # Put parameters here that don't need to change on each machine where the app is deployed
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
@@ -109,3 +110,20 @@ hwi_oauth:
             scope:              "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile"
             paths:
                 email: email
+
+easy_admin:
+    design:
+        brand_color: '#fe7f00'
+        color_scheme: 'light'
+    site_name: 'Anime Detour'
+    #design:
+        #assets:
+          #css:
+              # - 'assets/css/jquery.datetimepicker.css(Path of your datepicker css)'
+          #js:
+              # - 'assets/js/jquery.datetimepicker.full.js(Your Date picker Js)'
+              # - 'assets/js/initDatePicker.js (Your code to initialize date picker on base of class "datepicker")'
+              # - '/bundles/cksourceckfinder/ckfinder/ckfinder.js'
+              # 3- '/js/setup-ckfinder.js'
+    list:
+        actions: [{ name: 'edit', icon: 'pencil' }, '-delete']

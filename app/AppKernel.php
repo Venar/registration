@@ -18,6 +18,7 @@ class AppKernel extends Kernel
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new AppBundle\AppBundle(),
             new WhiteOctober\TCPDFBundle\WhiteOctoberTCPDFBundle(),
+            new EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle(),
             new HWI\Bundle\OAuthBundle\HWIOAuthBundle(),
         ];
 

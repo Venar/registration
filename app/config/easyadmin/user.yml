@@ -1,0 +1,63 @@
+easy_admin:
+    entities:
+        User:
+            disabled_actions: ['delete']
+            label: 'Users list'
+            class: AppBundle\Entity\User
+            search:
+                sort: ['lastname', 'ASC']
+            list:
+                sort: ['lastname', 'ASC']
+                dql_filter: 'entity.enabled = true'
+                fields:
+                    - lastname
+                    - firstName
+                    - email
+                    - { property: 'enabled', type: 'boolean' }
+
+            show:
+                fields:
+                    - username
+                    - lastname
+                    - firstname
+                    - email
+                    - enabled
+                    - lastLogin
+                    - { property: 'roles', type: 'choice', type_options: { multiple: true, choices: { 'ROLE_USER': 'ROLE_USER', 'ROLE_ADMIN': 'ROLE_ADMIN' } } }
+                    - createdBy
+                    - createdDate
+                    - modifiedBy
+                    - modifiedDate
+                form_options: { validation_groups: ['Profile'] }
+
+            edit:
+                title: 'Edit User'
+                actions: ['show', '-delete']
+                fields:
+                    - { type: 'group', css_class: 'col-sm-6', label: 'Basic information' }
+                    - { property: 'lastname', type_options: { required: true } }
+                    - { property: 'firstName', type_options: { required: true } }
+                    - { property: 'email', type: 'email', type_options: { required: true } }
+                    - { type: 'group', css_class: 'col-sm-6', label: 'Login information' }
+                    - { property: 'username', type_options: { required: true } }
+                    #- { property: 'password', type_options: { required: true } }
+                    - { property: 'plainPassword', label: 'Password', type: 'password', type_options: { required: false } }
+                    - { type: 'group', css_class: 'col-sm-12', label: 'Permissions' }
+                    - { property: 'enabled', type_options: { required: true } }
+                    - { property: 'roles', type: 'choice', type_options: { multiple: true, choices: { 'ROLE_USER': 'ROLE_USER', 'ROLE_ADMIN': 'ROLE_ADMIN' } } }
+                form_options: { validation_groups: ['Profile'] }
+            new:
+                title: 'Add new User'
+                fields:
+                    - { type: 'group', css_class: 'col-sm-6', label: 'Basic information' }
+                    - { property: 'lastname', type_options: { required: true } }
+                    - { property: 'firstName', type_options: { required: true } }
+                    - { property: 'email', type: 'email', type_options: { required: true } }
+                    - { type: 'group', css_class: 'col-sm-6', label: 'Login information' }
+                    - { property: 'username', type_options: { required: true } }
+                    #- { property: 'password', type_options: { required: true } }
+                    - { property: 'plainPassword', label: 'Password', type: 'password', type_options: { required: false } }
+                    - { type: 'group', css_class: 'col-sm-12', label: 'Permissions' }
+                    - { property: 'enabled', type_options: { required: true } }
+                    - { property: 'roles', type: 'choice', type_options: { multiple: true, choices: { 'ROLE_USER': 'ROLE_USER', 'ROLE_ADMIN': 'ROLE_ADMIN' } } }
+                form_options: { validation_groups: ['Registration'] }
