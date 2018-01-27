@@ -48,32 +48,36 @@ class RegistrationFormController extends Controller
         $pdf->CheckBox('reg_standard', 16);
         $pdf->cell('15');
         //$pdf->RadioButton('membershiptype', 16);
-        $pdf->Cell(100, 16, 'Sponsor ($150)');
+        $pdf->Cell(170, 16, 'Sponsor ($150)');
         $pdf->CheckBox('reg_sponsor', 16);
-        $pdf->cell('70');
+        $pdf->cell('40');
         //$pdf->RadioButton('membershiptype', 16);
-        $pdf->Cell(165, 16, 'Community Sponsor ($250)');
-        $pdf->CheckBox('reg_commsponsor', 16);
+        $pdf->Cell(160, 16, 'Sponsor Only Breakfast');
         $pdf->Ln(16);
 
         //$pdf->RadioButton('membershiptype', 16);
-        $pdf->Cell(140, 16, 'Standard ($55) 2/1+');
+        $pdf->Cell(155, 16, 'Standard ($60) 2/1+');
         $pdf->CheckBox('reg_standard_late', 16);
-        $pdf->cell('60');
-        //$pdf->RadioButton('membershiptype', 16);
-        $pdf->Cell(80, 16, 'Add Sponsor Breakfast ($30) (Requires Sponsorship)');
-        $pdf->CheckBox('', 16);
-        $pdf->cell('60');
-        //$pdf->RadioButton('membershiptype', 16);
-        $pdf->Cell(165, 16, '');
+        $pdf->cell('15');
+        $pdf->Cell(170, 16, 'Community Sponsor ($250)');
         $pdf->CheckBox('reg_commsponsor', 16);
+        $pdf->cell('40');
+        //$pdf->RadioButton('membershiptype', 16);
+        $pdf->Cell(95, 16, 'Add-on (+$30)');
+        //$pdf->RadioButton('membershiptype', 16);
+        $pdf->CheckBox('breakfast', 16);
+        $pdf->Ln(16);
+
+        $pdf->Cell(155, 16, 'At-Door   ($75)');
+        $pdf->CheckBox('reg_standard_door', 16);
         $pdf->Ln(16);
 
         $field1_width = 570;
-        $pdf->SetFont('Bauhaus LT Medium', 'B', 16);
+        $pdf->SetFont('Bauhaus LT Medium', 'B', 20);
         $y = $pdf->GetY();
         $pdf->Line($pdf->GetX(), $y, $pdf->GetX()+$field1_width, $y);
         $pdf->Cell($field1_width, 16, 'Membership Type');
+        $pdf->SetFont('Bauhaus LT Medium', 'B', 16);
         $pdf->Ln(40);
 
         $pdf->SetFont('helvetica', 'B', 10);
