@@ -406,12 +406,13 @@ class StatisticsController extends Controller
         $countByCurrentDate = [];
         $selectedCount = 0;
         foreach ($events as $event) {
-            $yearDifference = (int)$selectedEvent->getYear() - $event->getYear();
+            $currentEvent = $this->get('repository_event')->getCurrentEvent();
+            $yearDifference = (int)$currentEvent->getYear() - $event->getYear();
             $end = date('Y-m-d H:i:s', strtotime('now'));
             if ($yearDifference < 0) {
-                $end = date('Y-m-d H:i:s', strtotime("now -{$yearDifference} YEARS"));
-            } elseif ($yearDifference > 0) {
                 $end = date('Y-m-d H:i:s', strtotime("now +{$yearDifference} YEARS"));
+            } elseif ($yearDifference > 0) {
+                $end = date('Y-m-d H:i:s', strtotime("now -{$yearDifference} YEARS"));
             }
 
             $queryBuilder = $this->get('doctrine.orm.default_entity_manager')->createQueryBuilder();
