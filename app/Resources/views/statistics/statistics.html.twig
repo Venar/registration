@@ -16,6 +16,8 @@
             <ul>
                 <li><a href="#registrations_compare_year">Compare Registrations by Year</a></li>
                 <li><a href="#registrations_by_type">{{ year }} Registrations by Type</a></li>
+                <li><a href="#agePieChart">{{ year }} Registrations by Age</a></li>
+                <li><a href="#zipMap">{{ year }} Registrations by Region</a></li>
             </ul>
         </div>
         <div class="col-sm-9">
@@ -23,8 +25,33 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-12">
+        <div class="col-sm-8">
             <div id="registrations_compare_year" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+        </div>
+        <div class="col-sm-4">
+            <h3>Registrations By {{ "NOW"|date('F jS Y') }}</h3>
+            <table class="table-condensed">
+                <thead>
+                    <tr>
+                        <td>Year</td>
+                        <td>Count</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for countArray in countByCurrentDate %}
+                    <tr>
+                        <td>{{ countArray[0] }}</td>
+                        {% if countArray[2] < 0 %}
+                        <td>{{ countArray[1] }} (<span style="color:red;font-weight: bolder">{{ countArray[2] }}</span>)</td>
+                        {% elseif countArray[2] == 0 %}
+                        <td>{{ countArray[1] }}</td>
+                        {% else %}
+                        <td>{{ countArray[1] }} (<span style="color:darkgreen;font-weight: bolder">+{{ countArray[2] }}</span>)</td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
     <div class="row">

@@ -5,6 +5,8 @@ namespace AppBundle\Controller\Statistics;
 ini_set('max_execution_time', 300);
 
 use AppBundle\Entity\Event;
+use Doctrine\DBAL\Driver\AbstractDriverException;
+use Doctrine\ORM\NonUniqueResultException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Cache\Simple\FilesystemCache;
@@ -166,6 +168,8 @@ class StatisticsController extends Controller
         $vars['graphByAge'] = $this->graphByAge($event);
         $vars['graphByZip'] = $this->graphByZip($event);
 
+        $vars['countByCurrentDate'] = $this->countByCurrentDate($events, $event);
+
         return $this->render('statistics/statistics.html.twig', $vars);
     }
 
@@ -238,6 +242,7 @@ class StatisticsController extends Controller
      * @param int $startSecs
      * @param int $endSecs
      * @return int
+     * @throws NonUniqueResultException
      */
     public function getStatsByRange($event, $startSecs, $endSecs) {
         $start = date('Y-m-d H:i:s', $startSecs);
@@ -389,5 +394,58 @@ class StatisticsController extends Controller
         }
 
         return array_values($rawData);
+    }
+
+    /**
+     * @param Event[] $events
+     * @param Event $selectedEvent
+     * @return mixed
+     */
+    private function countByCurrentDate($events, $selectedEvent)
+    {
+        $countByCurrentDate = [];
+        $selectedCount = 0;
+        foreach ($events as $event) {
+            $yearDifference = (int)$selectedEvent->getYear() - $event->getYear();
+            $end = date('Y-m-d H:i:s', strtotime('now'));
+            if ($yearDifference < 0) {
+                $end = date('Y-m-d H:i:s', strtotime("now -{$yearDifference} YEARS"));
+            } elseif ($yearDifference > 0) {
+                $end = date('Y-m-d H:i:s', strtotime("now +{$yearDifference} YEARS"));
+            }
+
+            $queryBuilder = $this->get('doctrine.orm.default_entity_manager')->createQueryBuilder();
+            $queryBuilder
+                ->select('count(r.registrationId)')
+                ->from('AppBundle:Registration', 'r')
+                ->where('r.event = :event')
+                ->andWhere('r.createddate <= :end')
+                ->setParameter('event', $event)
+                ->setParameter('end', $end)
+            ;
+            try {
+                $count = (int)$queryBuilder->getQuery()->getSingleScalarResult();
+            } catch (NonUniqueResultException $e) {
+                $count = 0;
+            }
+
+            if ($event->getEventId() == $selectedEvent->getEventId()) {
+                $selectedCount = $count;
+            }
+            $tmp = [
+                $event->getYear(),
+                $count,
+                0,
+            ];
+            if ($count != 0) {
+                $countByCurrentDate[] = $tmp;
+            }
+        }
+
+        for ($i = 0; $i < count($countByCurrentDate); $i++) {
+            $countByCurrentDate[$i][2] = $selectedCount - (int)$countByCurrentDate[$i][1];
+        }
+
+        return $countByCurrentDate;
     }
 }
