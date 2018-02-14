@@ -16,7 +16,7 @@ class TShirtOrdersController extends Controller
     {
         $vars = [];
 
-        $event = $this->get('repository_event')->getCurrentEvent();
+        $event = $this->get('repository_event')->getSelectedEvent();
         $shirts = $this->get('repository_shirt')->findAll();
 
         $subQuery = $this->get('doctrine.orm.default_entity_manager')->createQueryBuilder()
