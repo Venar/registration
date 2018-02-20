@@ -21,7 +21,7 @@ class ValidateController extends Controller
         $headers = [];
         if (array_key_exists('HTTP_ORIGIN', $_SERVER)) {
             $http_origin = $_SERVER['HTTP_ORIGIN'];
-            if ($http_origin == "http://www.animedetour.com" || $http_origin == "http://animedetour.com") {
+            if ($http_origin == "https://www.animedetour.com" || $http_origin == "https://animedetour.com") {
                 $headers['Access-Control-Allow-Origin'] = $http_origin;
             }
         }
