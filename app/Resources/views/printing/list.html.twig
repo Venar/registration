@@ -72,14 +72,34 @@
 
     <div class="col-sm-3">
         <h3>Group Badges</h3>
-        <a href="{{ path('printing_bulk_WithType_WithPage', {'type':'group', 'page':1}) }}">Group (page 1)</a>
-        <a href="{{ path('printing_bulk_WithType_WithPage', {'type':'group', 'page':2}) }}">Group (page 2)</a>
+        <table class="table">
+            <tbody>
+            <tr>
+                <td>
+                    <a href="{{ path('printing_bulk_WithType_WithPage', {'type':'group', 'page':1}) }}">Group (page 1)</a>
+                </td>
+                <td>
+                    <a href="{{ path('printing_bulk_WithType_WithPage', {'type':'group', 'page':2}) }}">Group (page 2)</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 
     <div class="col-sm-3">
         <h3>Sponsor Badges</h3>
-        <a href="{{ path('printing_bulk_WithType_WithPage', {'type':'sponsor', 'page':1}) }}">Sponsor (page 1)</a>
-        <a href="{{ path('printing_bulk_WithType_WithPage', {'type':'sponsor', 'page':2}) }}">Sponsor (page 2)</a>
+        <table class="table">
+            <tbody>
+            <tr>
+                <td>
+                    <a href="{{ path('printing_bulk_WithType_WithPage', {'type':'sponsor', 'page':1}) }}">Sponsor (page 1)</a>
+                </td>
+                <td>
+                    <a href="{{ path('printing_bulk_WithType_WithPage', {'type':'sponsor', 'page':2}) }}">Sponsor (page 2)</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 
@@ -103,8 +123,18 @@
 <div class="row">
     <div class="col-sm-4">
         <h3>Staff Badges</h3>
-        <a href="{{ path('printing_bulk_WithType_WithPage', {'type':'staff', 'page':1}) }}">Staff (page 1)</a>
-        <a href="{{ path('printing_bulk_WithType_WithPage', {'type':'staff', 'page':2}) }}">Staff (page 2)</a>
+        <table class="table">
+            <tbody>
+            <tr>
+                <td>
+                    <a href="{{ path('printing_bulk_WithType_WithPage', {'type':'staff', 'page':1}) }}">Staff (page 1)</a>
+                </td>
+                <td>
+                    <a href="{{ path('printing_bulk_WithType_WithPage', {'type':'staff', 'page':2}) }}">Staff (page 2)</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 
