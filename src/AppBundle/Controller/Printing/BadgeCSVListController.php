@@ -82,7 +82,8 @@ class BadgeCSVListController extends Controller
                 'b.number as badgeNumber',
                 'bt.name as type',
                 'rg.name as regGroupName',
-                'r.confirmationnumber'
+                'r.confirmationnumber',
+                'ex.name as extra'
             ])
             ->from('AppBundle\Entity\Registration', 'r')
             ->innerJoin('AppBundle\Entity\Badge', 'b', Join::WITH, 'b.registration = r.registrationId')
@@ -91,6 +92,8 @@ class BadgeCSVListController extends Controller
             ->leftJoin('AppBundle\Entity\Registrationreggroup', 'rrg', Join::WITH,
                 'rrg.registration = r.registrationId')
             ->leftJoin('AppBundle\Entity\Reggroup', 'rg', Join::WITH, 'rg.reggroupId = rrg.reggroup')
+            ->leftJoin('AppBundle\Entity\Registrationextra', 'rx', Join::WITH, 'rx.registration = r.registrationId')
+            ->leftJoin('AppBundle\Entity\Extra', 'ex', Join::WITH, 'rx.extra = ex.extraId')
             ->where($queryBuilder->expr()->in('r.registrationstatus', $registrationStatusSubQueryDQL))
             ->andWhere($queryBuilder->expr()->in('r.registrationId', $badgesSubQueryDQL))
             ->andWhere('r.event = :event')
@@ -152,6 +155,7 @@ class BadgeCSVListController extends Controller
             'BadgeName',
             'badgetype',
             'Group',
+            'Extra',
             'Signature',
         ];
 
@@ -164,6 +168,7 @@ class BadgeCSVListController extends Controller
             $lastName = $registration['lastname'];
             $badgeType = $registration['type'];
             $groupName = $registration['regGroupName'];
+            $extra = $registration['extra'];
             $confirmationNumber = $registration['confirmationnumber'];
 
             $data = [
@@ -174,6 +179,7 @@ class BadgeCSVListController extends Controller
                 $regName,
                 $badgeType,
                 $groupName,
+                $extra,
                 'X_______________________',
             ];
 
