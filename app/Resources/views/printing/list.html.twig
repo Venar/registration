@@ -7,60 +7,104 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-sm-4">
+    <div class="col-sm-6">
         <h3>Standard Badges</h3>
-        <a href="/print/bulk/standard/1">Standard (page 1)</a>
-        <a href="/print/bulk/standard/2">Standard (page 2)</a>
-        <a href="/print/bulk/standard/3">Standard (page 3)</a>
-        <a href="/print/bulk/standard/4">Standard (page 4)</a>
-        <a href="/print/bulk/standard/5">Standard (page 5)</a>
-        <a href="/print/bulk/standard/6">Standard (page 6)</a>
-        <a href="/print/bulk/standard/7">Standard (page 7)</a>
-        <a href="/print/bulk/standard/8">Standard (page 8)</a>
-        <a href="/print/bulk/standard/9">Standard (page 9)</a>
-        <a href="/print/bulk/standard/10">Standard (page 10)</a>
-        <a href="/print/bulk/standard/11">Standard (page 11)</a>
-        <a href="/print/bulk/standard/12">Standard (page 12)</a>
-        <a href="/print/bulk/standard/13">Standard (page 13)</a>
-        <a href="/print/bulk/standard/14">Standard (page 14)</a>
-        <a href="/print/bulk/standard/15">Standard (page 15)</a>
+        <table class="table">
+            <tbody>
+                <tr>
+                    <td>
+                        <a href="{{ path('printing_bulk_WithType_WithPage', {'type':'standard', 'page':1}) }}">Standard (page 1)</a>
+                    </td>
+                    <td>
+                        <a href="{{ path('printing_bulk_WithType_WithPage', {'type':'standard', 'page':2}) }}">Standard (page 2)</a>
+                    </td>
+                    <td>
+                        <a href="{{ path('printing_bulk_WithType_WithPage', {'type':'standard', 'page':3}) }}">Standard (page 3)</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="{{ path('printing_bulk_WithType_WithPage', {'type':'standard', 'page':4}) }}">Standard (page 4)</a>
+                    </td>
+                    <td>
+                        <a href="{{ path('printing_bulk_WithType_WithPage', {'type':'standard', 'page':5}) }}">Standard (page 5)</a>
+                    </td>
+                    <td>
+                        <a href="{{ path('printing_bulk_WithType_WithPage', {'type':'standard', 'page':6}) }}">Standard (page 6)</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="{{ path('printing_bulk_WithType_WithPage', {'type':'standard', 'page':7}) }}">Standard (page 7)</a>
+                    </td>
+                    <td>
+                        <a href="{{ path('printing_bulk_WithType_WithPage', {'type':'standard', 'page':8}) }}">Standard (page 8)</a>
+                    </td>
+                    <td>
+                        <a href="{{ path('printing_bulk_WithType_WithPage', {'type':'standard', 'page':9}) }}">Standard (page 9)</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="{{ path('printing_bulk_WithType_WithPage', {'type':'standard', 'page':10}) }}">Standard (page 10)</a>
+                    </td>
+                    <td>
+                        <a href="{{ path('printing_bulk_WithType_WithPage', {'type':'standard', 'page':11}) }}">Standard (page 11)</a>
+                    </td>
+                    <td>
+                        <a href="{{ path('printing_bulk_WithType_WithPage', {'type':'standard', 'page':12}) }}">Standard (page 12)</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="{{ path('printing_bulk_WithType_WithPage', {'type':'standard', 'page':13}) }}">Standard (page 13)</a>
+                    </td>
+                    <td>
+                        <a href="{{ path('printing_bulk_WithType_WithPage', {'type':'standard', 'page':14}) }}">Standard (page 14)</a>
+                    </td>
+                    <td>
+                        <a href="{{ path('printing_bulk_WithType_WithPage', {'type':'standard', 'page':15}) }}">Standard (page 15)</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
-    <div class="col-sm-4">
+    <div class="col-sm-3">
         <h3>Group Badges</h3>
-        <a href="/print/bulk/group/1">Group (page 1)</a>
-        <a href="/print/bulk/group/2">Group (page 2)</a>
+        <a href="{{ path('printing_bulk_WithType_WithPage', {'type':'group', 'page':1}) }}">Group (page 1)</a>
+        <a href="{{ path('printing_bulk_WithType_WithPage', {'type':'group', 'page':2}) }}">Group (page 2)</a>
     </div>
 
-    <div class="col-sm-4">
+    <div class="col-sm-3">
         <h3>Sponsor Badges</h3>
-        <a href="/print/bulk/sponsor/1">Sponsors (page 1)</a>
-        <a href="/print/bulk/sponsor/2">Sponsors (page 2)</a>
+        <a href="{{ path('printing_bulk_WithType_WithPage', {'type':'sponsor', 'page':1}) }}">Sponsor (page 1)</a>
+        <a href="{{ path('printing_bulk_WithType_WithPage', {'type':'sponsor', 'page':2}) }}">Sponsor (page 2)</a>
     </div>
 </div>
 
 <div class="row">
     <div class="col-sm-4">
         <h3>Guest Badges</h3>
-        <a href="/print/bulk/guest/1">Guest (page 1)</a>
+        <a href="{{ path('printing_bulk_WithType_WithPage', {'type':'guest', 'page':1}) }}">Guest (page 1)</a>
     </div>
 
     <div class="col-sm-4">
         <h3>Vendor Badges</h3>
-        <a href="/print/bulk/vendor/1">Vendor (page 1)</a>
+        <a href="{{ path('printing_bulk_WithType_WithPage', {'type':'vendor', 'page':1}) }}">Vendor (page 1)</a>
     </div>
 
     <div class="col-sm-4">
         <h3>Exhibitor Badges</h3>
-        <a href="/print/bulk/exhibitor/1">Exhibitor (page 1)</a>
+        <a href="{{ path('printing_bulk_WithType_WithPage', {'type':'exhibitor', 'page':1}) }}">Exhibitor (page 1)</a>
     </div>
 </div>
 
 <div class="row">
     <div class="col-sm-4">
         <h3>Staff Badges</h3>
-        <a href="/print/bulk/staff/1">Staff Badges (page 1)</a>
-        <a href="/print/bulk/staff/2">Staff Badges (page 2)</a>
+        <a href="{{ path('printing_bulk_WithType_WithPage', {'type':'staff', 'page':1}) }}">Staff (page 1)</a>
+        <a href="{{ path('printing_bulk_WithType_WithPage', {'type':'staff', 'page':2}) }}">Staff (page 2)</a>
     </div>
 </div>
 
@@ -72,17 +116,17 @@
 <div class="row">
     <div class="col-sm-4">
         <h3>Standard Badges</h3>
-        <a href="/print/csv/standard">Standard</a>
+        <a href="{{ path('print_csv', {'type':'standard'}) }}">Standard</a>
     </div>
 
     <div class="col-sm-4">
         <h3>Sponsor Badges</h3>
-        <a href="/print/csv/sponsor">Sponsor</a>
+        <a href="{{ path('print_csv', {'type':'sponsor'}) }}">Sponsors</a>
     </div>
 
     <div class="col-sm-4">
         <h3>Staff Badges</h3>
-        <a href="/print/csv/staff">Staff</a>
+        <a href="{{ path('print_csv', {'type':'staff'}) }}">Staff</a>
     </div>
 </div>
 <div class="row">
