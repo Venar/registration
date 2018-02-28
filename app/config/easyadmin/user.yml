@@ -43,7 +43,7 @@ easy_admin:
                     #- { property: 'password', type_options: { required: true } }
                     - { property: 'plainPassword', label: 'Password', type: 'password', type_options: { required: false } }
                     - { type: 'group', css_class: 'col-sm-12', label: 'Permissions' }
-                    - { property: 'enabled', type_options: { required: true } }
+                    - { property: 'enabled' }
                     - { property: 'roles', type: 'choice', type_options: { multiple: true, choices: { 'ROLE_USER': 'ROLE_USER', 'ROLE_ADMIN': 'ROLE_ADMIN' } } }
                 form_options: { validation_groups: ['Profile'] }
             new:
