@@ -89,7 +89,7 @@ class TShirtOrdersController extends Controller
             $badges = $this->get('repository_badge')->getBadgesFromRegistration($registration);
             $badgeType = '';
             foreach ($badges as $badge) {
-                $badgeType = $badge->getBadgetype()->getName();
+                $badgeType = $badge->getBadgetype()->getDescription();
             }
 
             $group = $this->get('repository_reggroup')->getRegGroupFromRegistration($registration);
