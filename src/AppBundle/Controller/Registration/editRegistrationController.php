@@ -5,7 +5,7 @@ namespace AppBundle\Controller\Registration;
 use AppBundle\Entity\Badge;
 use AppBundle\Entity\Registration;
 use AppBundle\Entity\Registrationextra;
-use AppBundle\Entity\Registrationhistory;
+use AppBundle\Entity\History;
 use AppBundle\Entity\Registrationreggroup;
 use AppBundle\Entity\Registrationshirt;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -193,7 +193,7 @@ class editRegistrationController extends Controller
         }
 
         if ($registration->getRegistrationId() && $returnData['success']) {
-            $registrationHistory = new Registrationhistory();
+            $registrationHistory = new History();
             $registrationHistory->setRegistration($registration);
             $registrationHistory->setChangetext($returnData['message']);
             $entityManager->persist($registrationHistory);
@@ -269,7 +269,7 @@ class editRegistrationController extends Controller
         }
 
         if ($registration->getRegistrationId() && $returnData['success']) {
-            $registrationHistory = new RegistrationHistory();
+            $registrationHistory = new History();
             $registrationHistory->setRegistration($registration);
             $registrationHistory->setChangetext($returnData['message']);
             $entityManager->persist($registrationHistory);
@@ -376,7 +376,7 @@ class editRegistrationController extends Controller
         }
 
         if ($registration->getRegistrationId() && $returnData['success']) {
-            $registrationHistory = new RegistrationHistory();
+            $registrationHistory = new History();
             $registrationHistory->setRegistration($registration);
             $registrationHistory->setChangetext($returnData['message']);
             $entityManager->persist($registrationHistory);
@@ -611,7 +611,7 @@ class editRegistrationController extends Controller
                     $entityManager->remove($registrationRegGroup);
                 }
 
-                $registrationHistory = new RegistrationHistory();
+                $registrationHistory = new History();
                 $registrationHistory->setRegistration($transferredFrom);
                 $url = $this->generateUrl('viewRegistration', ['registrationId' => $registration->getRegistrationId()]);
                 $transferredToText= "<br>Registration Transferred to "
@@ -666,7 +666,7 @@ class editRegistrationController extends Controller
             $badges = $this->get('repository_badge')->getBadgesFromRegistration($registration);
             $this->get('repository_registration')->sendConfirmationEmail($registration, $badges);
 
-            $registrationHistory = new RegistrationHistory();
+            $registrationHistory = new History();
             $registrationHistory->setRegistration($registration);
 
             if ($request->request->has('comments') && $request->request->get('comments')) {

@@ -4,7 +4,7 @@ namespace AppBundle\Controller\Registration;
 
 use AppBundle\Entity\Badge;
 use AppBundle\Entity\Registration;
-use AppBundle\Entity\Registrationhistory;
+use AppBundle\Entity\History;
 use AppBundle\Entity\Registrationshirt;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -132,7 +132,7 @@ class rolloverController extends Controller
         $newBadges = $this->get('repository_badge')->getBadgesFromRegistration($registration);
         $this->get('repository_registration')->sendConfirmationEmail($registration, $newBadges);
 
-        $registrationHistory = new RegistrationHistory();
+        $registrationHistory = new History();
         $registrationHistory->setRegistration($registration);
         $url = $this->generateUrl('viewRegistration', ['registrationId' => $oldRegistration->getRegistrationId()]);
         $history = " Transferred From <a href='$url'>"
@@ -145,7 +145,7 @@ class rolloverController extends Controller
         $entityManager->persist($oldRegistration);
         $entityManager->flush();
 
-        $registrationHistory = new RegistrationHistory();
+        $registrationHistory = new History();
         $registrationHistory->setRegistration($oldRegistration);
         $url = $this->generateUrl('viewRegistration', ['registrationId' => $registration->getRegistrationId()]);
         $oldHistory .= " Transferred To <a href='$url'>"

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Extra
  *
- * @ORM\Table(name="Extra", indexes={@ORM\Index(name="FK1_Extra_CreatedBy", columns={"CreatedBy"}), @ORM\Index(name="FK2_Extra_ModifiedBy", columns={"ModifiedBy"})})
+ * @ORM\Table(name="extra", indexes={@ORM\Index(name="FK1_Extra_CreatedBy", columns={"created_by"}), @ORM\Index(name="FK2_Extra_ModifiedBy", columns={"modified_by"})})
  * @ORM\Entity
  */
 class Extra
@@ -15,59 +15,59 @@ class Extra
     /**
      * @var string
      *
-     * @ORM\Column(name="Name", type="string", length=255, nullable=false)
+     * @ORM\Column(name="name", type="string", length=255, nullable=false)
      */
     private $name;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="Description", type="string", length=255, nullable=false)
+     * @ORM\Column(name="description", type="string", length=255, nullable=false)
      */
     private $description;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="CreatedDate", type="datetime", nullable=true)
+     * @ORM\Column(name="created_date", type="datetime", nullable=true)
      */
-    private $createddate;
+    private $createdDate;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="ModifiedDate", type="datetime", nullable=true)
+     * @ORM\Column(name="modified_date", type="datetime", nullable=true)
      */
-    private $modifieddate;
+    private $modifiedDate;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="ExtraId", type="integer")
+     * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $extraId;
+    private $id;
 
     /**
      * @var \AppBundle\Entity\User
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="CreatedBy", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id")
      * })
      */
-    private $createdby;
+    private $createdBy;
 
     /**
      * @var \AppBundle\Entity\User
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="ModifiedBy", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="modified_by", referencedColumnName="id")
      * })
      */
-    private $modifiedby;
+    private $modifiedBy;
 
 
 
@@ -120,51 +120,51 @@ class Extra
     }
 
     /**
-     * Set createddate
+     * Set createdDate
      *
-     * @param \DateTime $createddate
+     * @param \DateTime $createdDate
      *
      * @return Extra
      */
-    public function setCreateddate($createddate)
+    public function setCreatedDate($createdDate)
     {
-        $this->createddate = $createddate;
+        $this->createdDate = $createdDate;
+
+        return $this;
+    }
+
+    /**d
+     * Get createdDate
+     *
+     * @return \DateTime
+     */
+    public function getCreatedDate()
+    {
+        return $this->createdDate;
+    }
+
+    /**
+     * Set modifiedDate
+     *
+     * @param \DateTime $modifiedDate
+     *
+     * @return Extra
+     */
+    public function setModifiedDate($modifiedDate)
+    {
+        $this->modifiedDate = $modifiedDate;
 
         return $this;
     }
 
     /**
-     * Get createddate
+     * Get modifiedDate
      *
      * @return \DateTime
      */
-    public function getCreateddate()
+    public function getModifiedDate()
     {
-        return $this->createddate;
-    }
-
-    /**
-     * Set modifieddate
-     *
-     * @param \DateTime $modifieddate
-     *
-     * @return Extra
-     */
-    public function setModifieddate($modifieddate)
-    {
-        $this->modifieddate = $modifieddate;
-
-        return $this;
-    }
-
-    /**
-     * Get modifieddate
-     *
-     * @return \DateTime
-     */
-    public function getModifieddate()
-    {
-        return $this->modifieddate;
+        return $this->modifiedDate;
     }
 
     /**
@@ -174,54 +174,54 @@ class Extra
      */
     public function getExtraId()
     {
-        return $this->extraId;
+        return $this->id;
     }
 
     /**
-     * Set createdby
+     * Set createdBy
      *
-     * @param \AppBundle\Entity\User $createdby
+     * @param \AppBundle\Entity\User $createdBy
      *
      * @return Extra
      */
-    public function setCreatedby(\AppBundle\Entity\User $createdby = null)
+    public function setCreatedBy(User $createdBy = null)
     {
-        $this->createdby = $createdby;
+        $this->createdBy = $createdBy;
 
         return $this;
     }
 
     /**
-     * Get createdby
+     * Get createdBy
      *
      * @return \AppBundle\Entity\User
      */
-    public function getCreatedby()
+    public function getCreatedBy()
     {
-        return $this->createdby;
+        return $this->createdBy;
     }
 
     /**
-     * Set modifiedby
+     * Set modifiedBy
      *
-     * @param \AppBundle\Entity\User $modifiedby
+     * @param \AppBundle\Entity\User $modifiedBy
      *
      * @return Extra
      */
-    public function setModifiedby(\AppBundle\Entity\User $modifiedby = null)
+    public function setModifiedBy(User $modifiedBy = null)
     {
-        $this->modifiedby = $modifiedby;
+        $this->modifiedBy = $modifiedBy;
 
         return $this;
     }
 
     /**
-     * Get modifiedby
+     * Get modifiedBy
      *
      * @return \AppBundle\Entity\User
      */
-    public function getModifiedby()
+    public function getModifiedBy()
     {
-        return $this->modifiedby;
+        return $this->modifiedBy;
     }
 }

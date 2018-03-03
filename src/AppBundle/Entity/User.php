@@ -8,95 +8,52 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * User
  *
- * @ORM\Table(name="`User`", uniqueConstraints={@ORM\UniqueConstraint(name="Login", columns={"Login"}), @ORM\UniqueConstraint(name="Nickname", columns={"Nickname"})}, indexes={@ORM\Index(name="FK1_User_CreatedBy", columns={"CreatedBy"}), @ORM\Index(name="FK2_User_ModifiedBy", columns={"ModifiedBy"})})
+ * @ORM\Table(name="`user`", uniqueConstraints={@ORM\UniqueConstraint(name="username", columns={"username"})}, indexes={@ORM\Index(name="FK1_User_CreatedBy", columns={"created_by"}), @ORM\Index(name="FK2_User_ModifiedBy", columns={"modified_by"})})
  * @ORM\Entity
- * @ORM\AttributeOverrides({
- *      @ORM\AttributeOverride(name="username",
- *          column=@ORM\Column(
- *              name     = "Login",
- *              type = "string"
- *          )
- *      )
- * })
  */
 class User extends BaseUser
 {
     /**
      * @var string
      *
-     * @ORM\Column(name="openid_identity", type="string", length=255, nullable=true)
+     * @ORM\Column(name="first_name", type="string", length=255, nullable=true)
      */
-    private $openidIdentity;
+    private $firstName;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="google_id", type="string", nullable=true)
+     * @ORM\Column(name="last_name", type="string", length=255, nullable=true)
      */
-    private $googleID;
+    private $lastName;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="Nickname", type="string", length=255, nullable=true)
-     */
-    private $nickname;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="FirstName", type="string", length=255, nullable=true)
-     */
-    private $firstname;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="LastName", type="string", length=255, nullable=true)
-     */
-    private $lastname;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="Position", type="string", length=255, nullable=true)
+     * @ORM\Column(name="position", type="string", length=255, nullable=true)
      */
     private $position;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="Description", type="string", length=255, nullable=true)
+     * @ORM\Column(name="description", type="string", length=255, nullable=true)
      */
     private $description;
 
     /**
-     * @var boolean
+     * @var \DateTime
      *
-     * @ORM\Column(name="Disabled", type="boolean", nullable=false)
+     * @ORM\Column(name="created_date", type="datetime", nullable=true)
      */
-    private $disabled = '0';
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="PhotoPath", type="string", length=255, nullable=true)
-     */
-    private $photopath;
+    private $createdDate;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="CreatedDate", type="datetime", nullable=true)
+     * @ORM\Column(name="modified_date", type="datetime", nullable=true)
      */
-    private $createddate;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="ModifiedDate", type="datetime", nullable=true)
-     */
-    private $modifieddate;
+    private $modifiedDate;
 
     /**
      * @ORM\Id
@@ -110,94 +67,21 @@ class User extends BaseUser
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="CreatedBy", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id")
      * })
      */
-    private $createdby;
+    private $createdBy;
 
     /**
      * @var \AppBundle\Entity\User
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="ModifiedBy", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="modified_by", referencedColumnName="id")
      * })
      */
-    private $modifiedby;
+    private $modifiedBy;
 
-
-
-    /**
-     * Set openidIdentity
-     *
-     * @param string $openidIdentity
-     *
-     * @return User
-     */
-    public function setOpenidIdentity($openidIdentity)
-    {
-        $this->openidIdentity = $openidIdentity;
-
-        return $this;
-    }
-
-    /**
-     * Get openidIdentity
-     *
-     * @return string
-     */
-    public function getOpenidIdentity()
-    {
-        return $this->openidIdentity;
-    }
-
-    /**
-     * Set GoogleID
-     *
-     * @param string $googleId
-     *
-     * @return User
-     */
-    public function setGoogleID($googleId)
-    {
-        $this->googleID = $googleId;
-
-        return $this;
-    }
-
-    /**
-     * Get GoogleID
-     *
-     * @return string
-     */
-    public function getGoogleID()
-    {
-        return $this->googleID;
-    }
-
-    /**
-     * Set login
-     *
-     * @param string $login
-     *
-     * @return User
-     */
-    public function setLogin($login)
-    {
-        $this->login = $login;
-
-        return $this;
-    }
-
-    /**
-     * Get login
-     *
-     * @return string
-     */
-    public function getLogin()
-    {
-        return $this->login;
-    }
 
     /**
      * Set email
@@ -221,30 +105,6 @@ class User extends BaseUser
     public function getEmail()
     {
         return $this->email;
-    }
-
-    /**
-     * Set nickname
-     *
-     * @param string $nickname
-     *
-     * @return User
-     */
-    public function setNickname($nickname)
-    {
-        $this->nickname = $nickname;
-
-        return $this;
-    }
-
-    /**
-     * Get nickname
-     *
-     * @return string
-     */
-    public function getNickname()
-    {
-        return $this->nickname;
     }
 
     /**
@@ -272,51 +132,51 @@ class User extends BaseUser
     }
 
     /**
-     * Set firstname
+     * Set firstName
      *
-     * @param string $firstname
+     * @param string $firstName
      *
      * @return User
      */
-    public function setFirstname($firstname)
+    public function setFirstName($firstName)
     {
-        $this->firstname = $firstname;
+        $this->firstName = $firstName;
 
         return $this;
     }
 
     /**
-     * Get firstname
+     * Get firstName
      *
      * @return string
      */
-    public function getFirstname()
+    public function getFirstName()
     {
-        return $this->firstname;
+        return $this->firstName;
     }
 
     /**
-     * Set lastname
+     * Set lastName
      *
-     * @param string $lastname
+     * @param string $lastName
      *
      * @return User
      */
-    public function setLastname($lastname)
+    public function setLastName($lastName)
     {
-        $this->lastname = $lastname;
+        $this->lastName = $lastName;
 
         return $this;
     }
 
     /**
-     * Get lastname
+     * Get lastName
      *
      * @return string
      */
     public function getLastname()
     {
-        return $this->lastname;
+        return $this->lastName;
     }
 
     /**
@@ -367,100 +227,53 @@ class User extends BaseUser
         return $this->description;
     }
 
+
     /**
-     * Set disabled
+     * Set createdDate
      *
-     * @param boolean $disabled
+     * @param \DateTime $createdDate
      *
      * @return User
      */
-    public function setDisabled($disabled)
+    public function setCreateddate($createdDate)
     {
-        $this->disabled = $disabled;
+        $this->createdDate = $createdDate;
 
         return $this;
     }
 
     /**
-     * Get disabled
-     *
-     * @return boolean
-     */
-    public function getDisabled()
-    {
-        return $this->disabled;
-    }
-
-    /**
-     * Set photopath
-     *
-     * @param string $photopath
-     *
-     * @return User
-     */
-    public function setPhotopath($photopath)
-    {
-        $this->photopath = $photopath;
-
-        return $this;
-    }
-
-    /**
-     * Get photopath
-     *
-     * @return string
-     */
-    public function getPhotopath()
-    {
-        return $this->photopath;
-    }
-
-    /**
-     * Set createddate
-     *
-     * @param \DateTime $createddate
-     *
-     * @return User
-     */
-    public function setCreateddate($createddate)
-    {
-        $this->createddate = $createddate;
-
-        return $this;
-    }
-
-    /**
-     * Get createddate
+     * Get createdDate
      *
      * @return \DateTime
      */
     public function getCreateddate()
     {
-        return $this->createddate;
+        return $this->createdDate;
     }
 
     /**
-     * Set modifieddate
+     * Set modifiedDate
      *
-     * @param \DateTime $modifieddate
+     * @param \DateTime $modifiedDate
      *
      * @return User
      */
-    public function setModifieddate($modifieddate)
+    public function setModifiedDate($modifiedDate)
     {
-        $this->modifieddate = $modifieddate;
+        $this->modifiedDate = $modifiedDate;
 
         return $this;
     }
 
     /**
-     * Get modifieddate
+     * Get modifiedDate
      *
      * @return \DateTime
      */
-    public function getModifieddate()
+    public function getModifiedDate()
     {
-        return $this->modifieddate;
+        return $this->modifiedDate;
     }
 
     /**
@@ -483,50 +296,50 @@ class User extends BaseUser
     }
 
     /**
-     * Set createdby
+     * Set createdBy
      *
-     * @param \AppBundle\Entity\User $createdby
+     * @param \AppBundle\Entity\User $createdBy
      *
      * @return User
      */
-    public function setCreatedby(\AppBundle\Entity\User $createdby = null)
+    public function setCreatedBy(User $createdBy = null)
     {
-        $this->createdby = $createdby;
+        $this->createdBy = $createdBy;
 
         return $this;
     }
 
     /**
-     * Get createdby
+     * Get createdBy
      *
      * @return \AppBundle\Entity\User
      */
-    public function getCreatedby()
+    public function getCreatedBy()
     {
-        return $this->createdby;
+        return $this->createdBy;
     }
 
     /**
-     * Set modifiedby
+     * Set modifiedBy
      *
-     * @param \AppBundle\Entity\User $modifiedby
+     * @param \AppBundle\Entity\User $modifiedBy
      *
      * @return User
      */
-    public function setModifiedby(\AppBundle\Entity\User $modifiedby = null)
+    public function setModifiedBy(User $modifiedBy = null)
     {
-        $this->modifiedby = $modifiedby;
+        $this->modifiedBy = $modifiedBy;
 
         return $this;
     }
 
     /**
-     * Get modifiedby
+     * Get modifiedBy
      *
      * @return \AppBundle\Entity\User
      */
-    public function getModifiedby()
+    public function getModifiedBy()
     {
-        return $this->modifiedby;
+        return $this->modifiedBy;
     }
 }

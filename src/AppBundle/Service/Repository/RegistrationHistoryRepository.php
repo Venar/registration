@@ -3,9 +3,9 @@
 namespace AppBundle\Service\Repository;
 
 
-use AppBundle\Entity\Badgetype;
+use AppBundle\Entity\BadgeType;
 use AppBundle\Entity\Registration;
-use AppBundle\Entity\Registrationhistory;
+use AppBundle\Entity\History;
 use Doctrine\ORM\EntityManager;
 
 class RegistrationHistoryRepository
@@ -22,7 +22,7 @@ class RegistrationHistoryRepository
 
     /**
      * @param Registration $registration
-     * @return Registrationhistory[]
+     * @return History[]
      */
     public function getHistoryFromRegistration(Registration $registration)
     {
@@ -39,14 +39,14 @@ class RegistrationHistoryRepository
      * @param String $searchText
      * @param int $limit
      * @param int $offset
-     * @return Registrationhistory[]
+     * @return History[]
      */
     public function getHistoryFromSearch($searchText, $limit = null, $offset = null)
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
 
         $queryBuilder->select('rh')
-            ->from('AppBundle:Registrationhistory', 'rh')
+            ->from('RegistrationHistory', 'rh')
             ->innerJoin('rh.createdby', 'cb')
             ->innerJoin('rh.registration', 'r')
             ->where("rh.changetext LIKE :changetext")
@@ -71,7 +71,7 @@ class RegistrationHistoryRepository
     }
 
     /**
-     * @return Registrationhistory[]
+     * @return History[]
      */
     public function findAll()
     {

@@ -3,7 +3,7 @@
 namespace AppBundle\Service\Repository;
 
 
-use AppBundle\Entity\Badgestatus;
+use AppBundle\Entity\BadgeStatus;
 use Doctrine\ORM\EntityManager;
 
 
@@ -21,7 +21,7 @@ class BadgeStatusRepository
 
     /**
      * @param String $status
-     * @return Badgestatus|null
+     * @return BadgeStatus|null
      */
     public function getBadgeStatusFromStatus($status)
     {
@@ -36,7 +36,7 @@ class BadgeStatusRepository
     }
 
     /**
-     * @return Badgestatus[]
+     * @return BadgeStatus[]
      */
     public function findAll()
     {

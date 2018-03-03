@@ -3,7 +3,7 @@
 namespace AppBundle\Service\Repository;
 
 
-use AppBundle\Entity\Reggroup;
+use AppBundle\Entity\Group;
 use AppBundle\Entity\Registrationreggroup;
 use AppBundle\Entity\Registration;
 use Doctrine\ORM\EntityManager;
@@ -15,7 +15,7 @@ class RegGroupRepository
     /** @var EntityManager $entityManager */
     protected $entityManager;
 
-    const entityName = 'AppBundle:Reggroup';
+    const entityName = 'AppBundle:Group';
 
     public function __construct(EntityManager $entityManager)
     {
@@ -24,7 +24,7 @@ class RegGroupRepository
 
     /**
      * @param String $reggroupId
-     * @return Reggroup|null
+     * @return Group|null
      */
     public function getFromReggroupId($reggroupId)
     {
@@ -34,7 +34,7 @@ class RegGroupRepository
         }
 
         $regGroup = $this->entityManager
-            ->getRepository('AppBundle:Reggroup')
+            ->getRepository('Group.php')
             ->find($reggroupId)
         ;
 
@@ -51,13 +51,13 @@ class RegGroupRepository
 
     /**
      * @param String $school
-     * @return Reggroup[]
+     * @return Group[]
      */
     public function findFromSchool($school = '')
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
         $queryBuilder->select('rg')
-            ->from('AppBundle:Reggroup', 'rg')
+            ->from('Group.php', 'rg')
             ->orderBy('rg.name', 'ASC');
 
         if ($school != '') {
@@ -70,14 +70,14 @@ class RegGroupRepository
 
     /**
      * @param Registration $registration
-     * @return Reggroup
+     * @return Group
      */
     public function getRegGroupFromRegistration(Registration $registration)
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
 
         $queryBuilder->select('rg')
-            ->from('AppBundle:Reggroup', 'rg')
+            ->from('Group.php', 'rg')
             ->innerJoin('AppBundle\Entity\Registrationreggroup', 'rrg', Join::WITH, 'rrg.reggroup = rg.reggroupId')
             ->innerJoin('AppBundle\Entity\Registration', 'r', Join::WITH, 'r.registrationId = rrg.registration')
             ->where("r.registrationId = :registrationId")
@@ -88,7 +88,7 @@ class RegGroupRepository
     }
 
     /**
-     * @return Reggroup[]
+     * @return Group[]
      */
     public function findAll()
     {

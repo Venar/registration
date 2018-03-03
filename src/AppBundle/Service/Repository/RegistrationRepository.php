@@ -4,12 +4,12 @@ namespace AppBundle\Service\Repository;
 
 
 use AppBundle\Entity\Badge;
-use AppBundle\Entity\Badgetype;
-use AppBundle\Entity\Reggroup;
+use AppBundle\Entity\BadgeType;
+use AppBundle\Entity\Group;
 use AppBundle\Entity\Registration;
 use AppBundle\Entity\Registrationreggroup;
-use AppBundle\Entity\Registrationstatus;
-use AppBundle\Entity\Registrationtype;
+use AppBundle\Entity\RegistrationStatus;
+use AppBundle\Entity\RegistrationType;
 use AppBundle\Service\Util\Email;
 use Doctrine\ORM\EntityManager;
 use \AppBundle\Entity\Event;
@@ -95,7 +95,7 @@ class RegistrationRepository
 
         $queryBuilder = $this->entityManager->createQueryBuilder();
         $count = $queryBuilder->select('count(r.registrationId)')
-            ->from('AppBundle:Registration', 'r')
+            ->from(Registration::class, 'r')
             ->where('r.event = :event')
             ->setParameter('event', $event)
             ->getQuery()->getSingleScalarResult();
@@ -119,7 +119,7 @@ class RegistrationRepository
         }
 
         $registration = $this->entityManager
-            ->getRepository('AppBundle:Registration')
+            ->getRepository(Registration::class)
             ->find($registrationId)
             //->getQuery()->getOneOrNullResult()
         ;
@@ -138,7 +138,7 @@ class RegistrationRepository
     public function getFromTransfered($registrationId)
     {
         $registration = $this->entityManager
-            ->getRepository('AppBundle:Registration')
+            ->getRepository(Registration::class)
             ->find($registrationId)
             //->getQuery()->getOneOrNullResult()
         ;
@@ -193,7 +193,7 @@ class RegistrationRepository
         $queryBuilder = $this->entityManager->createQueryBuilder();
 
         $queryBuilder->select('r')
-            ->from('AppBundle:Registration', 'r')
+            ->from(Registration::class, 'r')
             ->where("r.firstname = :firstname")
             ->andWhere('r.lastname = :lastname')
             ->andWhere('YEAR(r.birthday) = :birthyear')
@@ -222,7 +222,7 @@ class RegistrationRepository
         $queryBuilder = $this->entityManager->createQueryBuilder();
 
         $queryBuilder->select('r')
-            ->from('AppBundle:Registration', 'r')
+            ->from(Registration::class, 'r')
             ->where("r.firstname = :firstname")
             ->andWhere('r.lastname = :lastname')
             ->andWhere('r.email = :email')
@@ -250,7 +250,7 @@ class RegistrationRepository
         $queryBuilder = $this->entityManager->createQueryBuilder();
 
         $queryBuilder->select('r')
-            ->from('AppBundle:Registration', 'r')
+            ->from(Registration::class, 'r')
             ->where("r.birthday > :birthday")
             ->andWhere('r.event = :event')
             ->setParameter('birthday', $birthday)
@@ -260,11 +260,11 @@ class RegistrationRepository
     }
 
     /**
-     * @param Reggroup $regGroup
+     * @param Group $regGroup
      * @param Event $event
      * @return Registration[]
      */
-    public function getRegistrationsFromRegGroup(Reggroup $regGroup = null, Event $event = null)
+    public function getRegistrationsFromRegGroup(Group $regGroup = null, Event $event = null)
     {
         if (!$event) {
             $event = $this->eventRepository->getSelectedEvent();
@@ -275,9 +275,9 @@ class RegistrationRepository
         $queryBuilder = $this->entityManager->createQueryBuilder();
 
         $queryBuilder->select('r')
-            ->from('AppBundle:Registration', 'r')
+            ->from(Registration::class, 'r')
             ->innerJoin('AppBundle\Entity\Registrationreggroup', 'rrg', Join::WITH, 'rrg.registration = r.registrationId')
-            ->innerJoin('AppBundle\Entity\Reggroup', 'rg', Join::WITH, 'rg.reggroupId = rrg.reggroup')
+            ->innerJoin(Group::class, 'rg', Join::WITH, 'rg.reggroupId = rrg.reggroup')
             ->where("rg.reggroupId = :reggroupId")
             ->andWhere("r.event = :event")
             ->setParameter('reggroupId', $regGroup)
@@ -326,17 +326,17 @@ class RegistrationRepository
     /**
      * @param String $searchText
      * @param String $page
-     * @param Registrationtype|null $registrationType
-     * @param Registrationstatus|null $registrationStatus
-     * @param Badgetype|null $badgeType
+     * @param RegistrationType|null $registrationType
+     * @param RegistrationStatus|null $registrationStatus
+     * @param BadgeType|null $badgeType
      * @return Registration[]
      */
     public function searchFromManageRegistrations(
         $searchText,
         $page,
-        ?Registrationtype $registrationType,
-        ?Registrationstatus $registrationStatus,
-        ?Badgetype $badgeType
+        ?RegistrationType $registrationType,
+        ?RegistrationStatus $registrationStatus,
+        ?BadgeType $badgeType
         )
     {
         $event = $this->eventRepository->getSelectedEvent();
@@ -358,7 +358,7 @@ class RegistrationRepository
             , "($badgeListQuery)"
         )
             ->from('AppBundle:Registration', 'r')
-            ->innerJoin('r.registrationstatus', 'rs')
+            ->innerJoin('r.registrationStatus', 'rs')
             ->innerJoin('r.event', 'e')
             ->innerJoin('AppBundle\Entity\Badge', 'b', Join::WITH, 'r.registrationId = b.registration')
             ->leftJoin('AppBundle\Entity\Registrationreggroup', 'rrg', Join::WITH, 'r.registrationId = rrg.registration')

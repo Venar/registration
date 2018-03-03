@@ -8,7 +8,7 @@
 namespace AppBundle\Service\Repository;
 
 
-use AppBundle\Entity\Registrationtype;
+use AppBundle\Entity\RegistrationType;
 use Doctrine\ORM\EntityManager;
 
 class RegistrationTypeRepository
@@ -25,7 +25,7 @@ class RegistrationTypeRepository
 
     /**
      * @param String $type
-     * @return Registrationtype|null
+     * @return RegistrationType|null
      */
     public function getRegistrationTypeFromType($type)
     {
@@ -40,7 +40,7 @@ class RegistrationTypeRepository
     }
 
     /**
-     * @return Registrationtype[]
+     * @return RegistrationType[]
      */
     public function findAll()
     {

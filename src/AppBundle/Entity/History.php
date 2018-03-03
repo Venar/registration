@@ -5,19 +5,19 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Badge
+ * RegistrationHistory
  *
- * @ORM\Table(name="badge", indexes={@ORM\Index(name="FK1_Badge_CreatedBy", columns={"created_by"}), @ORM\Index(name="FK2_Badge_ModifiedBy", columns={"modified_by"}), @ORM\Index(name="FK2_Badge_Registration_ID", columns={"registration_id"}), @ORM\Index(name="FK2_Registration_BadgeType_ID", columns={"badge_type_id"}), @ORM\Index(name="FK2_Registration_BadgeStatus_ID", columns={"badge_status_id"})})
+ * @ORM\Table(name="history", indexes={@ORM\Index(name="FK1_RegistrationHistory_Registration_ID", columns={"registration_id"}), @ORM\Index(name="FK2_RegistrationHistory_CreatedBy", columns={"created_by"}), @ORM\Index(name="FK3_RegistrationHistory_ModifiedBy", columns={"modified_by"})})
  * @ORM\Entity
  */
-class Badge
+class History
 {
     /**
      * @var string
      *
-     * @ORM\Column(name="Number", type="string", length=255, nullable=false)
+     * @ORM\Column(name="change_text", type="text", length=65535, nullable=false)
      */
-    private $number;
+    private $changeText;
 
     /**
      * @var \DateTime
@@ -43,24 +43,14 @@ class Badge
     private $id;
 
     /**
-     * @var \AppBundle\Entity\BadgeStatus
+     * @var \AppBundle\Entity\Registration
      *
-     * @ORM\ManyToOne(targetEntity="BadgeStatus")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Registration")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="badge_status_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="registration_id", referencedColumnName="id")
      * })
      */
-    private $badgeStatus;
-
-    /**
-     * @var \AppBundle\Entity\BadgeType
-     *
-     * @ORM\ManyToOne(targetEntity="BadgeType")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="badge_type_id", referencedColumnName="id")
-     * })
-     */
-    private $badgeType;
+    private $registration;
 
     /**
      * @var \AppBundle\Entity\User
@@ -82,40 +72,30 @@ class Badge
      */
     private $modifiedBy;
 
-    /**
-     * @var \AppBundle\Entity\Registration
-     *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Registration")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="registration_id", referencedColumnName="id")
-     * })
-     */
-    private $registration;
-
 
 
     /**
-     * Set number
+     * Set changeText
      *
-     * @param string $number
+     * @param string $changeText
      *
-     * @return Badge
+     * @return History
      */
-    public function setNumber($number)
+    public function setChangeText($changeText)
     {
-        $this->number = $number;
+        $this->changeText = $changeText;
 
         return $this;
     }
 
     /**
-     * Get number
+     * Get changeText
      *
      * @return string
      */
-    public function getNumber()
+    public function getChangeText()
     {
-        return $this->number;
+        return $this->changeText;
     }
 
     /**
@@ -123,7 +103,7 @@ class Badge
      *
      * @param \DateTime $createdDate
      *
-     * @return Badge
+     * @return History
      */
     public function setCreatedDate($createdDate)
     {
@@ -147,7 +127,7 @@ class Badge
      *
      * @param \DateTime $modifiedDate
      *
-     * @return Badge
+     * @return History
      */
     public function setModifiedDate($modifiedDate)
     {
@@ -167,61 +147,37 @@ class Badge
     }
 
     /**
-     * Get badgeId
+     * Get HistoryId
      *
      * @return integer
      */
-    public function getBadgeId()
+    public function getHistoryId()
     {
         return $this->id;
     }
 
     /**
-     * Set badgeStatus
+     * Set registration
      *
-     * @param \AppBundle\Entity\BadgeStatus $badgeStatus
+     * @param \AppBundle\Entity\Registration $registration
      *
-     * @return Badge
+     * @return History
      */
-    public function setBadgestatus(BadgeStatus $badgeStatus = null)
+    public function setRegistration(Registration $registration = null)
     {
-        $this->badgeStatus = $badgeStatus;
+        $this->registration = $registration;
 
         return $this;
     }
 
     /**
-     * Get badgeStatus
+     * Get registration
      *
-     * @return \AppBundle\Entity\BadgeStatus
+     * @return \AppBundle\Entity\Registration
      */
-    public function getBadgeStatus()
+    public function getRegistration()
     {
-        return $this->badgeStatus;
-    }
-
-    /**
-     * Set badgeType
-     *
-     * @param \AppBundle\Entity\BadgeType $badgeType
-     *
-     * @return Badge
-     */
-    public function setBadgeType(BadgeType $badgeType = null)
-    {
-        $this->badgeType = $badgeType;
-
-        return $this;
-    }
-
-    /**
-     * Get badgeType
-     *
-     * @return \AppBundle\Entity\BadgeType
-     */
-    public function getBadgeType()
-    {
-        return $this->badgeType;
+        return $this->registration;
     }
 
     /**
@@ -229,7 +185,7 @@ class Badge
      *
      * @param \AppBundle\Entity\User $createdBy
      *
-     * @return Badge
+     * @return History
      */
     public function setCreatedBy(User $createdBy = null)
     {
@@ -253,7 +209,7 @@ class Badge
      *
      * @param \AppBundle\Entity\User $modifiedBy
      *
-     * @return Badge
+     * @return History
      */
     public function setModifiedBy(User $modifiedBy = null)
     {
@@ -270,29 +226,5 @@ class Badge
     public function getModifiedBy()
     {
         return $this->modifiedBy;
-    }
-
-    /**
-     * Set registration
-     *
-     * @param \AppBundle\Entity\Registration $registration
-     *
-     * @return Badge
-     */
-    public function setRegistration(Registration $registration = null)
-    {
-        $this->registration = $registration;
-
-        return $this;
-    }
-
-    /**
-     * Get registration
-     *
-     * @return \AppBundle\Entity\Registration
-     */
-    public function getRegistration()
-    {
-        return $this->registration;
     }
 }

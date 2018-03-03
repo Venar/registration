@@ -5,33 +5,26 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Shirt
+ * RegistrationError
  *
- * @ORM\Table(name="shirt", indexes={@ORM\Index(name="FK1_Shirt_CreatedBy", columns={"created_by"}), @ORM\Index(name="FK2_Shirt_ModifiedBy", columns={"modified_by"})})
+ * @ORM\Table(name="registration_error", indexes={@ORM\Index(name="FK1_Badge_CreatedBy", columns={"created_by"}), @ORM\Index(name="FK2_Badge_ModifiedBy", columns={"modified_by"})})
  * @ORM\Entity
  */
-class Shirt
+class RegistrationError
 {
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="size", type="string", length=255, nullable=false)
-     */
-    private $size;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="type", type="string", length=255, nullable=false)
-     */
-    private $type;
-
     /**
      * @var string
      *
      * @ORM\Column(name="description", type="string", length=255, nullable=false)
      */
     private $description;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="xml", type="string", length=8192, nullable=false)
+     */
+    private $xml;
 
     /**
      * @var \DateTime
@@ -79,59 +72,11 @@ class Shirt
 
 
     /**
-     * Set size
-     *
-     * @param string $size
-     *
-     * @return Shirt
-     */
-    public function setSize($size)
-    {
-        $this->size = $size;
-
-        return $this;
-    }
-
-    /**
-     * Get size
-     *
-     * @return string
-     */
-    public function getSize()
-    {
-        return $this->size;
-    }
-
-    /**
-     * Set type
-     *
-     * @param string $type
-     *
-     * @return Shirt
-     */
-    public function setType($type)
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
-    /**
-     * Get type
-     *
-     * @return string
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
      * Set description
      *
      * @param string $description
      *
-     * @return Shirt
+     * @return RegistrationError
      */
     public function setDescription($description)
     {
@@ -151,11 +96,35 @@ class Shirt
     }
 
     /**
+     * Set xml
+     *
+     * @param string $xml
+     *
+     * @return RegistrationError
+     */
+    public function setXml($xml)
+    {
+        $this->xml = $xml;
+
+        return $this;
+    }
+
+    /**
+     * Get xml
+     *
+     * @return string
+     */
+    public function getXml()
+    {
+        return $this->xml;
+    }
+
+    /**
      * Set createdDate
      *
      * @param \DateTime $createdDate
      *
-     * @return Shirt
+     * @return RegistrationError
      */
     public function setCreatedDate($createdDate)
     {
@@ -179,7 +148,7 @@ class Shirt
      *
      * @param \DateTime $modifiedDate
      *
-     * @return Shirt
+     * @return RegistrationError
      */
     public function setModifiedDate($modifiedDate)
     {
@@ -199,11 +168,11 @@ class Shirt
     }
 
     /**
-     * Get shirtId
+     * Get registrationErrorId
      *
      * @return integer
      */
-    public function getShirtId()
+    public function getRegistrationErrorId()
     {
         return $this->id;
     }
@@ -213,7 +182,7 @@ class Shirt
      *
      * @param \AppBundle\Entity\User $createdBy
      *
-     * @return Shirt
+     * @return RegistrationError
      */
     public function setCreatedBy(User $createdBy = null)
     {
@@ -237,7 +206,7 @@ class Shirt
      *
      * @param \AppBundle\Entity\User $modifiedBy
      *
-     * @return Shirt
+     * @return RegistrationError
      */
     public function setModifiedBy(User $modifiedBy = null)
     {

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Group
  *
- * @ORM\Table(name="Group", indexes={@ORM\Index(name="FK1_Group_CreatedBy", columns={"CreatedBy"}), @ORM\Index(name="FK2_Group_ModifiedBy", columns={"ModifiedBy"})})
+ * @ORM\Table(name="group", indexes={@ORM\Index(name="FK1_Group_CreatedBy", columns={"created_by"}), @ORM\Index(name="FK2_Group_ModifiedBy", columns={"modified_by"})})
  * @ORM\Entity
  */
 class Group
@@ -15,66 +15,130 @@ class Group
     /**
      * @var string
      *
-     * @ORM\Column(name="Name", type="string", length=255, nullable=false)
+     * @ORM\Column(name="name", type="string", length=255, nullable=false)
      */
     private $name;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="Description", type="string", length=255, nullable=true)
+     * @ORM\Column(name="school", type="string", length=255, nullable=false)
      */
-    private $description;
+    private $school;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="Email", type="string", length=255, nullable=true)
+     * @ORM\Column(name="address", type="string", length=255, nullable=false)
      */
-    private $email;
+    private $address;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="city", type="string", length=255, nullable=false)
+     */
+    private $city;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="state", type="string", length=32, nullable=false)
+     */
+    private $state;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="zip", type="string", length=16, nullable=false)
+     */
+    private $zip;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="leader", type="string", length=255, nullable=false)
+     */
+    private $leader;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="leader_phone", type="string", length=255, nullable=false)
+     */
+    private $leaderPhone;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="leader_email", type="string", length=255, nullable=false)
+     */
+    private $leaderEmail;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="authorized_name", type="string", length=255, nullable=false)
+     */
+    private $authorizedName;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="authorized_phone", type="string", length=255, nullable=false)
+     */
+    private $authorizedPhone;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="authorized_email", type="string", length=255, nullable=false)
+     */
+    private $authorizedEmail;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="CreatedDate", type="datetime", nullable=true)
+     * @ORM\Column(name="created_date", type="datetime", nullable=true)
      */
-    private $createddate;
+    private $createdDate;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="ModifiedDate", type="datetime", nullable=true)
+     * @ORM\Column(name="modified_date", type="datetime", nullable=true)
      */
-    private $modifieddate;
+    private $modifiedDate;
+
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="Group_ID", type="integer")
+     * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $groupId;
+    private $id;
 
     /**
      * @var \AppBundle\Entity\User
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="CreatedBy", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id")
      * })
      */
-    private $createdby;
+    private $createdBy;
 
     /**
      * @var \AppBundle\Entity\User
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="ModifiedBy", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="modified_by", referencedColumnName="id")
      * })
      */
-    private $modifiedby;
+    private $modifiedBy;
 
 
 
@@ -103,99 +167,315 @@ class Group
     }
 
     /**
-     * Set description
+     * Set school
      *
-     * @param string $description
+     * @param string $school
      *
      * @return Group
      */
-    public function setDescription($description)
+    public function setSchool($school)
     {
-        $this->description = $description;
+        $this->school = $school;
 
         return $this;
     }
 
     /**
-     * Get description
+     * Get school
      *
      * @return string
      */
-    public function getDescription()
+    public function getSchool()
     {
-        return $this->description;
+        return $this->school;
     }
 
     /**
-     * Set email
+     * Set address
      *
-     * @param string $email
+     * @param string $address
      *
      * @return Group
      */
-    public function setEmail($email)
+    public function setAddress($address)
     {
-        $this->email = $email;
+        $this->address = $address;
 
         return $this;
     }
 
     /**
-     * Get email
+     * Get address
      *
      * @return string
      */
-    public function getEmail()
+    public function getAddress()
     {
-        return $this->email;
+        return $this->address;
     }
 
     /**
-     * Set createddate
+     * Set city
      *
-     * @param \DateTime $createddate
+     * @param string $city
      *
      * @return Group
      */
-    public function setCreateddate($createddate)
+    public function setCity($city)
     {
-        $this->createddate = $createddate;
+        $this->city = $city;
 
         return $this;
     }
 
     /**
-     * Get createddate
+     * Get city
      *
-     * @return \DateTime
+     * @return string
      */
-    public function getCreateddate()
+    public function getCity()
     {
-        return $this->createddate;
+        return $this->city;
     }
 
     /**
-     * Set modifieddate
+     * Set state
      *
-     * @param \DateTime $modifieddate
+     * @param string $state
      *
      * @return Group
      */
-    public function setModifieddate($modifieddate)
+    public function setState($state)
     {
-        $this->modifieddate = $modifieddate;
+        $this->state = $state;
 
         return $this;
     }
 
     /**
-     * Get modifieddate
+     * Get state
+     *
+     * @return string
+     */
+    public function getState()
+    {
+        return $this->state;
+    }
+
+    /**
+     * Set zip
+     *
+     * @param string $zip
+     *
+     * @return Group
+     */
+    public function setZip($zip)
+    {
+        $this->zip = $zip;
+
+        return $this;
+    }
+
+    /**
+     * Get zip
+     *
+     * @return string
+     */
+    public function getZip()
+    {
+        return $this->zip;
+    }
+
+    /**
+     * Set leader
+     *
+     * @param string $leader
+     *
+     * @return Group
+     */
+    public function setLeader($leader)
+    {
+        $this->leader = $leader;
+
+        return $this;
+    }
+
+    /**
+     * Get leader
+     *
+     * @return string
+     */
+    public function getLeader()
+    {
+        return $this->leader;
+    }
+
+    /**
+     * Set leaderPhone
+     *
+     * @param string $leaderPhone
+     *
+     * @return Group
+     */
+    public function setLeaderPhone($leaderPhone)
+    {
+        $this->leaderPhone = $leaderPhone;
+
+        return $this;
+    }
+
+    /**
+     * Get leaderphone
+     *
+     * @return string
+     */
+    public function getLeaderPhone()
+    {
+        return $this->leaderPhone;
+    }
+
+    /**
+     * Set leaderEmail
+     *
+     * @param string $leaderEmail
+     *
+     * @return Group
+     */
+    public function setLeaderEmail($leaderEmail)
+    {
+        $this->leaderEmail = $leaderEmail;
+
+        return $this;
+    }
+
+    /**
+     * Get leaderEmail
+     *
+     * @return string
+     */
+    public function getLeaderEmail()
+    {
+        return $this->leaderEmail;
+    }
+
+    /**
+     * Set authorizedName
+     *
+     * @param string $authorizedName
+     *
+     * @return Group
+     */
+    public function setAuthorizedName($authorizedName)
+    {
+        $this->authorizedName = $authorizedName;
+
+        return $this;
+    }
+
+    /**
+     * Get authorizedName
+     *
+     * @return string
+     */
+    public function getAuthorizedName()
+    {
+        return $this->authorizedName;
+    }
+
+    /**
+     * Set authorizedPhone
+     *
+     * @param string $authorizedPhone
+     *
+     * @return Group
+     */
+    public function setAuthorizedPhone($authorizedPhone)
+    {
+        $this->authorizedPhone = $authorizedPhone;
+
+        return $this;
+    }
+
+    /**
+     * Get authorizedPhone
+     *
+     * @return string
+     */
+    public function getAuthorizedPhone()
+    {
+        return $this->authorizedPhone;
+    }
+
+    /**
+     * Set authorizedEmail
+     *
+     * @param string $authorizedEmail
+     *
+     * @return Group
+     */
+    public function setAuthorizedEmail($authorizedEmail)
+    {
+        $this->authorizedEmail = $authorizedEmail;
+
+        return $this;
+    }
+
+    /**
+     * Get authorizedEmail
+     *
+     * @return string
+     */
+    public function getAuthorizedEmail()
+    {
+        return $this->authorizedEmail;
+    }
+
+    /**
+     * Set createdDate
+     *
+     * @param \DateTime $createdDate
+     *
+     * @return Group
+     */
+    public function setCreatedDate($createdDate)
+    {
+        $this->createdDate = $createdDate;
+
+        return $this;
+    }
+
+    /**
+     * Get createdDate
      *
      * @return \DateTime
      */
-    public function getModifieddate()
+    public function getCreatedDate()
     {
-        return $this->modifieddate;
+        return $this->createdDate;
+    }
+
+    /**
+     * Set modifiedDate
+     *
+     * @param \DateTime $modifiedDate
+     *
+     * @return Group
+     */
+    public function setModifieddate($modifiedDate)
+    {
+        $this->modifiedDate = $modifiedDate;
+
+        return $this;
+    }
+
+    /**
+     * Get modifiedDate
+     *
+     * @return \DateTime
+     */
+    public function getModifiedDate()
+    {
+        return $this->modifiedDate;
     }
 
     /**
@@ -205,54 +485,54 @@ class Group
      */
     public function getGroupId()
     {
-        return $this->groupId;
+        return $this->id;
     }
 
     /**
-     * Set createdby
+     * Set createdBy
      *
-     * @param \AppBundle\Entity\User $createdby
+     * @param \AppBundle\Entity\User $createdBy
      *
      * @return Group
      */
-    public function setCreatedby(\AppBundle\Entity\User $createdby = null)
+    public function setCreatedBy(User $createdBy = null)
     {
-        $this->createdby = $createdby;
+        $this->createdBy = $createdBy;
 
         return $this;
     }
 
     /**
-     * Get createdby
+     * Get createdBy
      *
      * @return \AppBundle\Entity\User
      */
-    public function getCreatedby()
+    public function getCreatedBy()
     {
-        return $this->createdby;
+        return $this->createdBy;
     }
 
     /**
-     * Set modifiedby
+     * Set modifiedBy
      *
-     * @param \AppBundle\Entity\User $modifiedby
+     * @param \AppBundle\Entity\User $modifiedBy
      *
      * @return Group
      */
-    public function setModifiedby(\AppBundle\Entity\User $modifiedby = null)
+    public function setModifiedBy(User $modifiedBy = null)
     {
-        $this->modifiedby = $modifiedby;
+        $this->modifiedBy = $modifiedBy;
 
         return $this;
     }
 
     /**
-     * Get modifiedby
+     * Get modifiedBy
      *
      * @return \AppBundle\Entity\User
      */
-    public function getModifiedby()
+    public function getModifiedBy()
     {
-        return $this->modifiedby;
+        return $this->modifiedBy;
     }
 }

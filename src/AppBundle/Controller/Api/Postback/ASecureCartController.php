@@ -4,7 +4,7 @@ namespace AppBundle\Controller\Api\Postback;
 
 use AppBundle\Entity\Badge;
 use AppBundle\Entity\Registration;
-use AppBundle\Entity\Registrationerror;
+use AppBundle\Entity\RegistrationError;
 use AppBundle\Entity\Registrationextra;
 use AppBundle\Entity\Registrationshirt;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -247,7 +247,7 @@ class ASecureCartController extends Controller
     {
         $entityManager = $this->get('doctrine.orm.entity_manager');
 
-        $registrationError = new Registrationerror();
+        $registrationError = new RegistrationError();
         $registrationError->setDescription($error);
         $registrationError->setXml($xmlPost);
         $this->sendErrorEmail($registrationError);
@@ -256,7 +256,7 @@ class ASecureCartController extends Controller
     }
 
     /**
-     * @param Registrationerror $registrationError
+     * @param RegistrationError $registrationError
      */
     protected function sendErrorEmail($registrationError)
     {

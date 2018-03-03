@@ -2,7 +2,7 @@
 
 namespace AppBundle\Controller\Group;
 
-use AppBundle\Entity\Reggroup;
+use AppBundle\Entity\Group;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -87,7 +87,7 @@ class GroupController extends Controller
         $vars['errors'] = [];
         if ($request->request->has('action') && $request->request->get('action') == 'save') {
             if (!$regGroup) {
-                $regGroup = new Reggroup();
+                $regGroup = new Group();
             }
 
             $regGroup->setName($request->request->get('name'));

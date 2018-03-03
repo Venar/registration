@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Registration
  *
- * @ORM\Table(name="Registration", indexes={@ORM\Index(name="FK1_Registration_CreatedBy", columns={"CreatedBy"}), @ORM\Index(name="FK2_Registration_ModifiedBy", columns={"ModifiedBy"}), @ORM\Index(name="FK2_Registration_RegistrationType_ID", columns={"RegistrationType_ID"}), @ORM\Index(name="FK2_Registration_RegistrationStatus_ID", columns={"RegistrationStatus_ID"}), @ORM\Index(name="FK2_Registration_Event_ID", columns={"Event_ID"}), @ORM\Index(name="FK3_TransferedTo", columns={"TransferedTo"})})
+ * @ORM\Table(name="registration", indexes={@ORM\Index(name="FK1_Registration_CreatedBy", columns={"created_by"}), @ORM\Index(name="FK2_Registration_ModifiedBy", columns={"modified_by"}), @ORM\Index(name="FK2_Registration_RegistrationType_ID", columns={"registration_type_id"}), @ORM\Index(name="FK2_Registration_RegistrationStatus_ID", columns={"registration_status_id"}), @ORM\Index(name="FK2_Registration_Event_ID", columns={"event_id"}), @ORM\Index(name="FK3_TransferredTo", columns={"transferred_to"})})
  * @ORM\Entity
  */
 class Registration
@@ -15,100 +15,100 @@ class Registration
     /**
      * @var string
      *
-     * @ORM\Column(name="Number", type="string", length=255, nullable=false)
+     * @ORM\Column(name="number", type="string", length=255, nullable=false)
      */
     private $number;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="ConfirmationNumber", type="string", length=255, nullable=true)
+     * @ORM\Column(name="confirmation_number", type="string", length=255, nullable=true)
      */
-    private $confirmationnumber;
+    private $confirmationNumber;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="FirstName", type="string", length=255, nullable=false)
+     * @ORM\Column(name="first_name", type="string", length=255, nullable=false)
      */
-    private $firstname;
+    private $firstName;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="LastName", type="string", length=255, nullable=false)
+     * @ORM\Column(name="last_name", type="string", length=255, nullable=false)
      */
-    private $lastname;
+    private $lastName;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="MiddleName", type="string", length=255, nullable=false)
+     * @ORM\Column(name="middle_name", type="string", length=255, nullable=false)
      */
-    private $middlename;
+    private $middleName;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="Address", type="string", length=255, nullable=false)
+     * @ORM\Column(name="address", type="string", length=255, nullable=false)
      */
     private $address;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="Address2", type="string", length=255, nullable=false)
+     * @ORM\Column(name="address2", type="string", length=255, nullable=false)
      */
     private $address2;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="City", type="string", length=255, nullable=false)
+     * @ORM\Column(name="city", type="string", length=255, nullable=false)
      */
     private $city;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="State", type="string", length=32, nullable=false)
+     * @ORM\Column(name="state", type="string", length=32, nullable=false)
      */
     private $state;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="Zip", type="string", length=16, nullable=false)
+     * @ORM\Column(name="zip", type="string", length=16, nullable=false)
      */
     private $zip;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="Phone", type="string", length=255, nullable=false)
+     * @ORM\Column(name="phone", type="string", length=255, nullable=false)
      */
     private $phone;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="Email", type="string", length=255, nullable=false)
+     * @ORM\Column(name="email", type="string", length=255, nullable=false)
      */
     private $email;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="Birthday", type="datetime", nullable=true)
+     * @ORM\Column(name="birthday", type="datetime", nullable=true)
      */
     private $birthday;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="BadgeName", type="string", length=255, nullable=false)
+     * @ORM\Column(name="badge_name", type="string", length=255, nullable=false)
      */
-    private $badgename;
+    private $badgeName;
 
     /**
      * @var boolean
@@ -127,92 +127,92 @@ class Registration
     /**
      * @var string
      *
-     * @ORM\Column(name="XML", type="string", length=8296, nullable=true)
+     * @ORM\Column(name="xml", type="string", length=8296, nullable=true)
      */
     private $xml;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="CreatedDate", type="datetime", nullable=true)
+     * @ORM\Column(name="created_date", type="datetime", nullable=true)
      */
-    private $createddate;
+    private $createdDate;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="ModifiedDate", type="datetime", nullable=true)
+     * @ORM\Column(name="modified_date", type="datetime", nullable=true)
      */
-    private $modifieddate;
+    private $modifiedDate;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="Registration_ID", type="integer")
+     * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $registrationId;
+    private $id;
 
     /**
      * @var \AppBundle\Entity\User
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="CreatedBy", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id")
      * })
      */
-    private $createdby;
+    private $createdBy;
 
     /**
      * @var \AppBundle\Entity\Event
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Event")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="Event_ID", referencedColumnName="Event_ID")
+     *   @ORM\JoinColumn(name="event_id", referencedColumnName="id", nullable=true)
      * })
      */
     private $event;
 
     /**
-     * @var \AppBundle\Entity\Registrationstatus
+     * @var \AppBundle\Entity\RegistrationStatus
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Registrationstatus")
+     * @ORM\ManyToOne(targetEntity="RegistrationStatus")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="RegistrationStatus_ID", referencedColumnName="RegistrationStatus_ID")
+     *   @ORM\JoinColumn(name="registration_status_id", referencedColumnName="id")
      * })
      */
-    private $registrationstatus;
+    private $registrationStatus;
 
     /**
-     * @var \AppBundle\Entity\Registrationtype
+     * @var \AppBundle\Entity\RegistrationType
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Registrationtype")
+     * @ORM\ManyToOne(targetEntity="RegistrationType")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="RegistrationType_ID", referencedColumnName="RegistrationType_ID")
+     *   @ORM\JoinColumn(name="registration_type_id", referencedColumnName="id")
      * })
      */
-    private $registrationtype;
+    private $registrationType;
 
     /**
      * @var \AppBundle\Entity\Registration
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Registration")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="TransferedTo", referencedColumnName="Registration_ID")
+     *   @ORM\JoinColumn(name="transferred_to", referencedColumnName="id")
      * })
      */
-    private $transferedto;
+    private $transferredTo;
 
     /**
      * @var \AppBundle\Entity\User
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="ModifiedBy", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="modified_by", referencedColumnName="id")
      * })
      */
-    private $modifiedby;
+    private $modifiedBy;
 
 
 
@@ -241,99 +241,99 @@ class Registration
     }
 
     /**
-     * Set confirmationnumber
+     * Set confirmationNumber
      *
-     * @param string $confirmationnumber
+     * @param string $confirmationNumber
      *
      * @return Registration
      */
-    public function setConfirmationnumber($confirmationnumber)
+    public function setConfirmationNumber($confirmationNumber)
     {
-        $this->confirmationnumber = $confirmationnumber;
+        $this->confirmationNumber = $confirmationNumber;
 
         return $this;
     }
 
     /**
-     * Get confirmationnumber
+     * Get confirmationNumber
      *
      * @return string
      */
-    public function getConfirmationnumber()
+    public function getConfirmationNumber()
     {
-        return $this->confirmationnumber;
+        return $this->confirmationNumber;
     }
 
     /**
-     * Set firstname
+     * Set firstName
      *
-     * @param string $firstname
+     * @param string $firstName
      *
      * @return Registration
      */
-    public function setFirstname($firstname)
+    public function setFirstName($firstName)
     {
-        $this->firstname = $firstname;
+        $this->firstName = $firstName;
 
         return $this;
     }
 
     /**
-     * Get firstname
+     * Get firstName
      *
      * @return string
      */
-    public function getFirstname()
+    public function getFirstName()
     {
-        return $this->firstname;
+        return $this->firstName;
     }
 
     /**
-     * Set lastname
+     * Set lastName
      *
-     * @param string $lastname
+     * @param string $lastName
      *
      * @return Registration
      */
-    public function setLastname($lastname)
+    public function setLastname($lastName)
     {
-        $this->lastname = $lastname;
+        $this->lastName = $lastName;
 
         return $this;
     }
 
     /**
-     * Get lastname
+     * Get lastName
      *
      * @return string
      */
-    public function getLastname()
+    public function getLastName()
     {
-        return $this->lastname;
+        return $this->lastName;
     }
 
     /**
-     * Set middlename
+     * Set middleName
      *
-     * @param string $middlename
+     * @param string $middleName
      *
      * @return Registration
      */
-    public function setMiddlename($middlename)
+    public function setMiddlename($middleName)
     {
-        $this->middlename = $middlename;
+        $this->middleName = $middleName;
 
         return $this;
     }
 
     /**
-     * Get middlename
+     * Get middleName
      *
      * @return string
      */
-    public function getMiddlename()
+    public function getMiddleName()
     {
-        return $this->middlename;
+        return $this->middleName;
     }
 
     /**
@@ -529,27 +529,27 @@ class Registration
     }
 
     /**
-     * Set badgename
+     * Set badgeName
      *
-     * @param string $badgename
+     * @param string $badgeName
      *
      * @return Registration
      */
-    public function setBadgename($badgename)
+    public function setBadgeName($badgeName)
     {
-        $this->badgename = $badgename;
+        $this->badgeName = $badgeName;
 
         return $this;
     }
 
     /**
-     * Get badgename
+     * Get badgeName
      *
      * @return string
      */
-    public function getBadgename()
+    public function getBadgeName()
     {
-        return $this->badgename;
+        return $this->badgeName;
     }
 
     /**
@@ -625,51 +625,51 @@ class Registration
     }
 
     /**
-     * Set createddate
+     * Set createdDate
      *
-     * @param \DateTime $createddate
+     * @param \DateTime $createdDate
      *
      * @return Registration
      */
-    public function setCreateddate($createddate)
+    public function setCreatedDate($createdDate)
     {
-        $this->createddate = $createddate;
+        $this->createdDate = $createdDate;
 
         return $this;
     }
 
     /**
-     * Get createddate
+     * Get createdDate
      *
      * @return \DateTime
      */
-    public function getCreateddate()
+    public function getCreatedDate()
     {
-        return $this->createddate;
+        return $this->createdDate;
     }
 
     /**
-     * Set modifieddate
+     * Set modifiedDate
      *
-     * @param \DateTime $modifieddate
+     * @param \DateTime $modifiedDate
      *
      * @return Registration
      */
-    public function setModifieddate($modifieddate)
+    public function setModifieddate($modifiedDate)
     {
-        $this->modifieddate = $modifieddate;
+        $this->modifiedDate = $modifiedDate;
 
         return $this;
     }
 
     /**
-     * Get modifieddate
+     * Get modifiedDate
      *
      * @return \DateTime
      */
-    public function getModifieddate()
+    public function getModifiedDate()
     {
-        return $this->modifieddate;
+        return $this->modifiedDate;
     }
 
     /**
@@ -679,19 +679,19 @@ class Registration
      */
     public function getRegistrationId()
     {
-        return $this->registrationId;
+        return $this->id;
     }
 
     /**
-     * Set createdby
+     * Set createdBy
      *
-     * @param \AppBundle\Entity\User $createdby
+     * @param \AppBundle\Entity\User $createdBy
      *
      * @return Registration
      */
-    public function setCreatedby(\AppBundle\Entity\User $createdby = null)
+    public function setCreatedBy(User $createdBy = null)
     {
-        $this->createdby = $createdby;
+        $this->createdBy = $createdBy;
 
         return $this;
     }
@@ -701,9 +701,9 @@ class Registration
      *
      * @return \AppBundle\Entity\User
      */
-    public function getCreatedby()
+    public function getCreatedBy()
     {
-        return $this->createdby;
+        return $this->createdBy;
     }
 
     /**
@@ -713,7 +713,7 @@ class Registration
      *
      * @return Registration
      */
-    public function setEvent(\AppBundle\Entity\Event $event = null)
+    public function setEvent(Event $event = null)
     {
         $this->event = $event;
 
@@ -731,63 +731,63 @@ class Registration
     }
 
     /**
-     * Set registrationstatus
+     * Set registrationStatus
      *
-     * @param \AppBundle\Entity\Registrationstatus $registrationstatus
+     * @param \AppBundle\Entity\RegistrationStatus $registrationStatus
      *
      * @return Registration
      */
-    public function setRegistrationstatus(\AppBundle\Entity\Registrationstatus $registrationstatus = null)
+    public function setRegistrationstatus(RegistrationStatus $registrationStatus = null)
     {
-        $this->registrationstatus = $registrationstatus;
+        $this->registrationStatus = $registrationStatus;
 
         return $this;
     }
 
     /**
-     * Get registrationstatus
+     * Get registrationStatus
      *
-     * @return \AppBundle\Entity\Registrationstatus
+     * @return \AppBundle\Entity\RegistrationStatus
      */
-    public function getRegistrationstatus()
+    public function getRegistrationStatus()
     {
-        return $this->registrationstatus;
+        return $this->registrationStatus;
     }
 
     /**
-     * Set registrationtype
+     * Set registrationType
      *
-     * @param \AppBundle\Entity\Registrationtype $registrationtype
+     * @param \AppBundle\Entity\RegistrationType $registrationType
      *
      * @return Registration
      */
-    public function setRegistrationtype(\AppBundle\Entity\Registrationtype $registrationtype = null)
+    public function setRegistrationType(RegistrationType $registrationType = null)
     {
-        $this->registrationtype = $registrationtype;
+        $this->registrationType = $registrationType;
 
         return $this;
     }
 
     /**
-     * Get registrationtype
+     * Get registrationType
      *
-     * @return \AppBundle\Entity\Registrationtype
+     * @return \AppBundle\Entity\RegistrationType
      */
-    public function getRegistrationtype()
+    public function getRegistrationType()
     {
-        return $this->registrationtype;
+        return $this->registrationType;
     }
 
     /**
-     * Set transferedto
+     * Set transferredTo
      *
-     * @param \AppBundle\Entity\Registration $transferedto
+     * @param \AppBundle\Entity\Registration $transferredTo
      *
      * @return Registration
      */
-    public function setTransferedto(\AppBundle\Entity\Registration $transferedto = null)
+    public function setTransferredTo(Registration $transferredTo = null)
     {
-        $this->transferedto = $transferedto;
+        $this->transferredTo = $transferredTo;
 
         return $this;
     }
@@ -797,32 +797,32 @@ class Registration
      *
      * @return \AppBundle\Entity\Registration
      */
-    public function getTransferedto()
+    public function getTransferredTo()
     {
-        return $this->transferedto;
+        return $this->transferredTo;
     }
 
     /**
-     * Set modifiedby
+     * Set modifiedBy
      *
-     * @param \AppBundle\Entity\User $modifiedby
+     * @param \AppBundle\Entity\User $modifiedBy
      *
      * @return Registration
      */
-    public function setModifiedby(\AppBundle\Entity\User $modifiedby = null)
+    public function setModifiedBy(User $modifiedBy = null)
     {
-        $this->modifiedby = $modifiedby;
+        $this->modifiedBy = $modifiedBy;
 
         return $this;
     }
 
     /**
-     * Get modifiedby
+     * Get modifiedBy
      *
      * @return \AppBundle\Entity\User
      */
-    public function getModifiedby()
+    public function getModifiedBy()
     {
-        return $this->modifiedby;
+        return $this->modifiedBy;
     }
 }

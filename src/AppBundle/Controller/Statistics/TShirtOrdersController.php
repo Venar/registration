@@ -31,7 +31,7 @@ class TShirtOrdersController extends Controller
             $queryBuilder = $this->get('doctrine.orm.default_entity_manager')->createQueryBuilder();
             $queryBuilder
                 ->select('count(rs.registrationshirtId)')
-                ->from('AppBundle\Entity\Registrationshirt', 'rs')
+        //FIXME        ->from('AppBundle\Entity\Registrationshirt', 'rs')
                 ->where($queryBuilder->expr()->in('rs.registration', $subQuery))
                 ->andWhere('rs.shirt = :shirt')
                 ->setParameter('shirt', $shirt)

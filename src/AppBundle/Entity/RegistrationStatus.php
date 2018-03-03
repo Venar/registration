@@ -5,77 +5,76 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Badgestatus
+ * RegistrationStatus
  *
- * @ORM\Table(name="BadgeStatus", indexes={@ORM\Index(name="FK1_BadgeStatus_CreatedBy", columns={"CreatedBy"}), @ORM\Index(name="FK2_BadgeStatus_ModifiedBy", columns={"ModifiedBy"})})
+ * @ORM\Table(name="registration_status", indexes={@ORM\Index(name="FK1_RegistrationStatus_CreatedBy", columns={"created_by"}), @ORM\Index(name="FK2_RegistrationStatus_ModifiedBy", columns={"modified_by"})})
  * @ORM\Entity
  */
-class Badgestatus
+class RegistrationStatus
 {
     /**
      * @var string
      *
-     * @ORM\Column(name="Status", type="string", length=255, nullable=false)
+     * @ORM\Column(name="status", type="string", length=255, nullable=false)
      */
     private $status;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="Description", type="string", length=255, nullable=false)
+     * @ORM\Column(name="description", type="string", length=255, nullable=false)
      */
     private $description;
 
     /**
      * @var boolean
      *
-     * @ORM\Column(name="Active", type="boolean", nullable=false)
+     * @ORM\Column(name="active", type="boolean", nullable=false)
      */
     private $active = '0';
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="CreatedDate", type="datetime", nullable=true)
+     * @ORM\Column(name="created_date", type="datetime", nullable=true)
      */
-    private $createddate;
+    private $createdDate;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="ModifiedDate", type="datetime", nullable=true)
+     * @ORM\Column(name="modified_date", type="datetime", nullable=true)
      */
-    private $modifieddate;
+    private $modifiedDate;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="BadgeStatus_ID", type="integer")
+     * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $badgestatusId;
+    private $id;
 
     /**
      * @var \AppBundle\Entity\User
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="CreatedBy", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id")
      * })
      */
-    private $createdby;
+    private $createdBy;
 
     /**
      * @var \AppBundle\Entity\User
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="ModifiedBy", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="modified_by", referencedColumnName="id")
      * })
      */
-    private $modifiedby;
-
+    private $modifiedBy;
 
 
     /**
@@ -83,7 +82,7 @@ class Badgestatus
      *
      * @param string $status
      *
-     * @return Badgestatus
+     * @return RegistrationStatus
      */
     public function setStatus($status)
     {
@@ -107,7 +106,7 @@ class Badgestatus
      *
      * @param string $description
      *
-     * @return Badgestatus
+     * @return RegistrationStatus
      */
     public function setDescription($description)
     {
@@ -131,7 +130,7 @@ class Badgestatus
      *
      * @param boolean $active
      *
-     * @return Badgestatus
+     * @return RegistrationStatus
      */
     public function setActive($active)
     {
@@ -151,108 +150,108 @@ class Badgestatus
     }
 
     /**
-     * Set createddate
+     * Set createdDate
      *
-     * @param \DateTime $createddate
+     * @param \DateTime $createdDate
      *
-     * @return Badgestatus
+     * @return RegistrationStatus
      */
-    public function setCreateddate($createddate)
+    public function setCreatedDate($createdDate)
     {
-        $this->createddate = $createddate;
+        $this->createdDate = $createdDate;
 
         return $this;
     }
 
     /**
-     * Get createddate
+     * Get createdDate
      *
      * @return \DateTime
      */
-    public function getCreateddate()
+    public function getCreatedDate()
     {
-        return $this->createddate;
+        return $this->createdDate;
     }
 
     /**
-     * Set modifieddate
+     * Set modifiedDate
      *
-     * @param \DateTime $modifieddate
+     * @param \DateTime $modifiedDate
      *
-     * @return Badgestatus
+     * @return RegistrationStatus
      */
-    public function setModifieddate($modifieddate)
+    public function setModifiedDate($modifiedDate)
     {
-        $this->modifieddate = $modifieddate;
+        $this->modifiedDate = $modifiedDate;
 
         return $this;
     }
 
     /**
-     * Get modifieddate
+     * Get modifiedDate
      *
      * @return \DateTime
      */
-    public function getModifieddate()
+    public function getModifiedDate()
     {
-        return $this->modifieddate;
+        return $this->modifiedDate;
     }
 
     /**
-     * Get badgestatusId
+     * Get registrationStatusId
      *
      * @return integer
      */
-    public function getBadgestatusId()
+    public function getRegistrationStatusId()
     {
-        return $this->badgestatusId;
+        return $this->id;
     }
 
     /**
-     * Set createdby
+     * Set createdBy
      *
-     * @param \AppBundle\Entity\User $createdby
+     * @param \AppBundle\Entity\User $createdBy
      *
-     * @return Badgestatus
+     * @return RegistrationStatus
      */
-    public function setCreatedby(\AppBundle\Entity\User $createdby = null)
+    public function setCreatedBy(User $createdBy = null)
     {
-        $this->createdby = $createdby;
+        $this->createdBy = $createdBy;
 
         return $this;
     }
 
     /**
-     * Get createdby
+     * Get createdBy
      *
      * @return \AppBundle\Entity\User
      */
-    public function getCreatedby()
+    public function getCreatedBy()
     {
-        return $this->createdby;
+        return $this->createdBy;
     }
 
     /**
-     * Set modifiedby
+     * Set modifiedBy
      *
-     * @param \AppBundle\Entity\User $modifiedby
+     * @param \AppBundle\Entity\User $modifiedBy
      *
-     * @return Badgestatus
+     * @return RegistrationStatus
      */
-    public function setModifiedby(\AppBundle\Entity\User $modifiedby = null)
+    public function setModifiedBy(User $modifiedBy = null)
     {
-        $this->modifiedby = $modifiedby;
+        $this->modifiedBy = $modifiedBy;
 
         return $this;
     }
 
     /**
-     * Get modifiedby
+     * Get modifiedBy
      *
      * @return \AppBundle\Entity\User
      */
-    public function getModifiedby()
+    public function getModifiedBy()
     {
-        return $this->modifiedby;
+        return $this->modifiedBy;
     }
 }

@@ -9,7 +9,7 @@
 namespace AppBundle\Service\Repository;
 
 
-use AppBundle\Entity\Badgetype;
+use AppBundle\Entity\BadgeType;
 use Doctrine\ORM\EntityManager;
 
 class BadgeTypeRepository
@@ -26,7 +26,7 @@ class BadgeTypeRepository
 
     /**
      * @param $type
-     * @return Badgetype
+     * @return BadgeType
      */
     public function getBadgeTypeFromType($type)
     {
@@ -41,7 +41,7 @@ class BadgeTypeRepository
     }
 
     /**
-     * @return Badgetype[]
+     * @return BadgeType[]
      */
     public function findAll()
     {

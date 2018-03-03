@@ -2,6 +2,9 @@
 
 namespace AppBundle\Controller\Manage;
 
+use AppBundle\Entity\BadgeType;
+use AppBundle\Entity\RegistrationStatus;
+use AppBundle\Entity\RegistrationType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -29,7 +32,7 @@ class ManageController extends Controller
         if ($request->query->has('RegistrationType_ID')) {
             $registrationTypeID = $request->query->get('RegistrationType_ID');
             $registrationType = $this->getDoctrine()
-                ->getRepository('AppBundle:Registrationtype')
+                ->getRepository(RegistrationType::class)
                 ->find($registrationTypeID);
             if ($registrationType) {
                 $registrationTypeDescription = $registrationType->getDescription();
@@ -43,7 +46,7 @@ class ManageController extends Controller
         if ($request->query->has('RegistrationStatus_ID')) {
             $registrationStatusID = $request->query->get('RegistrationStatus_ID');
             $registrationStatus = $this->getDoctrine()
-                ->getRepository('AppBundle:Registrationstatus')
+                ->getRepository(RegistrationStatus::class)
                 ->find($registrationStatusID);
             if ($registrationStatus) {
                 $registrationStatusDescription = $registrationStatus->getDescription();
@@ -57,7 +60,7 @@ class ManageController extends Controller
         if ($request->query->has('BadgeType_ID')) {
             $badgeTypeID = $request->query->get('BadgeType_ID');
             $badgeType = $this->getDoctrine()
-                ->getRepository('AppBundle:Badgetype')
+                ->getRepository(BadgeType::class)
                 ->find($badgeTypeID);
             if ($badgeType) {
                 $badgeTypeDescription = $badgeType->getDescription();
@@ -100,17 +103,17 @@ class ManageController extends Controller
 
         $registrationTypeID = $request->query->get('RegistrationType_ID');
         $registrationType = $this->getDoctrine()
-            ->getRepository('AppBundle:Registrationtype')
+            ->getRepository(RegistrationType::class)
             ->find($registrationTypeID);
 
         $registrationStatusID = $request->query->get('RegistrationStatus_ID');
         $registrationStatus = $this->getDoctrine()
-            ->getRepository('AppBundle:Registrationstatus')
+            ->getRepository(RegistrationStatus::class)
             ->find($registrationStatusID);
 
         $badgeTypeID = $request->query->get('BadgeType_ID');
         $badgeType = $this->getDoctrine()
-            ->getRepository('AppBundle:Badgetype')
+            ->getRepository(BadgeType::class)
             ->find($badgeTypeID);
 
         if ($page <= 1 || !is_numeric($page)) {

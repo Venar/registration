@@ -4,7 +4,7 @@ namespace AppBundle\Service\Repository;
 
 
 use Doctrine\ORM\EntityManager;
-use AppBundle\Entity\Registrationstatus;
+use AppBundle\Entity\RegistrationStatus;
 
 class RegistrationStatusRepository
 {
@@ -20,7 +20,7 @@ class RegistrationStatusRepository
 
     /**
      * @param String $status
-     * @return Registrationstatus|null
+     * @return RegistrationStatus|null
      */
     public function getRegistrationStatusFromStatus($status)
     {
@@ -35,7 +35,7 @@ class RegistrationStatusRepository
     }
 
     /**
-     * @return Registrationstatus[]
+     * @return RegistrationStatus[]
      */
     public function findAll()
     {

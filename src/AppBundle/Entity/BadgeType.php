@@ -5,26 +5,19 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Shirt
+ * BadgeType
  *
- * @ORM\Table(name="shirt", indexes={@ORM\Index(name="FK1_Shirt_CreatedBy", columns={"created_by"}), @ORM\Index(name="FK2_Shirt_ModifiedBy", columns={"modified_by"})})
+ * @ORM\Table(name="badge_type", indexes={@ORM\Index(name="FK1_BadgeType_CreatedBy", columns={"created_by"}), @ORM\Index(name="FK2_BadgeType_ModifiedBy", columns={"modified_by"})})
  * @ORM\Entity
  */
-class Shirt
+class BadgeType
 {
     /**
      * @var string
      *
-     * @ORM\Column(name="size", type="string", length=255, nullable=false)
+     * @ORM\Column(name="name", type="string", length=255, nullable=false)
      */
-    private $size;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="type", type="string", length=255, nullable=false)
-     */
-    private $type;
+    private $name;
 
     /**
      * @var string
@@ -79,51 +72,27 @@ class Shirt
 
 
     /**
-     * Set size
+     * Set name
      *
-     * @param string $size
+     * @param string $name
      *
-     * @return Shirt
+     * @return BadgeType
      */
-    public function setSize($size)
+    public function setName($name)
     {
-        $this->size = $size;
+        $this->name = $name;
 
         return $this;
     }
 
     /**
-     * Get size
+     * Get name
      *
      * @return string
      */
-    public function getSize()
+    public function getName()
     {
-        return $this->size;
-    }
-
-    /**
-     * Set type
-     *
-     * @param string $type
-     *
-     * @return Shirt
-     */
-    public function setType($type)
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
-    /**
-     * Get type
-     *
-     * @return string
-     */
-    public function getType()
-    {
-        return $this->type;
+        return $this->name;
     }
 
     /**
@@ -131,7 +100,7 @@ class Shirt
      *
      * @param string $description
      *
-     * @return Shirt
+     * @return BadgeType
      */
     public function setDescription($description)
     {
@@ -155,7 +124,7 @@ class Shirt
      *
      * @param \DateTime $createdDate
      *
-     * @return Shirt
+     * @return BadgeType
      */
     public function setCreatedDate($createdDate)
     {
@@ -179,7 +148,7 @@ class Shirt
      *
      * @param \DateTime $modifiedDate
      *
-     * @return Shirt
+     * @return BadgeType
      */
     public function setModifiedDate($modifiedDate)
     {
@@ -199,11 +168,11 @@ class Shirt
     }
 
     /**
-     * Get shirtId
+     * Get badgeTypeId
      *
      * @return integer
      */
-    public function getShirtId()
+    public function getBadgeTypeId()
     {
         return $this->id;
     }
@@ -213,7 +182,7 @@ class Shirt
      *
      * @param \AppBundle\Entity\User $createdBy
      *
-     * @return Shirt
+     * @return BadgeType
      */
     public function setCreatedBy(User $createdBy = null)
     {
@@ -237,7 +206,7 @@ class Shirt
      *
      * @param \AppBundle\Entity\User $modifiedBy
      *
-     * @return Shirt
+     * @return BadgeType
      */
     public function setModifiedBy(User $modifiedBy = null)
     {

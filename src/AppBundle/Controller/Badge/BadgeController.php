@@ -3,7 +3,7 @@
 namespace AppBundle\Controller\Badge;
 
 use AppBundle\Entity\Badge;
-use AppBundle\Entity\Registrationhistory;
+use AppBundle\Entity\History;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -97,7 +97,7 @@ class BadgeController extends Controller
                 $badge->setBadgestatus($badgeStatus);
                 $entityManager->persist($badge);
 
-                $registrationHistory = new Registrationhistory();
+                $registrationHistory = new History();
                 $registrationHistory->setRegistration($registration);
 
                 $text = "Updated {$badgeType->getDescription()} badge #{$badge->getNumber()} to status {$badgeStatus->getDescription()}.";

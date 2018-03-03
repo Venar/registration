@@ -148,7 +148,7 @@ class PrintingController extends Controller
 
         $registrationStatusSubQueryDQL = $this->get('doctrine.orm.default_entity_manager')->createQueryBuilder()
             ->select('rs.registrationstatusId')
-            ->from('AppBundle\Entity\Registrationstatus', 'rs')
+            ->from('AppBundle\Entity\RegistrationStatus', 'rs')
             ->where('rs.active = :active')
             ->getDQL();
 
@@ -163,11 +163,11 @@ class PrintingController extends Controller
             ])
             ->from('AppBundle\Entity\Registration', 'r')
             ->innerJoin('AppBundle\Entity\Badge', 'b', Join::WITH, 'b.registration = r.registrationId')
-            ->innerJoin('AppBundle\Entity\Badgestatus', 'bs', Join::WITH, 'bs.badgestatusId = b.badgestatus')
-            ->innerJoin('AppBundle\Entity\Badgetype', 'bt', Join::WITH, 'bt.badgetypeId = b.badgetype')
+            ->innerJoin('AppBundle\Entity\BadgeStatus', 'bs', Join::WITH, 'bs.badgestatusId = b.badgestatus')
+            ->innerJoin('AppBundle\Entity\BadgeType', 'bt', Join::WITH, 'bt.badgetypeId = b.badgetype')
             ->leftJoin('AppBundle\Entity\Registrationreggroup', 'rrg', Join::WITH,
                 'rrg.registration = r.registrationId')
-            ->leftJoin('AppBundle\Entity\Reggroup', 'rg', Join::WITH, 'rg.reggroupId = rrg.reggroup')
+            ->leftJoin('AppBundle\Entity\Group', 'rg', Join::WITH, 'rg.reggroupId = rrg.reggroup')
             ->where($queryBuilder->expr()->in('r.registrationstatus', $registrationStatusSubQueryDQL))
             ->andWhere($queryBuilder->expr()->in('r.registrationId', $badgesSubQueryDQL))
             ->andWhere('r.event = :event')

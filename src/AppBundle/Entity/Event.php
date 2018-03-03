@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Event
  *
- * @ORM\Table(name="Event", indexes={@ORM\Index(name="Year", columns={"Year"}), @ORM\Index(name="Active", columns={"Active", "Public"}), @ORM\Index(name="FK1_Event_CreatedBy", columns={"CreatedBy"}), @ORM\Index(name="FK2_Event_ModifiedBy", columns={"ModifiedBy"})})
+ * @ORM\Table(name="event", indexes={@ORM\Index(name="year", columns={"year"}), @ORM\Index(name="active", columns={"active", "public"}), @ORM\Index(name="FK1_Event_CreatedBy", columns={"created_by"}), @ORM\Index(name="FK2_Event_ModifiedBy", columns={"modified_by"})})
  * @ORM\Entity
  */
 class Event
@@ -15,101 +15,87 @@ class Event
     /**
      * @var string
      *
-     * @ORM\Column(name="Year", type="string", length=255, nullable=false)
+     * @ORM\Column(name="year", type="string", length=255, nullable=false)
      */
     private $year;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="StartDate", type="datetime", nullable=true)
+     * @ORM\Column(name="start_date", type="datetime", nullable=false)
      */
-    private $startdate;
+    private $startDate;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="EndDate", type="datetime", nullable=true)
+     * @ORM\Column(name="end_date", type="datetime", nullable=false)
      */
-    private $enddate;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="Theme", type="string", length=255, nullable=true)
-     */
-    private $theme;
+    private $endDate;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="AttendanceCap", type="integer", nullable=false)
+     * @ORM\Column(name="attendance_cap", type="integer", nullable=false)
      */
-    private $attendancecap;
+    private $attendanceCap;
 
     /**
      * @var boolean
      *
-     * @ORM\Column(name="Active", type="boolean", nullable=false)
+     * @ORM\Column(name="active", type="boolean", nullable=false)
      */
     private $active = '0';
 
     /**
      * @var boolean
      *
-     * @ORM\Column(name="Public", type="boolean", nullable=false)
+     * @ORM\Column(name="public", type="boolean", nullable=false)
      */
     private $public = '0';
 
     /**
-     * @var integer
+     * @var \DateTime
      *
-     * @ORM\Column(name="FinalAttendance", type="integer", nullable=false)
+     * @ORM\Column(name="created_date", type="datetime", nullable=true)
      */
-    private $finalattendance;
+    private $createdDate;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="CreatedDate", type="datetime", nullable=true)
+     * @ORM\Column(name="modified_date", type="datetime", nullable=true)
      */
-    private $createddate;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="ModifiedDate", type="datetime", nullable=true)
-     */
-    private $modifieddate;
+    private $modifiedDate;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="Event_ID", type="integer")
+     * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $eventId;
+    private $id;
 
     /**
      * @var \AppBundle\Entity\User
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="CreatedBy", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id")
      * })
      */
-    private $createdby;
+    private $createdBy;
 
     /**
      * @var \AppBundle\Entity\User
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="ModifiedBy", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="modified_by", referencedColumnName="id")
      * })
      */
-    private $modifiedby;
+    private $modifiedBy;
 
 
 
@@ -138,99 +124,75 @@ class Event
     }
 
     /**
-     * Set startdate
+     * Set startDate
      *
-     * @param \DateTime $startdate
+     * @param \DateTime $startDate
      *
      * @return Event
      */
-    public function setStartdate($startdate)
+    public function setStartDate($startDate)
     {
-        $this->startdate = $startdate;
+        $this->startDate = $startDate;
 
         return $this;
     }
 
     /**
-     * Get startdate
+     * Get startDate
      *
      * @return \DateTime
      */
-    public function getStartdate()
+    public function getStartDate()
     {
-        return $this->startdate;
+        return $this->startDate;
     }
 
     /**
-     * Set enddate
+     * Set endDate
      *
-     * @param \DateTime $enddate
+     * @param \DateTime $endDate
      *
      * @return Event
      */
-    public function setEnddate($enddate)
+    public function setEndDate($endDate)
     {
-        $this->enddate = $enddate;
+        $this->endDate = $endDate;
 
         return $this;
     }
 
     /**
-     * Get enddate
+     * Get endDate
      *
      * @return \DateTime
      */
-    public function getEnddate()
+    public function getEndDate()
     {
-        return $this->enddate;
+        return $this->endDate;
     }
 
     /**
-     * Set theme
+     * Set attendanceCap
      *
-     * @param string $theme
+     * @param integer $attendanceCap
      *
      * @return Event
      */
-    public function setTheme($theme)
+    public function setAttendanceCap($attendanceCap)
     {
-        $this->theme = $theme;
+        $this->attendanceCap = $attendanceCap;
 
         return $this;
     }
 
     /**
-     * Get theme
-     *
-     * @return string
-     */
-    public function getTheme()
-    {
-        return $this->theme;
-    }
-
-    /**
-     * Set attendancecap
-     *
-     * @param integer $attendancecap
-     *
-     * @return Event
-     */
-    public function setAttendancecap($attendancecap)
-    {
-        $this->attendancecap = $attendancecap;
-
-        return $this;
-    }
-
-    /**
-     * Get attendancecap
+     * Get attendanceCap
      *
      * @return integer
      */
-    public function getAttendancecap()
+    public function getAttendanceCap()
     {
-        return $this->attendancecap;
+        return $this->attendanceCap;
     }
 
     /**
@@ -282,75 +244,51 @@ class Event
     }
 
     /**
-     * Set finalattendance
+     * Set createdDate
      *
-     * @param integer $finalattendance
+     * @param \DateTime $createdDate
      *
      * @return Event
      */
-    public function setFinalattendance($finalattendance)
+    public function setCreatedDate($createdDate)
     {
-        $this->finalattendance = $finalattendance;
+        $this->createdDate = $createdDate;
 
         return $this;
     }
 
     /**
-     * Get finalattendance
-     *
-     * @return integer
-     */
-    public function getFinalattendance()
-    {
-        return $this->finalattendance;
-    }
-
-    /**
-     * Set createddate
-     *
-     * @param \DateTime $createddate
-     *
-     * @return Event
-     */
-    public function setCreateddate($createddate)
-    {
-        $this->createddate = $createddate;
-
-        return $this;
-    }
-
-    /**
-     * Get createddate
+     * Get createdDate
      *
      * @return \DateTime
      */
-    public function getCreateddate()
+    public function getCreatedDate()
     {
-        return $this->createddate;
+        return $this->createdDate;
     }
 
     /**
-     * Set modifieddate
+     * Set modifiedDate
      *
-     * @param \DateTime $modifieddate
+     * @param \DateTime $modifiedDate
      *
      * @return Event
      */
-    public function setModifieddate($modifieddate)
+    public function setModifieddate($modifiedDate)
     {
-        $this->modifieddate = $modifieddate;
+        $this->modifiedDate = $modifiedDate;
 
         return $this;
     }
 
     /**
-     * Get modifieddate
+     * Get modifiedDate
      *
      * @return \DateTime
      */
-    public function getModifieddate()
+    public function getModifiedDate()
     {
-        return $this->modifieddate;
+        return $this->modifiedDate;
     }
 
     /**
@@ -360,54 +298,54 @@ class Event
      */
     public function getEventId()
     {
-        return $this->eventId;
+        return $this->id;
     }
 
     /**
-     * Set createdby
+     * Set created_by
      *
-     * @param \AppBundle\Entity\User $createdby
+     * @param \AppBundle\Entity\User $createdBy
      *
      * @return Event
      */
-    public function setCreatedby(\AppBundle\Entity\User $createdby = null)
+    public function setCreatedby(User $createdBy = null)
     {
-        $this->createdby = $createdby;
+        $this->createdBy = $createdBy;
 
         return $this;
     }
 
     /**
-     * Get createdby
+     * Get createdBy
      *
      * @return \AppBundle\Entity\User
      */
-    public function getCreatedby()
+    public function getCreatedBy()
     {
-        return $this->createdby;
+        return $this->createdBy;
     }
 
     /**
-     * Set modifiedby
+     * Set modifiedBy
      *
-     * @param \AppBundle\Entity\User $modifiedby
+     * @param \AppBundle\Entity\User $modifiedBy
      *
      * @return Event
      */
-    public function setModifiedby(\AppBundle\Entity\User $modifiedby = null)
+    public function setModifiedby(User $modifiedBy = null)
     {
-        $this->modifiedby = $modifiedby;
+        $this->modifiedBy = $modifiedBy;
 
         return $this;
     }
 
     /**
-     * Get modifiedby
+     * Get modifiedBy
      *
      * @return \AppBundle\Entity\User
      */
-    public function getModifiedby()
+    public function getModifiedBy()
     {
-        return $this->modifiedby;
+        return $this->modifiedBy;
     }
 }
