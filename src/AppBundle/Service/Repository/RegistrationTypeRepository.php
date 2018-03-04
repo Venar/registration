@@ -44,6 +44,6 @@ class RegistrationTypeRepository
      */
     public function findAll()
     {
-        return $this->entityManager->getRepository(self::entityName)->findAll();
+        return $this->entityManager->getRepository(RegistrationType::class)->findAll();
     }
 }

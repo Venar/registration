@@ -90,6 +90,6 @@ class BadgeRepository
      */
     public function findAll()
     {
-        return $this->entityManager->getRepository(self::entityName)->findAll();
+        return $this->entityManager->getRepository(Badge::class)->findAll();
     }
 }

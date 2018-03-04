@@ -39,6 +39,6 @@ class RegistrationStatusRepository
      */
     public function findAll()
     {
-        return $this->entityManager->getRepository(self::entityName)->findAll();
+        return $this->entityManager->getRepository(RegistrationStatus::class)->findAll();
     }
 }

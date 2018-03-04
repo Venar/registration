@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Event
  *
  * @ORM\Table(name="event", indexes={@ORM\Index(name="year", columns={"year"}), @ORM\Index(name="active", columns={"active", "public"}), @ORM\Index(name="FK1_Event_CreatedBy", columns={"created_by"}), @ORM\Index(name="FK2_Event_ModifiedBy", columns={"modified_by"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\EventRepository")
  */
 class Event
 {
@@ -296,7 +296,7 @@ class Event
      *
      * @return integer
      */
-    public function getEventId()
+    public function getId()
     {
         return $this->id;
     }
@@ -308,7 +308,7 @@ class Event
      *
      * @return Event
      */
-    public function setCreatedby(User $createdBy = null)
+    public function setCreatedBy(User $createdBy = null)
     {
         $this->createdBy = $createdBy;
 

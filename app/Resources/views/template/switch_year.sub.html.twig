@@ -1,8 +1,8 @@
 <li>
-    <a href="#Years">Event Year: {{ selectedYear }}</a>
+    <a href="javascript:void(0);">Event Year: {{ selectedYear }}</a>
     <ul>
         {% for year in years %}
-        <li><a href="/changeyear/{{ year }}">{{ year }}</a></li>
+        <li><a href="{{ url('changeYear', {'eventYear':year}) }}">{{ year }}</a></li>
         {% endfor %}
     </ul>
 </li>

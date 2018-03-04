@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller\Template;
 
+use AppBundle\Entity\Event;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class MenuController extends Controller
@@ -83,8 +84,8 @@ class MenuController extends Controller
     {
         $years = [];
 
-        $currentYear = $this->get('repository_event')->getSelectedEvent()->getYear();
-        $events = $this->get('repository_event')->findAll();
+        $currentYear = $this->getDoctrine()->getRepository(Event::class)->getSelectedEvent()->getYear();
+        $events = $this->getDoctrine()->getRepository(Event::class)->findAll();
         foreach ($events as $event) {
             $years[] = $event->getYear();
         }

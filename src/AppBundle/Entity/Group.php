@@ -2,16 +2,22 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Group
  *
- * @ORM\Table(name="group", indexes={@ORM\Index(name="FK1_Group_CreatedBy", columns={"created_by"}), @ORM\Index(name="FK2_Group_ModifiedBy", columns={"modified_by"})})
+ * @ORM\Table(name="`group`", indexes={@ORM\Index(name="FK1_Group_CreatedBy", columns={"created_by"}), @ORM\Index(name="FK2_Group_ModifiedBy", columns={"modified_by"})})
  * @ORM\Entity
  */
 class Group
 {
+    public function __construct()
+    {
+        $this->registrations = new ArrayCollection();
+    }
+
     /**
      * @var string
      *
@@ -140,6 +146,12 @@ class Group
      */
     private $modifiedBy;
 
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Registration", mappedBy="groups")
+     */
+    private $registrations;
 
 
     /**
@@ -534,5 +546,24 @@ class Group
     public function getModifiedBy()
     {
         return $this->modifiedBy;
+    }
+
+    /**
+     * Get events
+     *
+     * @return \Doctrine\Common\Collections\Collection|Registration[]
+     */
+    public function getRegistrations()
+    {
+        return $this->registrations;
+    }
+
+    /**
+     * @param Registration $registration
+     */
+    public function addRegistration(Registration $registration)
+    {
+        $registration->addGroup($this);
+        $this->registrations[] = $registration;
     }
 }

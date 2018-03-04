@@ -3,6 +3,7 @@
 namespace AppBundle\Controller\Manage;
 
 use AppBundle\Entity\BadgeType;
+use AppBundle\Entity\Registration;
 use AppBundle\Entity\RegistrationStatus;
 use AppBundle\Entity\RegistrationType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -120,7 +121,7 @@ class ManageController extends Controller
             $page = 1;
         }
 
-        $returnJson = $this->get('repository_registration')->searchFromManageRegistrations(
+        $returnJson = $this->getDoctrine()->getRepository(Registration::class)->searchFromManageRegistrations(
             $searchText,
             $page,
             $registrationType,

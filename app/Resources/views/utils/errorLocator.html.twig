@@ -20,7 +20,7 @@
     <div class="span5">
         <ul>
             {% for duplicates in duplicatesYear %}
-            <li>{{ duplicates.lastname }}, {{ duplicates.firstname }} - {{ duplicates.year }}
+            <li>{{ duplicates.lastName }}, {{ duplicates.firstName }} - {{ duplicates.year }}
                 <table class="table table-striped table-condensed">
                     <thead>
                     <tr>
@@ -37,11 +37,11 @@
                     {# @var registration \AppBundle\Entity\Registration #}
                     <tr>
                         <td><a href="/registration/view/{{ registration.registrationId }}">{{ registration.number }}</a></td>
-                        <td>{{ registration.badgename }}</td>
+                        <td>{{ registration.badgeName }}</td>
                         <td>{{ registration.email }}</td>
-                        <td>{{ registration.confirmationnumber }}</td>
-                        <td>{{ registration.createddate|date('Y-m-d') }}</td>
-                        <td>{{ registration.registrationtype.name }}</td>
+                        <td>{{ registration.confirmationNumber }}</td>
+                        <td>{{ registration.createdDate|date('Y-m-d') }}</td>
+                        <td>{{ registration.registrationType.name }}</td>
                     </tr>
                     {% endfor %}
                     </tbody>
@@ -57,7 +57,7 @@
     <div class="span5">
         <ul>
             {% for duplicates in duplicatesEmail %}
-            <li>{{ duplicates.lastname }}, {{ duplicates.firstname }} - {{ duplicates.email }}
+            <li>{{ duplicates.lastName }}, {{ duplicates.firstName }} - {{ duplicates.email }}
                 <table class="table table-striped table-condensed">
                     <thead>
                     <tr>
@@ -74,11 +74,11 @@
                         {# @var registration \AppBundle\Entity\Registration #}
                         <tr>
                             <td><a href="/registration/view/{{ registration.registrationId }}">{{ registration.number }}</a></td>
-                            <td>{{ registration.badgename }}</td>
+                            <td>{{ registration.badgeName }}</td>
                             <td>{{ registration.birthday|date('Y-m-d') }}</td>
-                            <td>{{ registration.confirmationnumber }}</td>
-                            <td>{{ registration.createddate|date('Y-m-d') }}</td>
-                            <td>{{ registration.registrationtype.name }}</td>
+                            <td>{{ registration.confirmationNumber }}</td>
+                            <td>{{ registration.createdDate|date('Y-m-d') }}</td>
+                            <td>{{ registration.registrationType.name }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -110,13 +110,13 @@
                 {# @var registration \AppBundle\Entity\Registration #}
                 <tr>
                     <td><a href="/registration/view/{{ registration.registrationId }}">{{ registration.number }}</a></td>
-                    <td>{{ registration.lastname }}</td>
-                    <td>{{ registration.firstname }}</td>
-                    <td>{{ registration.badgename }}</td>
+                    <td>{{ registration.lastName }}</td>
+                    <td>{{ registration.firstName }}</td>
+                    <td>{{ registration.badgeName }}</td>
                     <td>{{ registration.birthday|date('Y-m-d') }}</td>
-                    <td>{{ registration.confirmationnumber }}</td>
-                    <td>{{ registration.createddate|date('Y-m-d') }}</td>
-                    <td>{{ registration.registrationtype.name }}</td>
+                    <td>{{ registration.confirmationNumber }}</td>
+                    <td>{{ registration.createdDate|date('Y-m-d') }}</td>
+                    <td>{{ registration.registrationType.name }}</td>
                 </tr>
             {% endfor %}
             </tbody>

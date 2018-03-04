@@ -5,9 +5,9 @@ easy_admin:
             label: 'Users list'
             class: AppBundle\Entity\User
             search:
-                sort: ['lastname', 'ASC']
+                sort: ['lastName', 'ASC']
             list:
-                sort: ['lastname', 'ASC']
+                sort: ['lastName', 'ASC']
                 dql_filter: 'entity.enabled = true'
                 fields:
                     - lastname
@@ -35,7 +35,7 @@ easy_admin:
                 actions: ['show', '-delete']
                 fields:
                     - { type: 'group', css_class: 'col-sm-6', label: 'Basic information' }
-                    - { property: 'lastname', type_options: { required: true } }
+                    - { property: 'lastName', type_options: { required: true } }
                     - { property: 'firstName', type_options: { required: true } }
                     - { property: 'email', type: 'email', type_options: { required: true } }
                     - { type: 'group', css_class: 'col-sm-6', label: 'Login information' }
@@ -50,7 +50,7 @@ easy_admin:
                 title: 'Add new User'
                 fields:
                     - { type: 'group', css_class: 'col-sm-6', label: 'Basic information' }
-                    - { property: 'lastname', type_options: { required: true } }
+                    - { property: 'lastName', type_options: { required: true } }
                     - { property: 'firstName', type_options: { required: true } }
                     - { property: 'email', type: 'email', type_options: { required: true } }
                     - { type: 'group', css_class: 'col-sm-6', label: 'Login information' }

@@ -2,16 +2,22 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Registration
  *
  * @ORM\Table(name="registration", indexes={@ORM\Index(name="FK1_Registration_CreatedBy", columns={"created_by"}), @ORM\Index(name="FK2_Registration_ModifiedBy", columns={"modified_by"}), @ORM\Index(name="FK2_Registration_RegistrationType_ID", columns={"registration_type_id"}), @ORM\Index(name="FK2_Registration_RegistrationStatus_ID", columns={"registration_status_id"}), @ORM\Index(name="FK2_Registration_Event_ID", columns={"event_id"}), @ORM\Index(name="FK3_TransferredTo", columns={"transferred_to"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\RegistrationRepository")
  */
 class Registration
 {
+    public function __construct()
+    {
+        $this->groups = new ArrayCollection();
+    }
+
     /**
      * @var string
      *
@@ -213,6 +219,15 @@ class Registration
      * })
      */
     private $modifiedBy;
+
+
+    /**
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Group", inversedBy="registrations")
+     * @ORM\JoinTable(name="registration_group", joinColumns={@ORM\JoinColumn(name="registration_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="group_id", referencedColumnName="id")})
+     * @ORM\OrderBy({"name" = "DESC"})
+     */
+    private $groups;
 
 
 
@@ -824,5 +839,24 @@ class Registration
     public function getModifiedBy()
     {
         return $this->modifiedBy;
+    }
+
+    /**
+     * Get events
+     *
+     * @return \Doctrine\Common\Collections\Collection|Group[]
+     */
+    public function getGroups()
+    {
+        return $this->groups;
+    }
+
+    /**
+     * @param Group $group
+     */
+    public function addGroup(Group $group)
+    {
+        $group->addRegistration($this);
+        $this->groups[] = $group;
     }
 }
