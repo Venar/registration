@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Group
  *
  * @ORM\Table(name="`group`", indexes={@ORM\Index(name="FK1_Group_CreatedBy", columns={"created_by"}), @ORM\Index(name="FK2_Group_ModifiedBy", columns={"modified_by"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\GroupRepository")
  */
 class Group
 {
@@ -549,7 +549,7 @@ class Group
     }
 
     /**
-     * Get events
+     * Get registrations
      *
      * @return \Doctrine\Common\Collections\Collection|Registration[]
      */

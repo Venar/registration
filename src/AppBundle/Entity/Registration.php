@@ -229,6 +229,20 @@ class Registration
      */
     private $groups;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Shirt", inversedBy="registrations")
+     * @ORM\JoinTable(name="registration_shirt", joinColumns={@ORM\JoinColumn(name="registration_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="shirt_id", referencedColumnName="id")})
+     */
+    private $shirts;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Extra", inversedBy="registrations")
+     * @ORM\JoinTable(name="registration_extra", joinColumns={@ORM\JoinColumn(name="registration_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="extra_id", referencedColumnName="id")})
+     */
+    private $extras;
+
 
 
     /**
@@ -670,7 +684,7 @@ class Registration
      *
      * @return Registration
      */
-    public function setModifieddate($modifiedDate)
+    public function setModifiedDate($modifiedDate)
     {
         $this->modifiedDate = $modifiedDate;
 
@@ -752,7 +766,7 @@ class Registration
      *
      * @return Registration
      */
-    public function setRegistrationstatus(RegistrationStatus $registrationStatus = null)
+    public function setRegistrationStatus(RegistrationStatus $registrationStatus = null)
     {
         $this->registrationStatus = $registrationStatus;
 
@@ -842,7 +856,7 @@ class Registration
     }
 
     /**
-     * Get events
+     * Get groups
      *
      * @return \Doctrine\Common\Collections\Collection|Group[]
      */
@@ -858,5 +872,43 @@ class Registration
     {
         $group->addRegistration($this);
         $this->groups[] = $group;
+    }
+
+    /**
+     * Get shirts
+     *
+     * @return \Doctrine\Common\Collections\Collection|Shirt[]
+     */
+    public function getShirts()
+    {
+        return $this->shirts;
+    }
+
+    /**
+     * @param Shirt $shirt
+     */
+    public function addShirt(Shirt $shirt)
+    {
+        $shirt->addRegistration($this);
+        $this->shirts[] = $shirt;
+    }
+
+    /**
+     * Get extras
+     *
+     * @return \Doctrine\Common\Collections\Collection|Extra[]
+     */
+    public function getExtras()
+    {
+        return $this->extras;
+    }
+
+    /**
+     * @param Extra $extra
+     */
+    public function addExtra(Extra $extra)
+    {
+        $extra->addRegistration($this);
+        $this->extras[] = $extra;
     }
 }

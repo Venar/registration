@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * BadgeStatus
  *
  * @ORM\Table(name="badge_status", indexes={@ORM\Index(name="FK1_BadgeStatus_CreatedBy", columns={"created_by"}), @ORM\Index(name="FK2_BadgeStatus_ModifiedBy", columns={"modified_by"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\BadgeStatusRepository")
  */
 class BadgeStatus
 {

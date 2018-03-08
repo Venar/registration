@@ -3,11 +3,19 @@
 namespace AppBundle\Controller\Registration;
 
 use AppBundle\Entity\Badge;
+use AppBundle\Entity\BadgeStatus;
+use AppBundle\Entity\BadgeType;
+use AppBundle\Entity\Event;
+use AppBundle\Entity\Extra;
+use AppBundle\Entity\Group;
 use AppBundle\Entity\Registration;
 use AppBundle\Entity\Registrationextra;
 use AppBundle\Entity\History;
 use AppBundle\Entity\Registrationreggroup;
 use AppBundle\Entity\Registrationshirt;
+use AppBundle\Entity\RegistrationStatus;
+use AppBundle\Entity\RegistrationType;
+use AppBundle\Entity\Shirt;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -27,13 +35,13 @@ class editRegistrationController extends Controller
      */
     public function registrationTransfer($transferredFrom)
     {
-        $registration = $this->get('repository_registration')->getFromRegistrationId($transferredFrom);
+        $registration = $this->getDoctrine()->getRepository(Registration::class)->find($transferredFrom);
 
-        if (!$registration) {
+        if (!$registration instanceof Registration) {
             return $this->redirectToRoute('listRegistrations');
         }
 
-        if (!$registration->getRegistrationstatus()->getActive()) {
+        if (!$registration->getRegistrationStatus()->getActive()) {
             $params = ['registrationId' => $registration->getRegistrationId()];
             return $this->redirectToRoute('app_registration_editregistration_editregistrationpage', $params);
         }
@@ -42,7 +50,7 @@ class editRegistrationController extends Controller
     }
 
     /**
-     * @Route("/registration/group/add/{groupId}")
+     * @Route("/registration/group/add/{groupId}", name="registrationAddToGroup")
      * @Security("has_role('ROLE_USER')")
      *
      * @param String $groupId
@@ -50,7 +58,7 @@ class editRegistrationController extends Controller
      */
     public function registrationGroup($groupId)
     {
-        $group = $this->get('repository_reggroup')->getFromReggroupId($groupId);
+        $group = $this->getDoctrine()->getRepository(Group::class)->find($groupId);
 
         if (!$group) {
             return $this->redirectToRoute('listRegistrations');
@@ -60,36 +68,39 @@ class editRegistrationController extends Controller
     }
 
     /**
-     * @Route("/registration/edit/")
-     * @Route("/registration/edit/{registrationID}")
-     * @Route("/registration/edit/{registrationID}/{regGroupId}")
-     * @Route("/registration/edit/{registrationID}/{regGroupId}/{transferredFrom}")
+     * @Route("/registration/edit/", name="actionEditRegistration")
+     * @Route("/registration/edit/{registrationId}", name="actionEditRegistration")
+     * @Route("/registration/edit/{registrationId}/{regGroupId}")
+     * @Route("/registration/edit/{registrationId}/{regGroupId}/{transferredFrom}")
      * @Security("has_role('ROLE_USER')")
      *
-     * @param String $registrationID
-     * @param String $regGroupId
+     * @param String $registrationId
+     * @param String $groupId
      * @param String $transferredFrom
      * @return Response
      */
-    public function editRegistrationPage($registrationID = null, $regGroupId = null, $transferredFrom = null)
+    public function editRegistrationPage($registrationId = null, $groupId = null, $transferredFrom = null)
     {
-        $event = $this->get('repository_event')->getSelectedEvent();
-        $registration = $this->get('repository_registration')->getFromRegistrationId($registrationID);
-        $badges = $this->get('repository_badge')->getBadgesFromRegistration($registration);
+        $event = $this->getDoctrine()->getRepository(Event::class)->getSelectedEvent();
+        $registration = $this->getDoctrine()->getRepository(Registration::class)->find($registrationId);
+        $badges = $this->getDoctrine()->getRepository(Badge::class)->getBadgesFromRegistration($registration);
 
-        $group = $this->get('repository_reggroup')->getFromReggroupId($regGroupId);
+        $group = null;
+        if ($groupId) {
+            $group = $this->getDoctrine()->getRepository(Group::class)->find($groupId);
+        }
         if ($registration && !$group) {
             // If its a valid registration, look for an existing group
-            $group = $this->get('repository_reggroup')->getRegGroupFromRegistration($registration);
-            if ($group) {
-                $regGroupId = $group->getReggroupId();
-            }
+            $group = $this->getDoctrine()->getRepository(Group::class)->getGroupFromRegistration($registration);
         }
 
-        $transferredRegistration = $this->get('repository_registration')->getFromRegistrationId($transferredFrom);
+        $transferredRegistration = null;
+        if ($transferredRegistration) {
+            $transferredRegistration = $this->getDoctrine()->getRepository(Registration::class)->find($transferredFrom);
+        }
         $transferredBadges = null;
         if ($transferredRegistration) {
-            $transferredBadges = $this->get('repository_badge')->getBadgesFromRegistration($transferredRegistration);
+            $transferredBadges = $this->getDoctrine()->getRepository(Badge::class)->getBadgesFromRegistration($transferredRegistration);
         }
 
         $currentBadgeTypes = [];
@@ -97,27 +108,32 @@ class editRegistrationController extends Controller
             $currentBadgeTypes[] = $badge->getBadgetype()->getName();
         }
 
-        $registrationTypes = $this->get('repository_registrationtype')->findAll();
+        /** @var RegistrationType[] $registrationTypes */
+        $registrationTypes = $this->getDoctrine()->getRepository(RegistrationType::class)->findAll();
         $selectedType = null;
         if ($group) {
-            $selectedType = $this->get('repository_registrationtype')->getRegistrationTypeFromType('Group');
+            $selectedType = $this->getDoctrine()->getRepository(RegistrationType::class)->getRegistrationTypeFromType('Group');
         } elseif ($registration) {
             $selectedType = $registration->getRegistrationtype();
         }
 
-        $extras = $this->get('repository_extra')->findAll();
+        /** @var Extra[] $registrationTypes */
+        $extras = $this->getDoctrine()->getRepository(Extra::class)->findAll();
+        /** @var Group[] $registrationTypes */
+        $groups = $this->getDoctrine()->getRepository(Group::class)->findAll();
+        $registrationStatuses = $this->getDoctrine()->getRepository(RegistrationStatus::class)->findAll();
 
         $vars = [
             'event' => $event,
             'registrationTypes' => $registrationTypes,
             'selectedType' => $selectedType,
-            'regGroups' => $this->get('repository_reggroup')->findAll(),
-            'registrationStatuses' => $this->get('repository_registrationstatus')->findAll(),
+            'group' => $group,
+            'groups' => $groups,
+            'registrationStatuses' => $registrationStatuses,
             'registration' => $registration,
-            'isStaff' => $this->get('repository_badge')->isStaff($registration),
+            'isStaff' => $this->getDoctrine()->getRepository(Badge::class)->isStaff($registration),
             'currentBadgeTypes' => $currentBadgeTypes,
             'badges' => $badges,
-            'group' => $group,
             'transferredRegistration' => $transferredRegistration,
             'transferredBadges' => $transferredBadges,
             'extras' => $extras,
@@ -127,24 +143,26 @@ class editRegistrationController extends Controller
     }
 
     /**
-     * @Route("/getregshirtlist/{registrationID}")
+     * @Route("/getregshirtlist/{registrationId}")
      * @Security("has_role('ROLE_USER')")
      *
-     * @param String $registrationID
+     * @param String $registrationId
      * @return JsonResponse
      */
-    public function getRegistrationShirts($registrationID)
+    public function getRegistrationShirts($registrationId)
     {
         $arrayShirts = [];
-        $registration = $this->get('repository_registration')->getFromRegistrationId($registrationID);
-        if ($registration) {
-            $registrationShirts = $this->get('repository_registrationshirt')->getRegistrationShirtsFromRegistration($registration);
+        $registration = null;
+        if ($registrationId) {
+            $registration = $this->getDoctrine()->getRepository(Registration::class)->find($registrationId);
+        }
+        if ($registration instanceof Registration) {
+            $shirts = $registration->getShirts();
 
-            foreach ($registrationShirts as $registrationShirt) {
+            foreach ($shirts as $shirt) {
                 $tmp = array();
-                $tmp['RegistrationShirt_ID'] = $registrationShirt->getRegistrationshirtId();
-                $tmp['shirt_type'] = $registrationShirt->getShirt()->getShirttype();
-                $tmp['shirt_size'] = $registrationShirt->getShirt()->getShirtsize();
+                $tmp['shirt_type'] = $shirt->getType();
+                $tmp['shirt_size'] = $shirt->getSize();
                 $arrayShirts[] = $tmp;
             }
         }
@@ -153,25 +171,25 @@ class editRegistrationController extends Controller
     }
 
     /**
-     * @Route("/ajaxstaffmodify/{registrationID}/{action}")
+     * @Route("/ajaxstaffmodify/{registrationId}/{action}")
      * @Security("has_role('ROLE_USER')")
      *
-     * @param String $registrationID
+     * @param String $registrationId
      * @return JsonResponse
      */
-    public function modifyStaffStatus($registrationID, $action)
+    public function modifyStaffStatus($registrationId, $action)
     {
         $returnData = array();
         $returnData['success'] = false;
         $returnData['message'] = 'Invalid Registration ID. Save your badge first.';
 
-        $entityManager = $this->get('doctrine.orm.entity_manager');
+        $entityManager = $this->getDoctrine()->getManager();
 
-        $registration = $this->get('repository_registration')->getFromRegistrationId($registrationID);
+        $registration = $entityManager->getRepository(Registration::class)->find($registrationId);
         if ($registration && ($action == 'add' || $action == 'remove')) {
-            $badgeType = $this->get('repository_badgetype')->getBadgeTypeFromType('STAFF');
+            $badgeType = $entityManager->getRepository(BadgeType::class)->getBadgeTypeFromType('STAFF');
             if ($action == 'remove') {
-                $badges = $this->get('repository_badge')->getBadgesFromRegistration($registration);
+                $badges = $entityManager->getRepository(Badge::class)->getBadgesFromRegistration($registration);
                 foreach ($badges as $badge) {
                     if ($badge->getBadgetype()->getBadgetypeId() == $badgeType->getBadgetypeId()) {
                         $entityManager->remove($badge);
@@ -180,12 +198,12 @@ class editRegistrationController extends Controller
                     }
                 }
             } elseif ($action == 'add') {
-                $badgeStatus = $this->get('repository_badgestatus')->getBadgeStatusFromStatus('NEW');
+                $badgeStatus = $entityManager->getRepository(BadgeStatus::class)->getBadgeStatusFromStatus('NEW');
                 $badge = new Badge();
                 $badge->setRegistration($registration);
                 $badge->setBadgetype($badgeType);
                 $badge->setBadgestatus($badgeStatus);
-                $badge->setNumber($this->get('repository_badge')->generateNumber());
+                $badge->setNumber($entityManager->getRepository(Badge::class)->generateNumber());
                 $entityManager->persist($badge);
                 $returnData['success'] = true;
                 $returnData['message'] = 'Staff badge created';
@@ -205,23 +223,23 @@ class editRegistrationController extends Controller
     }
 
     /**
-     * @Route("/editregshirtlist/{registrationID}/{action}")
+     * @Route("/editregshirtlist/{registrationId}/{action}")
      * @Security("has_role('ROLE_USER')")
      *
      * @param Request $request
-     * @param String $registrationID
+     * @param String $registrationId
      * @param String $action
      * @return JsonResponse
      */
-    public function modifyTShirts(Request $request, $registrationID, $action)
+    public function modifyTShirts(Request $request, $registrationId, $action)
     {
-        $entityManager = $this->get('doctrine.orm.entity_manager');
+        $entityManager = $this->getDoctrine()->getManager();
 
         $returnData = array();
         $returnData['success'] = false;
         $returnData['message'] = '';
 
-        $registration = $this->get('repository_registration')->getFromRegistrationId($registrationID);
+        $registration = $entityManager->getRepository(Registration::class)->find($registrationId);
         if (!$registration) {
             $returnData['message'] = 'Invalid Registration ID';
 
@@ -235,27 +253,30 @@ class editRegistrationController extends Controller
                 $shirtType = $request->query->get('shirt_type');
                 $shirtSize = $request->query->get('shirt_size');
 
-                $shirt = $this->get('repository_shirt')->getShirtFromTypeAndSize($shirtType, $shirtSize);
+                $shirt = $entityManager->getRepository(Shirt::class)->getShirtFromTypeAndSize($shirtType, $shirtSize);
                 if (!$shirt) {
                     $returnData['message'] = 'Error: Invalid Type/Size';
 
                     return new JsonResponse($returnData);
                 }
 
-                $registrationShirt = new Registrationshirt();
-                $registrationShirt->setRegistration($registration);
-                $registrationShirt->setShirt($shirt);
-                $entityManager->persist($registrationShirt);
+                $registration->addShirt($shirt);
+
                 $entityManager->flush();
 
+                /**
+                 * FIXME:
                 if ($registrationShirt->getRegistrationshirtId()) {
                     $returnData['success'] = true;
                     $returnData['message'] = 'Added shirt size ' . $shirtType . ' ' . $shirtSize . ' to registration';
                     $returnData['RegistrationShirt_ID'] = $registrationShirt->getRegistrationshirtId();
                 }
+                 */
             }
         } else if ($action == 'delete') {
             if ($request->query->has('RegistrationShirt_ID')) {
+                /**
+                 * FIXME:
                 $registrationShirt_ID = $request->query->get('RegistrationShirt_ID');
                 $registrationShirt = $this->get('repository_registrationshirt')->getFromRegistrationShirtId($registrationShirt_ID);
                 $shirt = $registrationShirt->getShirt();
@@ -265,6 +286,7 @@ class editRegistrationController extends Controller
 
                 $returnData['message'] = 'Deleted shirt size ' . $shirt->getShirttype() . ' ' . $shirt->getShirtsize() . ' from registration';
                 $returnData['success'] = true;
+                 */
             }
         }
 
@@ -290,14 +312,15 @@ class editRegistrationController extends Controller
     public function getRegistrationExtras($registrationId)
     {
         $arrayExtras = [];
-        $registration = $this->get('repository_registration')->getFromRegistrationId($registrationId);
+        $registration = $this->getDoctrine()->getRepository(Registration::class)->find($registrationId);
         if ($registration) {
-            $registrationExtras = $this->get('repository_registrationextra')->getRegistrationExtrasFromRegistration($registration);
+            /** @var Extra[] $extras */
+            $extras = $registration->getExtras();
 
-            foreach ($registrationExtras as $registrationExtra) {
+            foreach ($extras as $extra) {
                 $tmp = array();
-                $tmp['RegistrationExtraId'] = $registrationExtra->getRegistrationextraId();
-                $tmp['extra'] = $registrationExtra->getExtra()->getName();
+                $tmp['RegistrationExtraId'] = $extra->getExtraId();
+                $tmp['extra'] = $extra->getName();
                 $arrayExtras[] = $tmp;
             }
         }
@@ -316,13 +339,13 @@ class editRegistrationController extends Controller
      */
     public function modifyExtras(Request $request, $registrationId, $action)
     {
-        $entityManager = $this->get('doctrine.orm.entity_manager');
+        $entityManager = $this->getDoctrine()->getManager();
 
         $returnData = array();
         $returnData['success'] = false;
         $returnData['message'] = '';
 
-        $registration = $this->get('repository_registration')->getFromRegistrationId($registrationId);
+        $registration = $this->getDoctrine()->getRepository(Registration::class)->find($registrationId);
         if (!$registration) {
             $returnData['message'] = 'Invalid Registration ID';
 
@@ -333,14 +356,15 @@ class editRegistrationController extends Controller
             if ($request->query->has('extra')) {
                 $extraName = $request->query->get('extra');
 
-                $extra = $this->get('repository_extra')->getExtraFromName($extraName);
+                $extra = $this->getDoctrine()->getRepository(Extra::class)->getExtraFromName($extraName);
                 if (!$extra) {
                     $returnData['message'] = 'Error: Invalid Extra';
 
                     return new JsonResponse($returnData);
                 }
 
-                $extras = $this->get('repository_extra')->getExtrasFromRegistration($registration);
+                /** @var Extra[] $extras */
+                $extras = $registration->getExtras();
                 foreach ($extras as $foundExtra) {
                     if ($foundExtra->getExtraId() == $extra->getExtraId()) {
                         $returnData['message'] = 'Extra already added to Registration!';
@@ -349,20 +373,16 @@ class editRegistrationController extends Controller
                     }
                 }
 
-                $registrationExtra = new Registrationextra();
-                $registrationExtra->setRegistration($registration);
-                $registrationExtra->setExtra($extra);
-                $entityManager->persist($registrationExtra);
+                $registration->addExtra($extra);
                 $entityManager->flush();
 
-                if ($registrationExtra->getRegistrationextraId()) {
-                    $returnData['success'] = true;
-                    $returnData['message'] = "Added extra $extraName to registration";
-                    $returnData['RegistrationExtraId'] = $registrationExtra->getRegistrationextraId();
-                }
+                $returnData['success'] = true;
+                $returnData['message'] = "Added extra $extraName to registration";
+                $returnData['RegistrationExtraId'] = $extra->getExtraId(); // FIXME: Wrong ID?
             }
         } elseif ($action == 'delete') {
             if ($request->query->has('RegistrationExtraId')) {
+                // FIXME: Bad stuff below
                 $registrationExtraId = $request->query->get('RegistrationExtraId');
                 $registrationExtra = $this->get('repository_registrationextra')->getFromRegistrationExtraId($registrationExtraId);
                 $extra = $registrationExtra->getExtra();
@@ -396,6 +416,7 @@ class editRegistrationController extends Controller
      */
     public function ajaxEditRegistration(Request $request)
     {
+        // FIXME: Fix this
         $entityManager = $this->get('doctrine.orm.entity_manager');
         $event = $this->get('repository_event')->getSelectedEvent();
 

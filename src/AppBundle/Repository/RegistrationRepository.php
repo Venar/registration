@@ -13,6 +13,11 @@ use Doctrine\ORM\Query\Expr\Join;
 
 class RegistrationRepository extends EntityRepository
 {
+    /**
+     * MyEntity repository.
+     *
+     * @method Registration|null find
+     */
 
     /**
      * @param String $searchText

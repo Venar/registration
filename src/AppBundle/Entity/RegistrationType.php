@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * RegistrationType
  *
  * @ORM\Table(name="registration_type", indexes={@ORM\Index(name="FK1_RegistrationType_CreatedBy", columns={"created_by"}), @ORM\Index(name="FK2_RegistrationType_ModifiedBy", columns={"modified_by"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\RegistrationTypeRepository")
  */
 class RegistrationType
 {

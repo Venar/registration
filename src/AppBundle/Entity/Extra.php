@@ -2,13 +2,14 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Extra
  *
  * @ORM\Table(name="extra", indexes={@ORM\Index(name="FK1_Extra_CreatedBy", columns={"created_by"}), @ORM\Index(name="FK2_Extra_ModifiedBy", columns={"modified_by"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\ExtraRepository")
  */
 class Extra
 {
@@ -69,6 +70,12 @@ class Extra
      */
     private $modifiedBy;
 
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Registration", mappedBy="extras")
+     */
+    private $registrations;
 
 
     /**
@@ -223,5 +230,24 @@ class Extra
     public function getModifiedBy()
     {
         return $this->modifiedBy;
+    }
+
+    /**
+     * Get events
+     *
+     * @return \Doctrine\Common\Collections\Collection|Registration[]
+     */
+    public function getRegistrations()
+    {
+        return $this->registrations;
+    }
+
+    /**
+     * @param Registration $registration
+     */
+    public function addRegistration(Registration $registration)
+    {
+        $registration->addExtra($this);
+        $this->registrations[] = $registration;
     }
 }

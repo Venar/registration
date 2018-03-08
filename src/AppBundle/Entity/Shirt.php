@@ -2,13 +2,14 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Shirt
  *
  * @ORM\Table(name="shirt", indexes={@ORM\Index(name="FK1_Shirt_CreatedBy", columns={"created_by"}), @ORM\Index(name="FK2_Shirt_ModifiedBy", columns={"modified_by"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\ShirtRepository")
  */
 class Shirt
 {
@@ -75,6 +76,13 @@ class Shirt
      * })
      */
     private $modifiedBy;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Registration", mappedBy="shirts")
+     */
+    private $registrations;
 
 
 
@@ -254,5 +262,24 @@ class Shirt
     public function getModifiedBy()
     {
         return $this->modifiedBy;
+    }
+
+    /**
+     * Get events
+     *
+     * @return \Doctrine\Common\Collections\Collection|Registration[]
+     */
+    public function getRegistrations()
+    {
+        return $this->registrations;
+    }
+
+    /**
+     * @param Registration $registration
+     */
+    public function addRegistration(Registration $registration)
+    {
+        $registration->addShirt($this);
+        $this->registrations[] = $registration;
     }
 }

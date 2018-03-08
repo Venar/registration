@@ -1,7 +1,7 @@
 {% extends 'detour.html.twig' %}
 
 {% block body %}
-    <form action="/registration/edit" method="post" id="form_editregistration">
+    <form action="{{ url('actionEditRegistration') }}" method="post" id="form_editRegistration">
 
         <input type="hidden" value="{{ registration.registrationId|default('') }}" id="Registration_ID" name="Registration_ID">
         <input type="hidden" value="{{ transferredRegistration.registrationId|default('') }}" id="TransferredFrom" name="TransferredFrom">
@@ -10,15 +10,15 @@
             {% if registration is not null %}
                 <a href="/registration/view/{{ registration.registrationId|default('') }}" class="btn btn-primary btn-sm">Back</a>&nbsp;-&nbsp;
             {% else %}
-                <a href="/manage/" class="btn btn-primary btn-sm">Back</a>&nbsp;-&nbsp;
+                <a href="{{ url('listRegistrations') }}" class="btn btn-primary btn-sm">Back</a>&nbsp;-&nbsp;
             {% endif %}
             {% if registration is not null and registration.registrationId %}
-            Edit {{ (group.reggroupId is defined) ? 'Group ' : '' }}Membership - {{ registration.event.year }} - {{ registration.number }}
+            Edit {{ (group.groupId is defined) ? 'Group ' : '' }}Membership - {{ registration.event.year }} - {{ registration.number }}
             {% elseif transferredRegistration is not null and transferredRegistration.registrationId %}
             Transfer Membership from {{ transferredRegistration.firstname }} {{ transferredRegistration.lastname }}
                 &lt;{{ transferredRegistration.number }}&gt; - {{ transferredRegistration.event.year }}
             {% else %}
-            New {{ group is not null and group.reggroupId ? 'Group ' : '' }}Membership - {{ event.year }} - New
+            New {{ group is not null and group.groupId ? 'Group ' : '' }}Membership - {{ event.year }} - New
             {% endif %}
         </h2>
 
@@ -38,7 +38,8 @@
             <div class="col-sm-3">
                 <select name="RegistrationType" id="RegistrationType">
                     {% for type in registrationTypes %}
-                    <option value="{{ type.name }}" {{ selectedType is not null and selectedType.registrationtypeId == type.registrationtypeId ? 'selected' : '' }}>
+                    {# @var type AppBundle\Entity\RegistrationType #}
+                    <option value="{{ type.name }}" {{ selectedType is not null and selectedType.registrationtypeId == type.registrationTypeId ? 'selected' : '' }}>
                         {{ type.name }}
                     </option>
                     {% endfor %}
@@ -46,8 +47,8 @@
                 <select name="RegGroup_ID" id="RegGroup_ID"
                         style="width: 150px; {{ selectedType is null or selectedType.name != 'Group' ? 'display:none;' : '' }}">
                     <option value=""></option>
-                    {% for regGroup in regGroups %}
-                        <option value="{{ regGroup.reggroupId }}" {{ (group is not null and group.reggroupId == regGroup.reggroupId) ? 'selected' : '' }}>
+                    {% for regGroup in groups %}
+                        <option value="{{ regGroup.groupId }}" {{ (group is not null and group.groupId == regGroup.groupId) ? 'selected' : '' }}>
                             {{ regGroup.name }}
                         </option>
                     {% endfor %}
@@ -56,7 +57,7 @@
             <div class="col-sm-3">
                 <select name="RegistrationStatus">
                     {% for status in registrationStatuses %}
-                        <option value="{{ status.status }}" {{ registration is not null and registration.registrationstatus.registrationstatusId == status.registrationstatusId ? 'selected' : '' }}>
+                        <option value="{{ status.status }}" {{ registration is not null and registration.registrationstatus.registrationstatusId == status.registrationStatusId ? 'selected' : '' }}>
                             {{ status.status }}
                         </option>
                     {% endfor %}
@@ -367,7 +368,7 @@
             {% endif %}
             {% if group is not null %}
                 <br><br>
-                <a href="/registration/group/add/{{ group.reggroupId }}" class="btn btn-primary">Add another registration to
+                <a href="/registration/group/add/{{ group.groupId }}" class="btn btn-primary">Add another registration to
                     {{ group.name }}</a>
             {% endif %}
             {% if registration is not null and registration.registrationId %}

@@ -2,6 +2,9 @@
 
 namespace AppBundle\Controller\Registration;
 
+use AppBundle\Entity\Badge;
+use AppBundle\Entity\History;
+use AppBundle\Entity\Registration;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,19 +22,23 @@ class ViewRegistrationController extends Controller
      */
     public function viewRegistrationPage($registrationId)
     {
-        $registration = $this->get('repository_registration')->getFromRegistrationId($registrationId);
+        $registration = $this->getDoctrine()->getRepository(Registration::class)->find($registrationId);
+
+        if (!$registration instanceof Registration) {
+            return $this->redirectToRoute('listRegistrations');
+        }
 
         $event = $registration->getEvent();
-        $registrationType = $registration->getRegistrationtype();
-        $registrationStatus = $registration->getRegistrationstatus();
-        $registrationHistory = $this->get('repository_registrationhistory')->getHistoryFromRegistration($registration);
-        $badges = $this->get('repository_badge')->getBadgesFromRegistration($registration);
+        $registrationType = $registration->getRegistrationType();
+        $registrationStatus = $registration->getRegistrationStatus();
+        $registrationHistory = $this->getDoctrine()->getRepository(History::class)->getHistoryFromRegistration($registration);
+        $badges = $this->getDoctrine()->getRepository(Badge::class)->getBadgesFromRegistration($registration);
 
         $info = '';
         if ($registrationStatus->getActive()) {
             $info = $registrationStatus->getDescription();
             if ($registrationStatus->getStatus() == 'Transfered') {
-                $transferredRegistration = $registration->getTransferedto();
+                $transferredRegistration = $registration->getTransferredTo();
                 $url = $this->generateUrl('viewRegistration', ['registrationId' => $transferredRegistration->getRegistrationId()]);
                 $info .= " Transferred to <a href='$url'>" . $transferredRegistration->getFirstname()
                     . ' ' . $transferredRegistration->getLastname() . '</a>. ';

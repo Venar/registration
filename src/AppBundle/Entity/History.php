@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * RegistrationHistory
  *
  * @ORM\Table(name="history", indexes={@ORM\Index(name="FK1_RegistrationHistory_Registration_ID", columns={"registration_id"}), @ORM\Index(name="FK2_RegistrationHistory_CreatedBy", columns={"created_by"}), @ORM\Index(name="FK3_RegistrationHistory_ModifiedBy", columns={"modified_by"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\HistoryRepository")
  */
 class History
 {
