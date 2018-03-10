@@ -9,6 +9,9 @@ use AppBundle\Entity\Registration;
 use AppBundle\Entity\RegistrationStatus;
 use AppBundle\Entity\RegistrationType;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\Query\Expr\Join;
 
 class RegistrationRepository extends EntityRepository
@@ -18,6 +21,58 @@ class RegistrationRepository extends EntityRepository
      *
      * @method Registration|null find
      */
+
+    /**
+     * @param Registration $registration
+     */
+    private function generateConfirmationNumber(Registration $registration)
+    {
+        if ($registration->getConfirmationnumber()) {
+
+            return; // Already have a number, so we return.
+        }
+        $unique = substr(md5(uniqid(rand(), true)), 16, 16);
+        $confirmationNumber = substr($unique, 0, 8) . substr($registration->getNumber(), 1, 2)
+            . substr($unique, 8, 2) . substr($registration->getNumber(), 3, 2)
+            . substr($unique, 10, 2);
+        $registration->setConfirmationnumber($confirmationNumber);
+        $this->getEntityManager()->persist($registration);
+
+        try {
+            $this->getEntityManager()->flush();
+        } catch (OptimisticLockException $e) {
+            // TODO: Handle Exception later
+        }
+
+        return;
+    }
+
+    public function generateNumber(Registration $registration)
+    {
+        $event = $registration->getEvent();
+        if (!$event) {
+            $event = $this->getEntityManager()->getRepository(Event::class)->getSelectedEvent();
+        }
+
+        $queryBuilder = $this->getEntityManager()->createQueryBuilder();
+        try {
+            $count = $queryBuilder->select('count(r.registrationId)')
+                ->from(Registration::class, 'r')
+                ->where('r.event = :event')
+                ->setParameter('event', $event)
+                ->getQuery()->getSingleScalarResult();
+        } catch (NonUniqueResultException $e) {
+            // TODO: Handle Exception later
+        } catch (NoResultException $e) {
+            // TODO: Handle Exception later
+        }
+
+        // Get count from only row returned.
+        $number = ucwords(substr($registration->getLastname(), 0, 1))
+            . str_pad($count + 1, 4, '0', STR_PAD_LEFT);
+
+        return $number;
+    }
 
     /**
      * @param String $searchText

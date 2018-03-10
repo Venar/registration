@@ -527,24 +527,24 @@
             );
         }
 
-        function render_extras(RegistrationExtraId, extra_type)
+        function render_extras(extraId, extra_type)
         {
             $('#extras')
                 .append($('<tr>')
-                    .attr('id', 'tr_extra_' + RegistrationExtraId)
+                    .attr('id', 'tr_extra_' + extraId)
                     .append($('<td>')
                         .text(extra_type)
                         .append($('<input>')
                             .attr('type', 'hidden')
-                            .attr('name', 'RegistrationExtraId[]')
-                            .attr('value', RegistrationExtraId)
+                            .attr('name', 'extraId[]')
+                            .attr('value', extraId)
                         )
                     )
                     .append($('<td>')
                         .append($('<span>')
                             .attr('class', 'close-btn')
                             .append($('<a>')
-                                .attr('id', 'delete_extra_' + RegistrationExtraId)
+                                .attr('id', 'delete_extra_' + extraId)
                                 .attr('href', 'javascript:void(0);')
                                 .html('X')
                             )
@@ -552,9 +552,9 @@
                     )
                 );
 
-            $('#delete_extra_' + RegistrationExtraId).click(function ()
+            $('#delete_extra_' + extraId).click(function ()
             {
-                delete_extra(RegistrationExtraId);
+                delete_extra(extraId);
             });
         }
 
@@ -563,7 +563,7 @@
             var extra = $('#extra').val();
             var reg_id = $('#Registration_ID').val();
 
-            var RegistrationExtraId = 0;
+            var extraId = 0;
             $.getJSON('/registration/ajax/extra/'+reg_id+'/add',
                 {
                     'Registration_ID': reg_id,
@@ -571,9 +571,9 @@
                 },
                 function (json)
                 {
-                    if (json['success'] && json['RegistrationExtraId']) {
-                        RegistrationExtraId = json['RegistrationExtraId'];
-                        render_extras(RegistrationExtraId, extra);
+                    if (json['success'] && json['extraId']) {
+                        extraId = json['extraId'];
+                        render_extras(extraId, extra);
                     } else {
                         alert('Error adding extra. '+ json['message'])
                     }
@@ -581,17 +581,17 @@
             );
         });
 
-        function delete_extra(RegistrationExtraId)
+        function delete_extra(extraId)
         {
             var reg_id = $('#Registration_ID').val();
             $.getJSON('/registration/ajax/extra/'+reg_id+'/delete',
                 {
                     'Registration_ID': reg_id,
-                    'RegistrationExtraId': RegistrationExtraId
+                    'extraId': extraId
                 },
                 function (json)
                 {
-                    $('#tr_extra_' + RegistrationExtraId).remove();
+                    $('#tr_extra_' + extraId).remove();
                 }
             );
             get_regextralist();
@@ -613,9 +613,9 @@
 
                     var extraCount = json.length;
                     for (var i = 0; i < extraCount; i++) {
-                        var RegistrationExtraId = json[i]['RegistrationExtraId'];
+                        var extraId = json[i]['extraId'];
                         var extra = json[i]['extra'];
-                        render_extras(RegistrationExtraId, extra);
+                        render_extras(extraId, extra);
                     }
                 }
             );

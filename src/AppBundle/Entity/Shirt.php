@@ -13,6 +13,11 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Shirt
 {
+    public function __construct()
+    {
+        $this->registrationShirts = new ArrayCollection();
+    }
+
     /**
      * @var string
      *
@@ -78,12 +83,10 @@ class Shirt
     private $modifiedBy;
 
     /**
-     * @var ArrayCollection
-     *
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Registration", mappedBy="shirts")
+     * One Product has Many Features.
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\RegistrationShirt", mappedBy="shirt")
      */
-    private $registrations;
-
+    private $registrationShirts;
 
 
     /**
@@ -267,19 +270,26 @@ class Shirt
     /**
      * Get events
      *
-     * @return \Doctrine\Common\Collections\Collection|Registration[]
+     * @return \Doctrine\Common\Collections\Collection|RegistrationShirt[]
      */
-    public function getRegistrations()
+    public function getRegistrationShirts()
     {
-        return $this->registrations;
+        return $this->registrationShirts;
     }
 
     /**
-     * @param Registration $registration
+     * @param RegistrationShirt $registrationShirt
      */
-    public function addRegistration(Registration $registration)
+    public function addRegistration(RegistrationShirt $registrationShirt)
     {
-        $registration->addShirt($this);
-        $this->registrations[] = $registration;
+        $this->registrationShirts->add($registrationShirt);
+    }
+
+    /**
+     * @param RegistrationShirt $registrationShirt
+     */
+    public function removeRegistrationShirt(RegistrationShirt $registrationShirt)
+    {
+        $this->registrationShirts->removeElement($registrationShirt);
     }
 }

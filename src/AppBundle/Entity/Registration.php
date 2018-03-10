@@ -15,7 +15,10 @@ class Registration
 {
     public function __construct()
     {
+        $this->badges = new ArrayCollection();
         $this->groups = new ArrayCollection();
+        $this->registrationShirts = new ArrayCollection();
+        $this->extras = new ArrayCollection();
     }
 
     /**
@@ -220,6 +223,11 @@ class Registration
      */
     private $modifiedBy;
 
+    /**
+     * One Product has Many Features.
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Badge", mappedBy="registration")
+     */
+    private $badges;
 
     /**
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Group", inversedBy="registrations")
@@ -230,11 +238,10 @@ class Registration
     private $groups;
 
     /**
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Shirt", inversedBy="registrations")
-     * @ORM\JoinTable(name="registration_shirt", joinColumns={@ORM\JoinColumn(name="registration_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="shirt_id", referencedColumnName="id")})
+     * One Product has Many Features.
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\RegistrationShirt", mappedBy="registration")
      */
-    private $shirts;
+    private $registrationShirts;
 
     /**
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Extra", inversedBy="registrations")
@@ -856,9 +863,35 @@ class Registration
     }
 
     /**
+     * Get badges
+     *
+     * @return Badge[]|\Doctrine\Common\Collections\Collection
+     */
+    public function getBadges()
+    {
+        return $this->badges;
+    }
+
+    /**
+     * @param Badge $badge
+     */
+    public function addBadge(Badge $badge)
+    {
+        $this->badges->add($badge);
+    }
+
+    /**
+     * @param Badge $badge
+     */
+    public function removeBadge($badge)
+    {
+        $this->badges->removeElement($badge);
+    }
+
+    /**
      * Get groups
      *
-     * @return \Doctrine\Common\Collections\Collection|Group[]
+     * @return Group[]|\Doctrine\Common\Collections\Collection
      */
     public function getGroups()
     {
@@ -870,33 +903,47 @@ class Registration
      */
     public function addGroup(Group $group)
     {
-        $group->addRegistration($this);
-        $this->groups[] = $group;
+        $this->groups->add($group);
     }
 
     /**
-     * Get shirts
+     * @param Group $group
+     */
+    public function removeGroup($group)
+    {
+        $this->groups->removeElement($group);
+    }
+
+    /**
+     * Get events
      *
-     * @return \Doctrine\Common\Collections\Collection|Shirt[]
+     * @return RegistrationShirt[]|\Doctrine\Common\Collections\Collection
      */
-    public function getShirts()
+    public function getRegistrationShirts()
     {
-        return $this->shirts;
+        return $this->registrationShirts;
     }
 
     /**
-     * @param Shirt $shirt
+     * @param RegistrationShirt $registrationShirt
      */
-    public function addShirt(Shirt $shirt)
+    public function addRegistration(RegistrationShirt $registrationShirt)
     {
-        $shirt->addRegistration($this);
-        $this->shirts[] = $shirt;
+        $this->registrationShirts->add($registrationShirt);
+    }
+
+    /**
+     * @param RegistrationShirt $registrationShirt
+     */
+    public function removeRegistrationShirt(RegistrationShirt $registrationShirt)
+    {
+        $this->registrationShirts->removeElement($registrationShirt);
     }
 
     /**
      * Get extras
      *
-     * @return \Doctrine\Common\Collections\Collection|Extra[]
+     * @return Extra[]|\Doctrine\Common\Collections\Collection
      */
     public function getExtras()
     {
@@ -908,7 +955,14 @@ class Registration
      */
     public function addExtra(Extra $extra)
     {
-        $extra->addRegistration($this);
-        $this->extras[] = $extra;
+        $this->extras->add($extra);
+    }
+
+    /**
+     * @param Extra $extra
+     */
+    public function removeExtra($extra)
+    {
+        $this->extras->removeElement($extra);
     }
 }

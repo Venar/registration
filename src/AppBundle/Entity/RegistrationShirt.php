@@ -2,36 +2,21 @@
 
 namespace AppBundle\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Extra
+ * RegistrationShirt
  *
- * @ORM\Table(name="extra", indexes={@ORM\Index(name="FK1_Extra_CreatedBy", columns={"created_by"}), @ORM\Index(name="FK2_Extra_ModifiedBy", columns={"modified_by"})})
- * @ORM\Entity(repositoryClass="AppBundle\Repository\ExtraRepository")
+ * @ORM\Table(name="registration_shirt",
+ *     indexes={
+ *     @ORM\Index(name="FK1_RegistrationShirt_CreatedBy", columns={"created_by"}),
+ *     @ORM\Index(name="FK2_RegistrationShirt_ModifiedBy", columns={"modified_by"}),
+ *     @ORM\Index(name="FK2_RegistrationShirt_Registration_ID", columns={"registration_id"}),
+ *     @ORM\Index(name="FK2_RegistrationShirt_Shirt_ID", columns={"shirt_id"})})
+ * @ORM\Entity
  */
-class Extra
+class RegistrationShirt
 {
-    public function __construct()
-    {
-        $this->registrations = new ArrayCollection();
-    }
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=255, nullable=false)
-     */
-    private $name;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="description", type="string", length=255, nullable=false)
-     */
-    private $description;
-
     /**
      * @var \DateTime
      *
@@ -53,7 +38,7 @@ class Extra
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $id;
+    private $registrationShirtId;
 
     /**
      * @var \AppBundle\Entity\User
@@ -76,67 +61,29 @@ class Extra
     private $modifiedBy;
 
     /**
-     * @var ArrayCollection
+     * @var \AppBundle\Entity\Registration
      *
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Registration", mappedBy="extras")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Registration", inversedBy="registrationShirts")
+     * @ORM\JoinColumn(name="registration_id", referencedColumnName="id")
      */
-    private $registrations;
-
+    private $registration;
 
     /**
-     * Set name
+     * @var \AppBundle\Entity\Shirt
      *
-     * @param string $name
-     *
-     * @return Extra
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Shirt", inversedBy="registrationShirts")
+     * @ORM\JoinColumn(name="shirt_id", referencedColumnName="id")
      */
-    public function setName($name)
-    {
-        $this->name = $name;
+    private $shirt;
 
-        return $this;
-    }
 
-    /**
-     * Get name
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * Set description
-     *
-     * @param string $description
-     *
-     * @return Extra
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    /**
-     * Get description
-     *
-     * @return string
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
 
     /**
      * Set createdDate
      *
      * @param \DateTime $createdDate
      *
-     * @return Extra
+     * @return RegistrationShirt
      */
     public function setCreatedDate($createdDate)
     {
@@ -145,7 +92,7 @@ class Extra
         return $this;
     }
 
-    /**d
+    /**
      * Get createdDate
      *
      * @return \DateTime
@@ -160,7 +107,7 @@ class Extra
      *
      * @param \DateTime $modifiedDate
      *
-     * @return Extra
+     * @return RegistrationShirt
      */
     public function setModifiedDate($modifiedDate)
     {
@@ -180,13 +127,13 @@ class Extra
     }
 
     /**
-     * Get extraId
+     * Get registrationShirtId
      *
      * @return integer
      */
-    public function getExtraId()
+    public function getRegistrationShirtId()
     {
-        return $this->id;
+        return $this->registrationShirtId;
     }
 
     /**
@@ -194,7 +141,7 @@ class Extra
      *
      * @param \AppBundle\Entity\User $createdBy
      *
-     * @return Extra
+     * @return RegistrationShirt
      */
     public function setCreatedBy(User $createdBy = null)
     {
@@ -218,7 +165,7 @@ class Extra
      *
      * @param \AppBundle\Entity\User $modifiedBy
      *
-     * @return Extra
+     * @return RegistrationShirt
      */
     public function setModifiedBy(User $modifiedBy = null)
     {
@@ -238,20 +185,50 @@ class Extra
     }
 
     /**
-     * Get events
+     * Set registration
      *
-     * @return \Doctrine\Common\Collections\Collection|Registration[]
+     * @param \AppBundle\Entity\Registration $registration
+     *
+     * @return RegistrationShirt
      */
-    public function getRegistrations()
+    public function setRegistration(Registration $registration = null)
     {
-        return $this->registrations;
+        $this->registration = $registration;
+
+        return $this;
     }
 
     /**
-     * @param Registration $registration
+     * Get registration
+     *
+     * @return \AppBundle\Entity\Registration
      */
-    public function addRegistration(Registration $registration)
+    public function getRegistration()
     {
-        $this->registrations->add($registration);
+        return $this->registration;
+    }
+
+    /**
+     * Set shirt
+     *
+     * @param \AppBundle\Entity\Shirt $shirt
+     *
+     * @return RegistrationShirt
+     */
+    public function setShirt(Shirt $shirt = null)
+    {
+        $this->shirt = $shirt;
+
+        return $this;
+    }
+
+    /**
+     * Get shirt
+     *
+     * @return \AppBundle\Entity\Shirt
+     */
+    public function getShirt()
+    {
+        return $this->shirt;
     }
 }
