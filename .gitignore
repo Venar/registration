@@ -2,6 +2,7 @@
 /build/
 /phpunit.xml
 /var/*
+.web-server-pid
 .idea/
 .idea/workspace.xml
 !/var/cache
