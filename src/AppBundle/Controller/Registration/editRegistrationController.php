@@ -103,7 +103,7 @@ class editRegistrationController extends Controller
 
         $currentBadgeTypes = [];
         foreach ($badges as $badge) {
-            $currentBadgeTypes[] = $badge->getBadgetype()->getName();
+            $currentBadgeTypes[] = $badge->getBadgeType()->getName();
         }
 
         /** @var RegistrationType[] $registrationTypes */
@@ -193,7 +193,7 @@ class editRegistrationController extends Controller
             if ($action == 'remove') {
                 $badges = $entityManager->getRepository(Badge::class)->getBadgesFromRegistration($registration);
                 foreach ($badges as $badge) {
-                    if ($badge->getBadgetype()->getBadgetypeId() == $badgeType->getBadgetypeId()) {
+                    if ($badge->getBadgeType()->getBadgeTypeId() == $badgeType->getBadgeTypeId()) {
                         $entityManager->remove($badge);
                         $returnData['success'] = true;
                         $returnData['message'] = 'Staff badge deleted';
@@ -203,8 +203,8 @@ class editRegistrationController extends Controller
                 $badgeStatus = $entityManager->getRepository(BadgeStatus::class)->getBadgeStatusFromStatus('NEW');
                 $badge = new Badge();
                 $badge->setRegistration($registration);
-                $badge->setBadgetype($badgeType);
-                $badge->setBadgestatus($badgeStatus);
+                $badge->setBadgeType($badgeType);
+                $badge->setBadgeStatus($badgeStatus);
                 $badge->setNumber($entityManager->getRepository(Badge::class)->generateNumber());
                 $entityManager->persist($badge);
                 $returnData['success'] = true;
@@ -594,7 +594,7 @@ class editRegistrationController extends Controller
 
             $badges = $registration->getBadges();
             foreach ($badges as $badge) {
-                $badgeType = $badge->getBadgetype();
+                $badgeType = $badge->getBadgeType();
                 if (in_array($badgeType->getName(), $allow_one_badge_types) && $badgeType->getName() != $regtype) {
                     $toDelete[] = $badge;
                     $history .= "BadgeType: {$badgeType->getName()} => $regtype<br>";
@@ -676,8 +676,8 @@ class editRegistrationController extends Controller
                     ->getBadgeTypeFromType($regtype);
                 $badge = new Badge();
                 $badge->setRegistration($registration);
-                $badge->setBadgetype($badgeType);
-                $badge->setBadgestatus($badgeStatus);
+                $badge->setBadgeType($badgeType);
+                $badge->setBadgeStatus($badgeStatus);
                 $badgeNumber = $this->getDoctrine()->getRepository(Badge::class)->generateNumber();
                 $badge->setNumber($badgeNumber);
                 $history .= "BadgeType: Added Badge Type: {$badgeType->getName()}<br>";

@@ -85,7 +85,7 @@ class Badge
     /**
      * @var \AppBundle\Entity\Registration
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Registration")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Registration", inversedBy="badges")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="registration_id", referencedColumnName="id")
      * })

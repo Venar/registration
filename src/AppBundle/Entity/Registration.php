@@ -355,7 +355,7 @@ class Registration
      *
      * @return Registration
      */
-    public function setMiddlename($middleName)
+    public function setMiddleName($middleName)
     {
         $this->middleName = $middleName;
 
