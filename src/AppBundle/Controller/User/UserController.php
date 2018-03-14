@@ -11,39 +11,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class UserController extends Controller
 {
-    /**
-     * @Route("/user/list", name="listUsers")
-     * @Route("/user/list/", name="listUsers_withSlash")
-     * @Route("/user/list/{curPageNum}", name="listUsers_withPageNum")
-     * @Security("has_role('ROLE_ADMIN')")
-     *
-     * @param Request $request
-     * @param String $curPageNum Current page number
-     * @return Response
-     */
-    public function listUsers(Request $request, $curPageNum = '1')
-    {
-        $vars = [];
-
-        $searchText = '';
-        if ($request->query->has('searchText')) {
-            $searchText = $request->query->get('searchText');
-        }
-
-        $users = $this->get('repository_user')->findAll();
-
-        $vars['users'] = $users;
-
-        $vars['totalResults'] = count($users);
-        $vars['searchText'] = $searchText;
-
-        $roles = $this->get('security.role_hierarchy');
-        //var_dump($roles);
-
-        return $this->render('user/list.html.twig', $vars);
-    }
-
-    public function indexAction()
+    public function currentUserAction()
     {
         $user = $this->get('security.token_storage')->getToken()->getUser();
         if ($user instanceof User) {

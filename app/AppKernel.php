@@ -19,7 +19,6 @@ class AppKernel extends Kernel
             new AppBundle\AppBundle(),
             new WhiteOctober\TCPDFBundle\WhiteOctoberTCPDFBundle(),
             new EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle(),
-            new HWI\Bundle\OAuthBundle\HWIOAuthBundle(),
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {

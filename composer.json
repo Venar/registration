@@ -19,7 +19,6 @@
         "doctrine/doctrine-cache-bundle": "^1.2",
         "doctrine/orm": "^2.5",
         "friendsofsymfony/user-bundle": "~2.0",
-        "hwi/oauth-bundle": "^0.5.3",
         "incenteev/composer-parameter-handler": "^2.0",
         "javiereguiluz/easyadmin-bundle": "^1.17",
         "sensio/distribution-bundle": "^5.0",
