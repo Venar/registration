@@ -40,12 +40,12 @@
             </tr>
             </thead>
             <tbody>
-            {% for regGroup in regGroups %}
+            {% for group in groups %}
             <tr>
-                <td><a href="/group/edit/{{ regGroup.regGroup.reggroupId }}">{{ regGroup.regGroup.name }}</a></td>
-                <td>{{ regGroup.regGroup.school }}</td>
-                <td>{{ regGroup.regGroup.leader }}</td>
-                <td>{{ regGroup.count }}</td>
+                <td><a href="/group/edit/{{ group.group.groupId }}">{{ group.group.name }}</a></td>
+                <td>{{ group.group.school }}</td>
+                <td>{{ group.group.leader }}</td>
+                <td>{{ group.count }}</td>
             </tr>
             {% endfor %}
             </tbody>

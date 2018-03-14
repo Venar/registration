@@ -5,6 +5,7 @@ namespace AppBundle\Repository;
 use AppBundle\Entity\Badge;
 use AppBundle\Entity\BadgeType;
 use AppBundle\Entity\Event;
+use AppBundle\Entity\Group;
 use AppBundle\Entity\Registration;
 use AppBundle\Entity\RegistrationStatus;
 use AppBundle\Entity\RegistrationType;
@@ -12,6 +13,7 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Doctrine\ORM\Query\Expr\Join;
 
 class RegistrationRepository extends EntityRepository
@@ -36,11 +38,13 @@ class RegistrationRepository extends EntityRepository
             . substr($unique, 8, 2) . substr($registration->getNumber(), 3, 2)
             . substr($unique, 10, 2);
         $registration->setConfirmationnumber($confirmationNumber);
-        $this->getEntityManager()->persist($registration);
 
         try {
+            $this->getEntityManager()->persist($registration);
             $this->getEntityManager()->flush();
         } catch (OptimisticLockException $e) {
+            // TODO: Handle Exception later
+        } catch (ORMException $e) {
             // TODO: Handle Exception later
         }
 
@@ -296,6 +300,33 @@ class RegistrationRepository extends EntityRepository
             ->andWhere('r.event = :event')
             ->setParameter('birthday', $birthday)
             ->setParameter('event', $event->getId());
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+    /**
+     * @param Group $group
+     * @param Event $event
+     * @return Registration[]
+     */
+    public function getRegistrationsFromGroup(Group $group = null, Event $event = null)
+    {
+        if (!$event) {
+            $event = $this->getEntityManager()->getRepository(Event::class)->getSelectedEvent();
+        }
+        if (!$group) {
+            return [];
+        }
+        $queryBuilder = $this->getEntityManager()->createQueryBuilder();
+
+        $queryBuilder->select('r')
+            ->from(Registration::class, 'r')
+            ->innerJoin('r.groups', 'g')
+            ->where("g.id = :groupId")
+            ->andWhere("r.event = :event")
+            ->setParameter('groupId', $group)
+            ->setParameter('event', $event)
+        ;
 
         return $queryBuilder->getQuery()->getResult();
     }

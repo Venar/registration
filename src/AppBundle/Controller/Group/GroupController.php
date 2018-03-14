@@ -2,7 +2,9 @@
 
 namespace AppBundle\Controller\Group;
 
+use AppBundle\Entity\Event;
 use AppBundle\Entity\Group;
+use AppBundle\Entity\Registration;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,13 +20,12 @@ class GroupController extends Controller
      * @Security("has_role('ROLE_USER')")
      *
      * @param Request $request
-     * @param String $curPageNum Current page number
      * @return Response
      */
-    public function listGroups(Request $request, $curPageNum = '1')
+    public function listGroups(Request $request)
     {
         $vars = [];
-        $event = $this->get('repository_event')->getSelectedEvent();
+        $event = $this->getDoctrine()->getRepository(Event::class)->getSelectedEvent();
 
         $showEmptyGroups = false;
         if (
@@ -39,21 +40,22 @@ class GroupController extends Controller
             $searchText = $request->query->get('searchText');
         }
 
-        $groups = $this->get('repository_reggroup')->findFromSchool($searchText);
+        $groups = $this->getDoctrine()->getRepository(Group::class)->findFromSchool($searchText);
 
-        $vars['regGroups'] = [];
+        $vars['groups'] = [];
         foreach ($groups as $group) {
             $registrations = $this
-                ->get('repository_registration')
-                ->getRegistrationsFromRegGroup($group, $event);
+                ->getDoctrine()
+                ->getRepository(Registration::class)
+                ->getRegistrationsFromGroup($group, $event);
             $count = count($registrations);
 
             if (!$showEmptyGroups && $count == 0) {
                 continue;
             }
 
-            $vars['regGroups'][] = [
-                'regGroup' => $group,
+            $vars['groups'][] = [
+                'group' => $group,
                 'count' => $count,
             ];
         }
@@ -68,55 +70,58 @@ class GroupController extends Controller
     /**
      * @Route("/group/edit")
      * @Route("/group/edit/")
-     * @Route("/group/edit/{regGroupId}")
+     * @Route("/group/edit/{groupId}")
      * @Security("has_role('ROLE_USER')")
      *
      * @param Request $request
-     * @param String $regGroupId
+     * @param String $groupId
      * @return Response
      */
-    public function groupEdit(Request $request, $regGroupId = null)
+    public function groupEdit(Request $request, $groupId = null)
     {
         $vars = [];
         $vars['saveSuccessful'] = false;
-        $entityManager = $this->get('doctrine.orm.entity_manager');
-        $event = $this->get('repository_event')->getSelectedEvent();
+        $entityManager = $this->getDoctrine()->getManager();
+        $event = $this->getDoctrine()->getRepository(Event::class)->getSelectedEvent();
 
-        $regGroup = $this->get('repository_reggroup')->getFromReggroupId($regGroupId);
+        $group = $this->getDoctrine()->getRepository(Group::class)->find($groupId);
 
         $vars['errors'] = [];
         if ($request->request->has('action') && $request->request->get('action') == 'save') {
-            if (!$regGroup) {
-                $regGroup = new Group();
+            if (!$group) {
+                $group = new Group();
             }
 
-            $regGroup->setName($request->request->get('name'));
-            $regGroup->setSchool($request->request->get('school'));
-            $regGroup->setAddress($request->request->get('address'));
-            $regGroup->setCity($request->request->get('city'));
-            $regGroup->setState($request->request->get('state'));
-            $regGroup->setZip($request->request->get('zip'));
-            $regGroup->setLeader($request->request->get('leader'));
-            $regGroup->setLeaderemail($request->request->get('leaderemail'));
-            $regGroup->setLeaderphone($request->request->get('leaderphone'));
-            $regGroup->setAuthorizedname($request->request->get('authorizedname'));
-            $regGroup->setAuthorizedemail($request->request->get('authorizedemail'));
-            $regGroup->setAuthorizedphone($request->request->get('authorizedphone'));
+            $group->setName($request->request->get('name'));
+            $group->setSchool($request->request->get('school'));
+            $group->setAddress($request->request->get('address'));
+            $group->setCity($request->request->get('city'));
+            $group->setState($request->request->get('state'));
+            $group->setZip($request->request->get('zip'));
+            $group->setLeader($request->request->get('leader'));
+            $group->setLeaderemail($request->request->get('leaderemail'));
+            $group->setLeaderphone($request->request->get('leaderphone'));
+            $group->setAuthorizedname($request->request->get('authorizedname'));
+            $group->setAuthorizedemail($request->request->get('authorizedemail'));
+            $group->setAuthorizedphone($request->request->get('authorizedphone'));
 
-            if ($regGroup->getName() == '') {
+            if ($group->getName() == '') {
                 $vars['errors'][] = 'Name can not be blank!';
             }
 
             if (count($vars['errors']) == 0) {
-                $entityManager->persist($regGroup);
+                $entityManager->persist($group);
                 $entityManager->flush();
                 $vars['saveSuccessful'] = true;
             }
         }
 
-        $registrations = $this->get('repository_registration')->getRegistrationsFromRegGroup($regGroup, $event);
+        $registrations = $this
+            ->getDoctrine()
+            ->getRepository(Registration::class)
+            ->getRegistrationsFromGroup($group, $event);
 
-        $vars['regGroup'] = $regGroup;
+        $vars['group'] = $group;
         $vars['registrations'] = $registrations;
 
         return $this->render('group/edit.html.twig', $vars);

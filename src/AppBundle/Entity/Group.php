@@ -153,7 +153,6 @@ class Group
      */
     private $registrations;
 
-
     /**
      * Set name
      *
