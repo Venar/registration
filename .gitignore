@@ -18,3 +18,4 @@
 /vendor/
 /web/bundles/
 /web/config.php
+/web/node_modules/
