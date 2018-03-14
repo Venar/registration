@@ -19,7 +19,7 @@ class CreatedModifiedFields
     public function prePersist(LifecycleEventArgs $args) {
         $entity = $args->getEntity();
 
-        if (!method_exists($entity, 'setCreateddate')) {
+        if (!method_exists($entity, 'setCreatedDate')) {
             return;
         }
 
@@ -31,18 +31,18 @@ class CreatedModifiedFields
 
         $user = $args->getEntityManager()->getRepository('AppBundle:User')->find($userId);
 
-        $entity->setCreateddate(new \DateTime("now"));
-        $entity->setCreatedby($user);
+        $entity->setCreatedDate(new \DateTime("now"));
+        $entity->setCreatedBy($user);
 
-        $entity->setModifieddate(new \DateTime("now"));
-        $entity->setModifiedby($user);
+        $entity->setModifiedDate(new \DateTime("now"));
+        $entity->setModifiedBy($user);
     }
 
     public function preUpdate(LifecycleEventArgs $args)
     {
         $entity = $args->getEntity();
 
-        if (!method_exists($entity, 'setModifieddate')) {
+        if (!method_exists($entity, 'setModifiedDate')) {
             return;
         }
 
@@ -54,7 +54,7 @@ class CreatedModifiedFields
 
         $user = $args->getEntityManager()->getRepository('AppBundle:User')->find($userId);
 
-        $entity->setModifieddate(new \DateTime("now"));
-        $entity->setModifiedby($user);
+        $entity->setModifiedDate(new \DateTime("now"));
+        $entity->setModifiedBy($user);
     }
 }

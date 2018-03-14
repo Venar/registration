@@ -240,7 +240,7 @@ class PrintingController extends Controller
         if ($badge) {
             $this->addBadgeFromRegistrationAndBadge($registration, $badge);
         } else {
-            $badges = $registration->getBadges();
+            $badges = $registration->getBadges()->toArray();
             $badges = array_reverse($badges);
             /** @var $badges Badge[] */
             foreach ($badges as $badge) {
