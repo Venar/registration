@@ -32,7 +32,7 @@ class ViewRegistrationController extends Controller
         $registrationType = $registration->getRegistrationType();
         $registrationStatus = $registration->getRegistrationStatus();
         $registrationHistory = $this->getDoctrine()->getRepository(History::class)->getHistoryFromRegistration($registration);
-        $badges = $this->getDoctrine()->getRepository(Badge::class)->getBadgesFromRegistration($registration);
+        $badges = $registration->getBadges();
 
         $info = '';
         if ($registrationStatus->getActive()) {

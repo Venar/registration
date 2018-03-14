@@ -3,9 +3,15 @@
 namespace AppBundle\Controller\Registration;
 
 use AppBundle\Entity\Badge;
+use AppBundle\Entity\BadgeType;
+use AppBundle\Entity\Event;
+use AppBundle\Entity\Group;
 use AppBundle\Entity\Registration;
 use AppBundle\Entity\History;
 use AppBundle\Entity\Registrationshirt;
+use AppBundle\Entity\RegistrationStatus;
+use AppBundle\Entity\RegistrationType;
+use Doctrine\ORM\ORMException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,20 +32,23 @@ class rolloverController extends Controller
         $vars['error'] = '';
         $vars['errorMessage'] = '';
 
-        $registration = $this->get('repository_registration')->getFromRegistrationId($registrationId);
+        $registration = $this->getDoctrine()->getRepository(Registration::class)->find($registrationId);
         $vars['registration'] = $registration;
 
-        if (!$registration->getRegistrationstatus()->getActive()) {
+        if (!$registration->getRegistrationStatus()->getActive()) {
             $vars['error'] = 'Registration is not active!';
             $vars['errorMessage'] = 'You cannot rollover an inactive registration!';
         }
 
-        $badges = $this->get('repository_badge')->getBadgesFromRegistration($registration);
+        $badges = $registration->getBadges();
         $vars['badges'] = $badges;
 
         $vars['nextYear'] = $registration->getEvent()->getYear() + 1;
 
-        $nextEvent = $this->get('repository_event')->getEventFromYear($vars['nextYear']);
+        $nextEvent = $this
+            ->getDoctrine()
+            ->getRepository(Event::class)
+            ->getEventFromYear($vars['nextYear']);
         if (!$nextEvent) {
             $vars['error'] = 'Next year not configured';
             $vars['errorMessage'] = 'You cannot rollover until the admin sets up a next event!';
@@ -54,26 +63,39 @@ class rolloverController extends Controller
      *
      * @param String $registrationId
      * @return Response
+     * @throws ORMException
      */
     public function rolloverConfirm($registrationId) {
         $entityManager = $this->get('doctrine.orm.entity_manager');
 
-        $oldRegistration = $this->get('repository_registration')->getFromRegistrationId($registrationId);
-        $registrationType = $this->get('repository_registrationtype')->getRegistrationTypeFromType('Rollover');
-        $registrationStatusNew = $this->get('repository_registrationstatus')->getRegistrationStatusFromStatus('New');
-        $registrationStatusRollover = $this->get('repository_registrationstatus')->getRegistrationStatusFromStatus('RolledOver');
-        $registrationStatus = $oldRegistration->getRegistrationstatus();
+        $oldRegistration = $this
+            ->getDoctrine()
+            ->getRepository(Registration::class)
+            ->find($registrationId);
+        $registrationType = $this
+            ->getDoctrine()
+            ->getRepository(RegistrationType::class)
+            ->getRegistrationTypeFromType('Rollover');
+        $registrationStatusNew = $this
+            ->getDoctrine()
+            ->getRepository(RegistrationStatus::class)
+            ->getRegistrationStatusFromStatus('New');
+        $registrationStatusRollover = $this
+            ->getDoctrine()
+            ->getRepository(RegistrationStatus::class)
+            ->getRegistrationStatusFromStatus('RolledOver');
+        $registrationStatus = $oldRegistration->getRegistrationStatus();
 
         if (!$registrationStatus->getActive()) {
             $params = ['registrationId' => $registrationId];
-            return $this->redirectToRoute('app_registration_viewregistration_viewregistrationpage', $params);
+            return $this->redirectToRoute('viewRegistration', $params);
         }
 
         $nextYear = $oldRegistration->getEvent()->getYear() + 1;
-        $nextEvent = $this->get('repository_event')->getEventFromYear($nextYear);
+        $nextEvent = $this->getDoctrine()->getRepository(Event::class)->getEventFromYear($nextYear);
         if (!$nextEvent) {
             $params = ['registrationId' => $oldRegistration->getRegistrationId()];
-            return $this->redirectToRoute('app_registration_rollover_rolloverinformation', $params);
+            return $this->redirectToRoute('viewRegistration', $params);
         }
 
         $registration = new Registration();
@@ -94,43 +116,47 @@ class rolloverController extends Controller
         $registration->setPhone($oldRegistration->getPhone());
         $registration->setContactNewsletter($oldRegistration->getContactNewsletter());
         $registration->setContactVolunteer($oldRegistration->getContactVolunteer());
-        $registration->setNumber($this->get('repository_registration')->generateNumber($registration));
+        $number = $this->getDoctrine()->getRepository(Registration::class)->generateNumber($registration);
+        $registration->setNumber($number);
 
         $entityManager->persist($registration);
         $entityManager->flush();
 
-        $oldBadges = $this->get('repository_badge')->getBadgesFromRegistration($oldRegistration);
+        $oldBadges = $oldRegistration->getBadges();
         foreach ($oldBadges as $oldBadge) {
-            if ($oldBadge->getBadgetype()->getName() == 'Staff') {
+            /** @var Badge $oldBadge */
+            if ($oldBadge->getBadgeType()->getName() == 'Staff') {
                 // We will not rollover a staff badge
                 continue;
             }
             $badge = new Badge();
-            $badge->setNumber($this->get('repository_badge')->generateNumber());
+            $number = $this->getDoctrine()->getRepository(Badge::class)->generateNumber();
+            $badge->setNumber($number);
             $badge->setBadgetype($oldBadge->getBadgetype());
             $badge->setBadgestatus($oldBadge->getBadgestatus());
             $badge->setRegistration($registration);
             $entityManager->persist($badge);
         }
 
-        $oldShirts = $this->get('repository_shirt')->getShirtsFromRegistration($oldRegistration);
-        foreach ($oldShirts as $oldShirt) {
+        $oldRegistrationShirts = $oldRegistration->getRegistrationShirts();
+        foreach ($oldRegistrationShirts as $oldRegistrationShirt) {
+            /** @var RegistrationShirt $oldRegistrationShirt */
             $registrationShirt = new RegistrationShirt();
             $registrationShirt->setRegistration($registration);
-            $registrationShirt->setShirt($oldShirt);
+            $registrationShirt->setShirt($oldRegistrationShirt->getShirt());
             $entityManager->persist($registrationShirt);
         }
 
         $oldHistory = '';
-        $registrationRegGroups = $this->get('repository_registrationreggroup')->getRegistrationRegGroupFromRegistration($oldRegistration);
-        foreach ($registrationRegGroups as $registrationRegGroup) {
-            $oldHistory = "Group Removed: {$registrationRegGroup->getReggroup()->getName()}<br>";
-            $entityManager->remove($registrationRegGroup);
+        $groups = $oldRegistration->getGroups();
+        foreach ($groups as $group) {
+            /** @var Group $group */
+            $oldHistory = "Group Removed: {$group->getName()}<br>";
+            $registration->removeGroup($group);
         }
         $entityManager->flush();
 
-        $newBadges = $this->get('repository_badge')->getBadgesFromRegistration($registration);
-        $this->get('repository_registration')->sendConfirmationEmail($registration, $newBadges);
+        $this->get('util_email')->generateAndSendConfirmationEmail($registration);
 
         $registrationHistory = new History();
         $registrationHistory->setRegistration($registration);

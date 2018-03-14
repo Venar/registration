@@ -2,6 +2,8 @@
 
 namespace AppBundle\Controller\Printing;
 
+use AppBundle\Entity\BadgeType;
+use AppBundle\Entity\Event;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -15,39 +17,41 @@ class BadgeCSVListController extends Controller
      *
      * @param string $type
      */
-    public function printingList($type) {
-
-        $event = $this->get('repository_event')->getSelectedEvent();
+    public function printingList($type)
+    {
+        $event = $this->getDoctrine()->getRepository(Event::class)->getSelectedEvent();
         $queryBuilder = $this->get('doctrine.orm.default_entity_manager')->createQueryBuilder();
 
         $order = [];
+
+        $badgeTypeRepository = $this->getDoctrine()->getRepository(BadgeType::class);
 
         $badgeTypes = [];
         $show_group = false;
         switch ($type) {
             case 'staff':
-                $badgeTypes[] = $this->get('repository_badgetype')->getBadgeTypeFromType('STAFF');
+                $badgeTypes[] = $badgeTypeRepository->getBadgeTypeFromType('STAFF');
                 break;
             case 'sponsor':
-                $badgeTypes[] = $this->get('repository_badgetype')->getBadgeTypeFromType('ADREGSPONSOR');
-                $badgeTypes[] = $this->get('repository_badgetype')->getBadgeTypeFromType('ADREGCOMMSPONSOR');
+                $badgeTypes[] = $badgeTypeRepository->getBadgeTypeFromType('ADREGSPONSOR');
+                $badgeTypes[] = $badgeTypeRepository->getBadgeTypeFromType('ADREGCOMMSPONSOR');
                 break;
             case 'standard':
-                $badgeTypes[] = $this->get('repository_badgetype')->getBadgeTypeFromType('ADREGSTANDARD');
-                $badgeTypes[] = $this->get('repository_badgetype')->getBadgeTypeFromType('MINOR');
+                $badgeTypes[] = $badgeTypeRepository->getBadgeTypeFromType('ADREGSTANDARD');
+                $badgeTypes[] = $badgeTypeRepository->getBadgeTypeFromType('MINOR');
                 break;
             case 'group':
                 $show_group = true;
                 $order[] = ['regGroupName', 'ASC'];
                 break;
             case 'guest':
-                $badgeTypes[] = $this->get('repository_badgetype')->getBadgeTypeFromType('GUEST');
+                $badgeTypes[] = $badgeTypeRepository->getBadgeTypeFromType('GUEST');
                 break;
             case 'exhibitor':
-                $badgeTypes[] = $this->get('repository_badgetype')->getBadgeTypeFromType('EXHIBITOR');
+                $badgeTypes[] = $badgeTypeRepository->getBadgeTypeFromType('EXHIBITOR');
                 break;
             case 'vendor':
-                $badgeTypes[] = $this->get('repository_badgetype')->getBadgeTypeFromType('VENDOR');
+                $badgeTypes[] = $badgeTypeRepository->getBadgeTypeFromType('VENDOR');
                 break;
         }
 
@@ -104,7 +108,7 @@ class BadgeCSVListController extends Controller
 
 
         if ($type != 'staff') {
-            $staffBadge = $this->get('repository_badgetype')->getBadgeTypeFromType('STAFF');
+            $staffBadge = $badgeTypeRepository->getBadgeTypeFromType('STAFF');
 
             $allStaffBadges = $this->get('doctrine.orm.default_entity_manager')->createQueryBuilder()
                 ->select('IDENTITY(b3.registration)')

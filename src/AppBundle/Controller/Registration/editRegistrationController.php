@@ -81,7 +81,7 @@ class editRegistrationController extends Controller
     {
         $event = $this->getDoctrine()->getRepository(Event::class)->getSelectedEvent();
         $registration = $this->getDoctrine()->getRepository(Registration::class)->find($registrationId);
-        $badges = $this->getDoctrine()->getRepository(Badge::class)->getBadgesFromRegistration($registration);
+        $badges = $registration->getBadges();
 
         $group = null;
         if ($groupId) {
@@ -98,11 +98,12 @@ class editRegistrationController extends Controller
         }
         $transferredBadges = null;
         if ($transferredRegistration) {
-            $transferredBadges = $this->getDoctrine()->getRepository(Badge::class)->getBadgesFromRegistration($transferredRegistration);
+            $transferredBadges = $transferredRegistration->getBadges();
         }
 
         $currentBadgeTypes = [];
         foreach ($badges as $badge) {
+            /** @var Badge $badge */
             $currentBadgeTypes[] = $badge->getBadgeType()->getName();
         }
 
@@ -191,8 +192,9 @@ class editRegistrationController extends Controller
         if ($registration && ($action == 'add' || $action == 'remove')) {
             $badgeType = $entityManager->getRepository(BadgeType::class)->getBadgeTypeFromType('STAFF');
             if ($action == 'remove') {
-                $badges = $entityManager->getRepository(Badge::class)->getBadgesFromRegistration($registration);
+                $badges = $registration->getBadges();
                 foreach ($badges as $badge) {
+                    /** @var Badge $badge */
                     if ($badge->getBadgeType()->getBadgeTypeId() == $badgeType->getBadgeTypeId()) {
                         $entityManager->remove($badge);
                         $returnData['success'] = true;
@@ -686,7 +688,7 @@ class editRegistrationController extends Controller
             }
 
             $badges = $registration->getBadges();
-            $this->get('repository_registration')->sendConfirmationEmail($registration, $badges);
+            $this->get('util_email')->generateAndSendConfirmationEmail($registration, $badges);
 
             $registrationHistory = new History();
             $registrationHistory->setRegistration($registration);
