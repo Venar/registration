@@ -141,9 +141,9 @@ class ManageController extends Controller
     {
         $registrationStatusList = [];
 
-        $registrationStatuses = $this->get('repository_registrationstatus')->findAll();
+        $registrationStatuses = $this->getDoctrine()->getRepository(RegistrationStatus::class)->findAll();
         foreach ($registrationStatuses as $registrationStatus) {
-            $id = $registrationStatus->getRegistrationstatusId();
+            $id = $registrationStatus->getRegistrationStatusId();
             $registrationStatusList[] = [
                 'id' => $id,
                 'status' => $registrationStatus->getStatus(),
@@ -157,9 +157,9 @@ class ManageController extends Controller
     {
         $registrationTypeList = [];
 
-        $registrationTypes = $this->get('repository_registrationtype')->findAll();
+        $registrationTypes = $this->getDoctrine()->getRepository(RegistrationType::class)->findAll();
         foreach ($registrationTypes as $registrationType) {
-            $id = $registrationType->getRegistrationtypeId();
+            $id = $registrationType->getRegistrationTypeId();
             $registrationTypeList[] = [
                 'id' => $id,
                 'type' => $registrationType->getName(),
@@ -173,9 +173,9 @@ class ManageController extends Controller
     {
         $badgeTypeList = [];
 
-        $badgeTypes = $this->get('repository_badgetype')->findAll();
+        $badgeTypes = $this->getDoctrine()->getRepository(BadgeType::class)->findAll();
         foreach ($badgeTypes as $badgeType) {
-            $id = $badgeType->getBadgetypeId();
+            $id = $badgeType->getBadgeTypeId();
             $badgeTypeList[] = [
                 'id' => $id,
                 'name' => $badgeType->getDescription(),

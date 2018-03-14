@@ -34,19 +34,19 @@ class HistoryRepository extends EntityRepository
     {
         $queryBuilder = $this->getEntityManager()->createQueryBuilder();
 
-        $queryBuilder->select('rh')
-            ->from('History', 'h')
-            ->innerJoin('h.createdby', 'cb')
+        $queryBuilder->select('h')
+            ->from(History::class, 'h')
+            ->innerJoin('h.createdBy', 'cb')
             ->innerJoin('h.registration', 'r')
-            ->where("h.changetext LIKE :changetext")
-            ->orWhere('cb.firstname LIKE :firstname')
-            ->orWhere('cb.lastname LIKE :lastname')
-            ->orWhere('r.registrationId = :registrationId')
+            ->where("h.changeText LIKE :changeText")
+            ->orWhere('cb.firstName LIKE :firstName')
+            ->orWhere('cb.lastName LIKE :lastName')
+            ->orWhere('r.id = :registrationId')
             ->setParameter('registrationId', "$searchText")
-            ->setParameter('changetext', "%$searchText%")
-            ->setParameter('firstname', "%$searchText%")
-            ->setParameter('lastname', "%$searchText%")
-            ->orderBy('h.createddate', 'DESC')
+            ->setParameter('changeText', "%$searchText%")
+            ->setParameter('firstName', "%$searchText%")
+            ->setParameter('lastName', "%$searchText%")
+            ->orderBy('h.createdDate', 'DESC')
         ;
 
         $query = $queryBuilder->getQuery();

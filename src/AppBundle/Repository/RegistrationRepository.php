@@ -27,7 +27,7 @@ class RegistrationRepository extends EntityRepository
     /**
      * @param Registration $registration
      */
-    private function generateConfirmationNumber(Registration $registration)
+    public function generateConfirmationNumber(Registration $registration)
     {
         if ($registration->getConfirmationnumber()) {
 
@@ -329,5 +329,70 @@ class RegistrationRepository extends EntityRepository
         ;
 
         return $queryBuilder->getQuery()->getResult();
+    }
+
+    /**
+     * @param bool $showStaff
+     * @param Event|null $event
+     * @return Registration[]
+     */
+    public function findRegistrationsWithShirts($showStaff = false, Event $event = null) : array
+    {
+        if (!$event) {
+            $event = $this->getEntityManager()->getRepository(Event::class)->getSelectedEvent();
+        }
+        $queryBuilder = $this->getEntityManager()->createQueryBuilder();
+
+        $queryBuilder->select('r')
+            ->from(Registration::class, 'r')
+            ->innerJoin('r.registrationShirts', 'rs')
+            ->where("r.event = :event")
+            ->setParameter('event', $event)
+        ;
+
+        if (!$showStaff) {
+            $staffBadge = $this
+                ->getEntityManager()
+                ->getRepository(BadgeType::class)
+                ->getBadgeTypeFromType('STAFF');
+            $allStaffBadges = $this->getEntityManager()->createQueryBuilder()
+                ->select('IDENTITY(b.registration)')
+                ->from('AppBundle:Badge', 'b')
+                ->where("b.badgeType = :staffType")
+                ->getDQL();
+
+            $queryBuilder
+                ->andWhere($queryBuilder->expr()->notIn('r.id', $allStaffBadges))
+                ->setParameter('staffType', $staffBadge->getBadgetypeId());
+        }
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+    /**
+     * @param String $confirmation
+     * @param Event $event
+     * @return Registration|null
+     */
+    public function getFromConfirmation($confirmation, Event $event)
+    {
+        if (!$event) {
+            $event = $this->getEntityManager()->getRepository(Event::class)->getCurrentEvent();
+        }
+
+        $queryBuilder = $this->getEntityManager()->createQueryBuilder();
+
+        $queryBuilder->select('r')
+            ->from('AppBundle:Registration', 'r')
+            ->where("r.confirmationnumber = :confirmationnumber")
+            ->andWhere('r.event = :event')
+            ->setParameter('confirmationnumber', $confirmation)
+            ->setParameter('event', $event->getId());
+
+        try {
+            return $queryBuilder->getQuery()->getOneOrNullResult();
+        } catch (NonUniqueResultException $e) {
+            return null;
+        }
     }
 }

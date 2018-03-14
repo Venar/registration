@@ -24,6 +24,7 @@ class HistoryController extends Controller
      */
     public function history(Request $request, $curPageNum = 1) {
         $vars = [];
+        $historyRepository = $this->getDoctrine()->getRepository(History::class);
 
         $limit = 90;
         if ($request->query->has('limit')
@@ -41,7 +42,7 @@ class HistoryController extends Controller
         };
         $vars['searchText'] = $searchText;
 
-        $count = count($this->get('repository_registrationhistory')->getHistoryFromSearch($searchText));
+        $count = count($historyRepository->getHistoryFromSearch($searchText));
         $vars['total'] = $count;
 
         $totalPages = ceil($count / $limit);
@@ -52,7 +53,7 @@ class HistoryController extends Controller
         $offset = $limit * ($curPageNum - 1);
         $vars['offset'] = (int) $offset;
 
-        $registrationHistories = $this->get('repository_registrationhistory')->getHistoryFromSearch($searchText, $limit, $offset);
+        $registrationHistories = $historyRepository->getHistoryFromSearch($searchText, $limit, $offset);
         $vars['registrationHistories'] = $registrationHistories;
 
         return $this->render('utils/history.html.twig', $vars);

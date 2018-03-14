@@ -19,78 +19,17 @@ services:
     #    class: AppBundle\Directory\ClassName
     #    arguments: ['@another_service_name', 'plain_value', '%parameter_name%']
 
-    repository_badge:
-        class: AppBundle\Service\Repository\BadgeRepository
-        arguments: [ "@doctrine.orm.entity_manager"]
-
-    repository_badgestatus:
-        class: AppBundle\Service\Repository\BadgeStatusRepository
-        arguments: [ "@doctrine.orm.entity_manager"]
-
-    repository_badgetype:
-        class: AppBundle\Service\Repository\BadgeTypeRepository
-        arguments: [ "@doctrine.orm.entity_manager"]
-
-    repository_event:
-        class: AppBundle\Service\Repository\EventRepository
-        arguments: [ "@doctrine.orm.entity_manager"]
-
-    repository_extra:
-        class: AppBundle\Service\Repository\ExtraRepository
-        arguments: [ "@doctrine.orm.entity_manager"]
-
-    repository_registration:
-        class: AppBundle\Service\Repository\RegistrationRepository
-        arguments: [ "@repository_event", "@repository_badgetype", "@doctrine.orm.entity_manager",
-            "@service_container", '@util_email']
-
-    repository_registrationextra:
-        class: AppBundle\Service\Repository\RegistrationExtraRepository
-        arguments: [ "@doctrine.orm.entity_manager"]
-
-    repository_registrationreggroup:
-        class: AppBundle\Service\Repository\RegistrationRegGroupRepository
-        arguments: [ "@doctrine.orm.entity_manager"]
-
-    repository_registrationshirt:
-        class: AppBundle\Service\Repository\RegistrationShirtRepository
-        arguments: [ "@doctrine.orm.entity_manager"]
-
-    repository_registrationstatus:
-        class: AppBundle\Service\Repository\RegistrationStatusRepository
-        arguments: [ "@doctrine.orm.entity_manager"]
-
-    repository_registrationtype:
-        class: AppBundle\Service\Repository\RegistrationTypeRepository
-        arguments: [ "@doctrine.orm.entity_manager"]
-
-    repository_registrationhistory:
-        class: AppBundle\Service\Repository\RegistrationHistoryRepository
-        arguments: [ "@doctrine.orm.entity_manager"]
-
-    repository_reggroup:
-        class: AppBundle\Service\Repository\RegGroupRepository
-        arguments: [ "@doctrine.orm.entity_manager"]
-
-    repository_shirt:
-        class: AppBundle\Service\Repository\ShirtRepository
-        arguments: [ "@doctrine.orm.entity_manager"]
-
-    repository_user:
-        class: AppBundle\Service\Repository\UserRepository
-        arguments: [ "@doctrine.orm.entity_manager"]
-
     util_email:
         class: AppBundle\Service\Util\Email
-        arguments: [ "@templating", '@mailer',  "@repository_badge"]
+        arguments: [ "@templating", '@mailer', "@doctrine.orm.entity_manager"]
 
     util_percent:
         class: AppBundle\Service\Util\Percent
-        arguments: [ "@repository_event", "@repository_badgetype", "@doctrine.orm.entity_manager"]
+        arguments: [ "@doctrine.orm.entity_manager"]
 
     repository_tcpdf:
         class: AppBundle\Service\TCPDF\PDFRepository
-        arguments: [ "@repository_event"]
+        arguments: [ "@doctrine.orm.entity_manager"]
 
     app.provider.oauth:
         class: AppBundle\Security\Core\User\OAuthUserProvider

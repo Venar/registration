@@ -41,7 +41,7 @@ class RegistrationRepository
     /**
      * @param Registration $registration
      */
-    private function generateConfirmationNumber(Registration $registration)
+    private function generateConfirmatiogenerateConfirmationNumbernNumber(Registration $registration)
     {
         if ($registration->getConfirmationnumber()) {
 
@@ -75,7 +75,7 @@ class RegistrationRepository
         }
 
         if ($registration->getConfirmationnumber() == '') {
-            $this->generateConfirmationNumber($registration);
+            $this->($registration);
         }
 
         try {

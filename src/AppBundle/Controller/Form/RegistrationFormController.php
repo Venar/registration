@@ -2,6 +2,8 @@
 
 namespace AppBundle\Controller\Form;
 
+use AppBundle\Entity\Event;
+use AppBundle\Service\TCPDF\RegistrationPDF;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -15,8 +17,11 @@ class RegistrationFormController extends Controller
      */
     public function getRegistrationForm()
     {
+        $event = $this->getDoctrine()->getRepository(Event::class)->getSelectedEvent();
+
+        /** @var RegistrationPDF $pdf */
         $pdf = $this->get("white_october.tcpdf")->create();
-        $pdf->setEvent($this->get('repository_event')->getSelectedEvent());
+        $pdf->setEvent($event);
         $pdf->setSubTitle('Registration Form');
 
         $pdf->setFontSubsetting(false);
@@ -35,8 +40,6 @@ class RegistrationFormController extends Controller
 
         // set font
         $pdf->SetFont('helvetica', '', 10);
-        //global $WorkOrder;
-        $FileName = "Bulk";
 
         $pdf->AddPage();
         $pdf->Ln(10);

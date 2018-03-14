@@ -1,24 +1,19 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: jjkoniges
- * Date: 6/2/17
- * Time: 10:18 PM
- */
 
 namespace AppBundle\Service\TCPDF;
 
 
-use AppBundle\Service\Repository\EventRepository;
+use AppBundle\Entity\Event;
+use Doctrine\ORM\EntityManager;
 
 class PDFRepository
 {
-    /** @var EventRepository $event */
-    protected $event;
+    /** @var EntityManager $entityManager */
+    protected $entityManager;
 
-    public function __construct(EventRepository $event)
+    public function __construct(EntityManager $entityManager)
     {
-        $this->event = $event;
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -26,7 +21,7 @@ class PDFRepository
      */
     public function getBadgePDF()
     {
-        $event = $this->event->getSelectedEvent();
+        $event = $this->entityManager->getRepository(Event::class)->getSelectedEvent();
         $imageFile = "images/badge_backgrounds/{$event->getYear()}/" . 'ADREGSTANDARD.jpg';
 
         $size = GetImageSize($imageFile); // Read the size

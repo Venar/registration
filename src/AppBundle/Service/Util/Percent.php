@@ -1,31 +1,20 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: John J. Koniges
- * Date: 4/27/2017
- * Time: 2:46 PM
- */
 
 namespace AppBundle\Service\Util;
 
 
-use AppBundle\Service\Repository\BadgeTypeRepository;
-use AppBundle\Service\Repository\EventRepository;
+use AppBundle\Entity\BadgeType;
+use AppBundle\Entity\Event;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\NonUniqueResultException;
 
 class Percent
 {
-    /** @var EventRepository $event */
-    protected $event;
-    /** @var BadgeTypeRepository $badgeType */
-    protected $badgeType;
     /** @var EntityManager $entityManager */
     protected $entityManager;
 
-    public function __construct(EventRepository $event, BadgeTypeRepository $badgeType, EntityManager $entityManager)
+    public function __construct(EntityManager $entityManager)
     {
-        $this->event = $event;
-        $this->badgeType = $badgeType;
         $this->entityManager = $entityManager;
     }
 
@@ -34,9 +23,12 @@ class Percent
      */
     public function getPercent()
     {
-        $event = $this->event->getCurrentEvent();
+        $event = $this->entityManager->getRepository(Event::class)->getCurrentEvent();
         $remaining = $event->getAttendancecap();
-        $badgeTypeStaff = $this->badgeType->getBadgeTypeFromType('STAFF');
+        $badgeTypeStaff = $this
+            ->entityManager
+            ->getRepository(BadgeType::class)
+            ->getBadgeTypeFromType('STAFF');
 
         $allStaffBadges = $this->entityManager->createQueryBuilder()
             ->select('b.badgeId')
@@ -45,7 +37,10 @@ class Percent
             ->getDQL();
 
         $counts = [];
-        $badgeTypes = $this->badgeType->findAll();
+        $badgeTypes = $this
+            ->entityManager
+            ->getRepository(BadgeType::class)
+            ->findAll();
         foreach ($badgeTypes as $badgeType) {
             if ($badgeType->getBadgetypeId() == $badgeTypeStaff->getBadgetypeId()) {
                 continue;
@@ -68,28 +63,44 @@ class Percent
                 ->andWhere('rs.active = :active')
                 ->setParameter('stafftype', $badgeTypeStaff->getBadgetypeId())
                 ->setParameter('type', $badgeType->getBadgetypeId())
-                ->setParameter('event', $event->getEventId())
+                ->setParameter('event', $event->getId())
                 ->setParameter('active', true)
             ;
 
-            $count = $queryBuilder->getQuery()->getSingleScalarResult();
+            try {
+                $count = $queryBuilder->getQuery()->getSingleScalarResult();
+            } catch (NonUniqueResultException $e) {
+                $count = 0;
+            }
 
             $counts[$badgeType->getName()] = $count;
         }
 
-        $tmpBadge = $this->badgeType->getBadgeTypeFromType('ADREGSTANDARD');
+        $tmpBadge = $this
+            ->entityManager
+            ->getRepository(BadgeType::class)
+            ->getBadgeTypeFromType('ADREGSTANDARD');
         $tmpCount = $counts[$tmpBadge->getName()];
         $remaining = $remaining - $tmpCount;
 
-        $tmpBadge = $this->badgeType->getBadgeTypeFromType('MINOR');
+        $tmpBadge = $this
+            ->entityManager
+            ->getRepository(BadgeType::class)
+            ->getBadgeTypeFromType('MINOR');
         $tmpCount = $counts[$tmpBadge->getName()];
         $remaining = $remaining - $tmpCount;
 
-        $tmpBadge = $this->badgeType->getBadgeTypeFromType('ADREGSPONSOR');
+        $tmpBadge = $this
+            ->entityManager
+            ->getRepository(BadgeType::class)
+            ->getBadgeTypeFromType('ADREGSPONSOR');
         $tmpCount = $counts[$tmpBadge->getName()];
         $remaining = $remaining - $tmpCount;
 
-        $tmpBadge = $this->badgeType->getBadgeTypeFromType('ADREGCOMMSPONSOR');
+        $tmpBadge = $this
+            ->entityManager
+            ->getRepository(BadgeType::class)
+            ->getBadgeTypeFromType('ADREGCOMMSPONSOR');
         $tmpCount = $counts[$tmpBadge->getName()];
         $remaining = $remaining - $tmpCount;
 

@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller\Api;
 
+use AppBundle\Entity\Event;
 use AppBundle\Entity\Registration;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -10,13 +11,13 @@ use Symfony\Component\HttpFoundation\Response;
 class ValidateController extends Controller
 {
     /**
-     * @Route("/api/validate/confirmation/{confirmation}/{lastname}", name="api_validate_confirmation")
+     * @Route("/api/validate/confirmation/{confirmation}/{lastName}", name="api_validate_confirmation")
      *
      * @param String $confirmation Confirmation Code for Registration
-     * @param String $lastname Lastname that should match the Registration
+     * @param String $lastName Last name that should match the Registration
      * @return Response
      */
-    public function validateConfirmation($confirmation, $lastname)
+    public function validateConfirmation($confirmation, $lastName)
     {
         $headers = [];
         if (array_key_exists('HTTP_ORIGIN', $_SERVER)) {
@@ -28,11 +29,13 @@ class ValidateController extends Controller
 
         $returnJson = array('status' => 'invalid', 'active' => false);
 
-        $currentEvent = $this->get('repository_event')->getCurrentEvent();
+        $currentEvent = $this->getDoctrine()->getRepository(Event::class)->getCurrentEvent();
 
-        $registration = $this->get('repository_registration')->getFromConfirmation($confirmation, $currentEvent);
+        $registration = $this->getDoctrine()
+            ->getRepository(Registration::class)
+            ->getFromConfirmation($confirmation, $currentEvent);
         if ($registration instanceof Registration
-            && strtolower(trim($registration->getLastname())) == strtolower(trim($lastname))
+            && strtolower(trim($registration->getLastname())) == strtolower(trim($lastName))
         ) {
             $returnJson['status'] = 'inactive';
             $returnJson['active'] = false;
