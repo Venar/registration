@@ -103,19 +103,28 @@ class ManageController extends Controller
         $page = $request->query->get('page');
 
         $registrationTypeID = $request->query->get('RegistrationType_ID');
-        $registrationType = $this->getDoctrine()
-            ->getRepository(RegistrationType::class)
-            ->find($registrationTypeID);
+        $registrationType = null;
+        if ($registrationTypeID) {
+            $registrationType = $this->getDoctrine()
+                ->getRepository(RegistrationType::class)
+                ->find($registrationTypeID);
+        }
 
         $registrationStatusID = $request->query->get('RegistrationStatus_ID');
-        $registrationStatus = $this->getDoctrine()
-            ->getRepository(RegistrationStatus::class)
-            ->find($registrationStatusID);
+        $registrationStatus = null;
+        if ($registrationStatusID) {
+            $registrationStatus = $this->getDoctrine()
+                ->getRepository(RegistrationStatus::class)
+                ->find($registrationStatusID);
+        }
 
         $badgeTypeID = $request->query->get('BadgeType_ID');
-        $badgeType = $this->getDoctrine()
-            ->getRepository(BadgeType::class)
-            ->find($badgeTypeID);
+        $badgeType = null;
+        if ($badgeTypeID) {
+            $badgeType = $this->getDoctrine()
+                ->getRepository(BadgeType::class)
+                ->find($badgeTypeID);
+        }
 
         if ($page <= 1 || !is_numeric($page)) {
             $page = 1;

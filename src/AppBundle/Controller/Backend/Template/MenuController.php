@@ -1,8 +1,7 @@
 <?php
 
-namespace AppBundle\Controller\Template;
+namespace AppBundle\Controller\Backend\Template;
 
-use AppBundle\Entity\Event;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class MenuController extends Controller
@@ -66,30 +65,8 @@ class MenuController extends Controller
                     ],
                 ]
             ],
-            [
-                'name' => 'Admin',
-                'items' => [
-                    [
-                        'title' => 'Admin',
-                        'url' => 'admin',
-                    ],
-                ]
-            ],
         ];
 
-        return $this->render('template/menu.sub.html.twig', array('sections' => $sections));
-    }
-
-    public function switchYearsAction()
-    {
-        $years = [];
-
-        $currentYear = $this->getDoctrine()->getRepository(Event::class)->getSelectedEvent()->getYear();
-        $events = $this->getDoctrine()->getRepository(Event::class)->findAll();
-        foreach ($events as $event) {
-            $years[] = $event->getYear();
-        }
-
-        return $this->render('template/switch_year.sub.html.twig', array('selectedYear' => $currentYear, 'years' => $years));
+        return $this->render(':Backend/template:menu.sub.html.twig', array('sections' => $sections));
     }
 }

@@ -1,8 +1,19 @@
-<ul class="dropdown-menu">
-    <li><a href="javascript:void(0);" onclick="changeType('all', 'All')">All</a></li>
-    {% for type in typeList %}
-        <li>
-            <a href="javascript:void(0);" onclick="changeType('{{ type.id }}', '{{ type.type }}')">{{ type.type }}</a>
-        </li>
-    {% endfor %}
-</ul>
+<div class="dropdown">
+    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Registration Type
+    </button>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenu3">
+        <a class="dropdown-item"
+           href="javascript:void(0);"
+           onclick="changeType('all', 'All')">
+            All
+        </a>
+        {% for type in typeList %}
+        <a class="dropdown-item"
+           href="javascript:void(0);"
+           onclick="changeType('{{ type.id }}', '{{ type.type }}')">
+            {{ type.type }}
+        </a>
+        {% endfor %}
+    </div>
+</div>

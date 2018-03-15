@@ -1,128 +1,144 @@
 {% extends 'detour.html.twig' %}
 
 {% block body %}
-<ul>
-    <li>
-        <a href="#duplicates">Duplicate Entries</a>
-    </li>
-    <li>
-        <a href="#age">Age less than 1 year old</a>
-    </li>
-    <!--
-    <li>
-        <a href="#NoShirt">Missing Shirts</a>
-    </li>
-    -->
-</ul>
-
-<h2 id="duplicates">Registration Errors Detected - Duplicate Entries (By Name & Year)</h2>
-<div class="row-fluid">
-    <div class="span5">
-        <ul>
-            {% for duplicates in duplicatesYear %}
-            <li>{{ duplicates.lastName }}, {{ duplicates.firstName }} - {{ duplicates.year }}
-                <table class="table table-striped table-condensed">
-                    <thead>
-                    <tr>
-                        <th>Badge Number</th>
-                        <th>Badge Name</th>
-                        <th>Email</th>
-                        <th>Confirmation Number</th>
-                        <th>Registration Date</th>
-                        <th>Type</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for registration in duplicates.registrations %}
-                    {# @var registration \AppBundle\Entity\Registration #}
-                    <tr>
-                        <td><a href="/registration/view/{{ registration.registrationId }}">{{ registration.number }}</a></td>
-                        <td>{{ registration.badgeName }}</td>
-                        <td>{{ registration.email }}</td>
-                        <td>{{ registration.confirmationNumber }}</td>
-                        <td>{{ registration.createdDate|date('Y-m-d') }}</td>
-                        <td>{{ registration.registrationType.name }}</td>
-                    </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </li>
-            {% endfor %}
-        </ul>
+<div class="container bg-white">
+    <div class="row">
+        <div class="col-sm-12">
+            <h1>Registration Error locator</h1>
+            <ul>
+                <li>
+                    <a href="#duplicates">Duplicate Entries</a>
+                </li>
+                <li>
+                    <a href="#age">Age less than 1 year old</a>
+                </li>
+            </ul>
+        </div>
     </div>
-</div>
 
-<h2 id="duplicates">Registration Errors Detected - Duplicate Entries (By Name & Email)</h2>
-<div class="row-fluid">
-    <div class="span5">
-        <ul>
-            {% for duplicates in duplicatesEmail %}
-            <li>{{ duplicates.lastName }}, {{ duplicates.firstName }} - {{ duplicates.email }}
-                <table class="table table-striped table-condensed">
-                    <thead>
-                    <tr>
-                        <th>Badge Number</th>
-                        <th>Badge Name</th>
-                        <th>Birthday</th>
-                        <th>Confirmation Number</th>
-                        <th>Registration Date</th>
-                        <th>Type</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for registration in duplicates.registrations %}
+    <div class="row">
+        <div class="col-sm-12">
+            <h2 id="duplicates">Registration Errors Detected - Duplicate Entries (By Name & Year)</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <ul>
+                {% for duplicates in duplicatesYear %}
+                <li>{{ duplicates.lastName }}, {{ duplicates.firstName }} - {{ duplicates.year }}
+                    <table class="table table-striped table-condensed">
+                        <thead>
+                        <tr>
+                            <th>Badge Number</th>
+                            <th>Badge Name</th>
+                            <th>Email</th>
+                            <th>Confirmation Number</th>
+                            <th>Registration Date</th>
+                            <th>Type</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for registration in duplicates.registrations %}
                         {# @var registration \AppBundle\Entity\Registration #}
                         <tr>
                             <td><a href="/registration/view/{{ registration.registrationId }}">{{ registration.number }}</a></td>
                             <td>{{ registration.badgeName }}</td>
-                            <td>{{ registration.birthday|date('Y-m-d') }}</td>
+                            <td>{{ registration.email }}</td>
                             <td>{{ registration.confirmationNumber }}</td>
                             <td>{{ registration.createdDate|date('Y-m-d') }}</td>
                             <td>{{ registration.registrationType.name }}</td>
                         </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </li>
-            {% endfor %}
-        </ul>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
     </div>
-</div>
 
-<h2 id="age">Registration Errors Detected - Age Less than a Year</h2>
-<div class="row-fluid">
-    <div class="span5">
-        <table class="table table-striped table-condensed">
-            <thead>
-            <tr>
-                <th>Badge Number</th>
-                <th>Last Name</th>
-                <th>First Name</th>
-                <th>Badge Name</th>
-                <th>Birthday</th>
-                <th>Confirmation Number</th>
-                <th>Registration Date</th>
-                <th>Type</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for registration in tooYoung %}
-                {# @var registration \AppBundle\Entity\Registration #}
+    <div class="row">
+        <div class="col-sm-12">
+            <h2 id="duplicates">Registration Errors Detected - Duplicate Entries (By Name & Email)</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <ul>
+                {% for duplicates in duplicatesEmail %}
+                <li>{{ duplicates.lastName }}, {{ duplicates.firstName }} - {{ duplicates.email }}
+                    <table class="table table-striped table-condensed">
+                        <thead>
+                        <tr>
+                            <th>Badge Number</th>
+                            <th>Badge Name</th>
+                            <th>Birthday</th>
+                            <th>Confirmation Number</th>
+                            <th>Registration Date</th>
+                            <th>Type</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for registration in duplicates.registrations %}
+                            {# @var registration \AppBundle\Entity\Registration #}
+                            <tr>
+                                <td><a href="/registration/view/{{ registration.registrationId }}">{{ registration.number }}</a></td>
+                                <td>{{ registration.badgeName }}</td>
+                                <td>{{ registration.birthday|date('Y-m-d') }}</td>
+                                <td>{{ registration.confirmationNumber }}</td>
+                                <td>{{ registration.createdDate|date('Y-m-d') }}</td>
+                                <td>{{ registration.registrationType.name }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <h2 id="age">Registration Errors Detected - Age Less than a Year</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <table class="table table-striped table-condensed">
+                <thead>
                 <tr>
-                    <td><a href="/registration/view/{{ registration.registrationId }}">{{ registration.number }}</a></td>
-                    <td>{{ registration.lastName }}</td>
-                    <td>{{ registration.firstName }}</td>
-                    <td>{{ registration.badgeName }}</td>
-                    <td>{{ registration.birthday|date('Y-m-d') }}</td>
-                    <td>{{ registration.confirmationNumber }}</td>
-                    <td>{{ registration.createdDate|date('Y-m-d') }}</td>
-                    <td>{{ registration.registrationType.name }}</td>
+                    <th>Badge Number</th>
+                    <th>Last Name</th>
+                    <th>First Name</th>
+                    <th>Badge Name</th>
+                    <th>Birthday</th>
+                    <th>Confirmation Number</th>
+                    <th>Registration Date</th>
+                    <th>Type</th>
                 </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                {% for registration in tooYoung %}
+                    {# @var registration \AppBundle\Entity\Registration #}
+                    <tr>
+                        <td><a href="/registration/view/{{ registration.registrationId }}">{{ registration.number }}</a></td>
+                        <td>{{ registration.lastName }}</td>
+                        <td>{{ registration.firstName }}</td>
+                        <td>{{ registration.badgeName }}</td>
+                        <td>{{ registration.birthday|date('Y-m-d') }}</td>
+                        <td>{{ registration.confirmationNumber }}</td>
+                        <td>{{ registration.createdDate|date('Y-m-d') }}</td>
+                        <td>{{ registration.registrationType.name }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
-<!-- <h2 id="NoShirt">Registration Errors Detected - Missing Shirts</h2> -->
 {% endblock %}
