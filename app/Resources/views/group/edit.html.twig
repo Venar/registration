@@ -36,142 +36,239 @@
             {% endif %}
         </div>
     </div>
+    <form class="form-horizontal" method="post" action="/group/edit/{{ group ? group.groupId : '' }}" id="guestedit_form" enctype="multipart/form-data">
+    <input type="hidden" name="groupid" value="{{ group ? group.groupId : '' }}" />
+    <input type="hidden" name="action" value="save" />
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="md-form">
+                    <input type="text"
+                           id="name"
+                           name="name"
+                           class="form-control validate"
+                           value="{{ group.name|default('') }}"
+                           placeholder="Club Name"
+                           required>
+                    <label class="required" for="name">
+                        Club Name
+                        <i class="fa fa-asterisk red-text small" aria-hidden="true"></i>
+                    </label>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="md-form">
+                    <input type="text"
+                           id="school"
+                           name="school"
+                           class="form-control validate"
+                           value="{{ group.school|default('') }}"
+                           placeholder="School of Hard Knocks"
+                           required>
+                    <label class="required" for="school">
+                        School
+                        <i class="fa fa-asterisk red-text small" aria-hidden="true"></i>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="md-form">
+                    <input type="text"
+                           id="address"
+                           name="address"
+                           class="form-control validate"
+                           value="{{ group.address|default('') }}"
+                           placeholder="Address"
+                           >
+                    <label for="address">
+                        Address
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-7">
+                <div class="md-form">
+                    <input type="text"
+                           id="city"
+                           name="city"
+                           class="form-control validate"
+                           value="{{ group.city|default('') }}"
+                           placeholder="Central City"
+                    >
+                    <label for="city">
+                        City
+                    </label>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="md-form">
+                    <input type="text"
+                           id="state"
+                           name="state"
+                           class="form-control validate"
+                           value="{{ group.state|default('') }}"
+                           placeholder="MN"
+                    >
+                    <label for="state">
+                        State
+                    </label>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="md-form">
+                    <input type="text"
+                           id="zip"
+                           name="zip"
+                           class="form-control validate"
+                           value="{{ group.zip|default('') }}"
+                           placeholder="12345"
+                    >
+                    <label for="zip">
+                        Zip
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="md-form">
+                    <input type="text"
+                           id="leader"
+                           name="leader"
+                           class="form-control validate"
+                           value="{{ group.leader|default('') }}"
+                           placeholder="Colonel Mustang"
+                    >
+                    <label for="leader">
+                        Leader
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="md-form">
+                    <input type="text"
+                           id="leaderphone"
+                           name="leaderphone"
+                           class="form-control validate"
+                           value="{{ group.leaderPhone|default('') }}"
+                           placeholder="0118 999 881 999 119 7253"
+                    >
+                    <label for="leaderphone">
+                        Leader's Phone
+                    </label>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="md-form">
+                    <input type="text"
+                           id="leaderemail"
+                           name="leaderemail"
+                           class="form-control validate"
+                           value="{{ group.leaderEmail|default('') }}"
+                           placeholder="roy@it.whatdoyouwant"
+                    >
+                    <label for="leaderemail">
+                        Leader's Email
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="md-form">
+                    <input type="text"
+                           id="authorizedname"
+                           name="authorizedname"
+                           class="form-control validate"
+                           value="{{ group.authorizedName|default('') }}"
+                           placeholder="General Armstrong"
+                    >
+                    <label for="authorizedname">
+                        Authorized Person
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="md-form">
+                    <input type="text"
+                           id="authorizedphone"
+                           name="authorizedphone"
+                           class="form-control validate"
+                           value="{{ group.authorizedPhone|default('') }}"
+                           placeholder="867-5309"
+                    >
+                    <label for="authorizedphone">
+                        Authorized's Phone
+                    </label>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="md-form">
+                    <input type="text"
+                           id="authorizedemail"
+                           name="authorizedemail"
+                           class="form-control validate"
+                           value="{{ group.authorizedEmail|default('') }}"
+                           placeholder="jenny@shes.got.it"
+                    >
+                    <label for="authorizedemail">
+                        Authorized's Email
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-8">
+            </div>
+            <div class="col-sm-4">
+                <br>
+                <button type="submit" class="btn btn-primary btn-sm btn-warning">Save</button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="window.location='/group/list'">Cancel</button>
+            </div>
+        </div>
+    </form>
     <div class="row">
         <div class="col-sm-12">
-
-            <form class="form-horizontal" method="post" action="/group/edit/{{ group ? group.groupId : '' }}" id="guestedit_form" enctype="multipart/form-data">
-                <input type="hidden" name="groupid" value="{{ group ? group.groupId : '' }}" />
-                <input type="hidden" name="action" value="save" />
-
-                <br>
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="input-group">
-                            <span class="input-group-addon">Name</span>
-                            <input class="form-control" id="name" name="name" type="text" value="{{ group ? group.name : '' }}" placeholder="Club Name">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="input-group">
-                            <span class="input-group-addon">School</span>
-                            <input class="form-control" id="school" name="school" type="text" value="{{ group ? group.school : '' }}" placeholder="School">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="input-group">
-                            <span class="input-group-addon">Address</span>
-                            <input class="form-control" id="address" name="address" type="text" value="{{ group ? group.address : '' }}" placeholder="123 Main St.">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-7">
-                        <div class="input-group">
-                            <span class="input-group-addon">City</span>
-                            <input class="form-control" id="city" name="city" type="text" value="{{ group ? group.city : '' }}" placeholder="Minneapolis">
-                        </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="input-group">
-                            <span class="input-group-addon">State</span>
-                            <input class="form-control" id="state" name="state" type="text" value="{{ group ? group.state : '' }}" placeholder="MN">
-                        </div>
-                    </div>
-                    <div class="col-sm-2">
-                        <div class="input-group">
-                            <span class="input-group-addon">Zip</span>
-                            <input class="form-control" id="zip" name="zip" type="text" value="{{ group ? group.zip : '' }}" placeholder="12345">
-                        </div>
-                    </div>
-                </div>
-
-                <br>
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="input-group">
-                            <span class="input-group-addon">Leader</span>
-                            <input class="form-control" id="leader" name="leader" type="text" value="{{ group ? group.leader : '' }}" placeholder="The leader is great">
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="input-group">
-                            <span class="input-group-addon">Leader's Phone</span>
-                            <input class="form-control" id="leaderphone" name="leaderphone" type="text" value="{{ group ? group.leaderphone : '' }}" placeholder="Phone">
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="input-group">
-                            <span class="input-group-addon">Leader's Email</span>
-                            <input class="form-control" id="leaderemail" name="leaderemail" type="text" value="{{ group ? group.leaderemail : '' }}" placeholder="Email">
-                        </div>
-                    </div>
-                </div>
-
-                <br>
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="input-group">
-                            <span class="input-group-addon">Authorized Person</span>
-                            <input class="form-control" id="authorizedname" name="authorizedname" type="text" value="{{ group ? group.authorizedname : '' }}" placeholder="Authorized Name">
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="input-group">
-                            <span class="input-group-addon">Authorized's Phone</span>
-                            <input class="form-control" id="authorizedphone" name="authorizedphone" type="text" value="{{ group ? group.authorizedphone : '' }}" placeholder="Phone">
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="input-group">
-                            <span class="input-group-addon">Authorized's Email</span>
-                            <input class="form-control" id="authorizedemail" name="authorizedemail" type="text" value="{{ group ? group.authorizedemail : '' }}" placeholder="Email">
-                        </div>
-                    </div>
-                </div>
-
-                <br>
-                <button type="submit" class="btn btn-primary">Save</button>
-                <button type="button" class="btn btn-primary" onclick="window.location='/group/list'">Cancel</button>
-
-                {% if group is not null and group.groupId %}
-                <br>
-                <h3>Group Members:</h3>
-                <a href="/registration/group/add/{{ group.groupId }}">Add new group member</a>
-                <table class="table table-striped table-condensed">
-                    <thead>
+            {% if group is not null and group.groupId %}
+            <br>
+            <h3>Group Members:</h3>
+            <a href="/registration/group/add/{{ group.groupId }}">Add new group member</a>
+            <table class="table table-striped table-condensed">
+                <thead>
+                <tr>
+                    <th>Registration Number</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for registration in registrations %}
                     <tr>
-                        <th>Registration Number</th>
-                        <th>Name</th>
-                        <th>Email</th>
+                        <td>{{ registration.number }}</td>
+                        <td>
+                            <a href="/registration/edit/{{ registration.registrationId }}">
+                                {{ registration.firstname }} {{ registration.lastname }}
+                            </a>
+                        </td>
+                        <td>{{ registration.email }}</td>
                     </tr>
-                    </thead>
-                    <tbody>
-                    {% for registration in registrations %}
-                        <tr>
-                            <td>{{ registration.number }}</td>
-                            <td>
-                                <a href="/registration/edit/{{ registration.registrationId }}">
-                                    {{ registration.firstname }} {{ registration.lastname }}
-                                </a>
-                            </td>
-                            <td>{{ registration.email }}</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-                {% endif %}
-            </form>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
         </div>
     </div>
 </div>
