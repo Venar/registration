@@ -86,8 +86,8 @@ fos_user:
     firewall_name: main
     user_class: AppBundle\Entity\User
     from_email:
-        address: "%mailer_user%"
-        sender_name: "%mailer_user%"
+        address: "%mailer_from%"
+        sender_name: "%mailer_fromName%"
 
 white_october_tcpdf:
     class: 'AppBundle\Service\TCPDF\RegistrationPDF'
@@ -101,15 +101,14 @@ easy_admin:
     design:
         brand_color: '#fe7f00'
         color_scheme: 'light'
+        menu:
+            - { route: 'homepage', label: 'Return to Homepage', icon: 'arrow-left' }
+            - label: 'IT'
+              icon: 'laptop'
+              children:
+                - { entity: 'Event', icon: 'calendar' }
+                - { entity: 'User', icon: 'user-circle' }
     site_name: 'Anime Detour'
-    #design:
-        #assets:
-          #css:
-              # - 'assets/css/jquery.datetimepicker.css(Path of your datepicker css)'
-          #js:
-              # - 'assets/js/jquery.datetimepicker.full.js(Your Date picker Js)'
-              # - 'assets/js/initDatePicker.js (Your code to initialize date picker on base of class "datepicker")'
-              # - '/bundles/cksourceckfinder/ckfinder/ckfinder.js'
-              # 3- '/js/setup-ckfinder.js'
+
     list:
         actions: [{ name: 'edit', icon: 'pencil' }, '-delete']

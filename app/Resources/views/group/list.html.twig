@@ -9,7 +9,7 @@
     </div>
     <div class="row">
         <div class="col-sm-3">
-            <a class="btn btn-primary" href="/group/edit">New Group</a>
+            <a class="btn btn-primary btn-sm" href="{{ path('groupEdit') }}">New Group</a>
         </div>
         <div class="col-sm-3">
             &nbsp;
@@ -23,7 +23,7 @@
                 <div class="input-append">
                     <input type="text" id="search" name="search" value="{{ searchText }}"
                            onKeyPress="return searchenter(this,event)" placeholder="Search">
-                    <button type="button" class="btn btn-primary" id="searchButton">Search</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="searchButton">Search</button>
                     <script>
                         $('#searchButton').click(function() {
                             search();

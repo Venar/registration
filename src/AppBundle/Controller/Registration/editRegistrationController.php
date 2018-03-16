@@ -66,7 +66,7 @@ class editRegistrationController extends Controller
     }
 
     /**
-     * @Route("/registration/edit/", name="actionEditRegistration")
+     * @Route("/registration/edit/", name="newRegistration")
      * @Route("/registration/edit/{registrationId}", name="actionEditRegistration")
      * @Route("/registration/edit/{registrationId}/{regGroupId}")
      * @Route("/registration/edit/{registrationId}/{regGroupId}/{transferredFrom}")
@@ -80,8 +80,14 @@ class editRegistrationController extends Controller
     public function editRegistrationPage($registrationId = null, $groupId = null, $transferredFrom = null)
     {
         $event = $this->getDoctrine()->getRepository(Event::class)->getSelectedEvent();
-        $registration = $this->getDoctrine()->getRepository(Registration::class)->find($registrationId);
-        $badges = $registration->getBadges();
+        $registration = null;
+        if ($registrationId) {
+            $registration = $this->getDoctrine()->getRepository(Registration::class)->find($registrationId);
+        }
+        $badges = [];
+        if ($registration) {
+            $badges = $registration->getBadges();
+        }
 
         $group = null;
         if ($groupId) {

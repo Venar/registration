@@ -1,8 +1,12 @@
-<li>
-    <a href="javascript:void(0);">Event Year: {{ selectedYear }}</a>
-    <ul>
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="javascript:void(0);" id="navbarDropdownMenuLink_SwitchYear"
+       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fas fa-calendar-alt"></i>
+        Selected Event Year: {{ selectedYear }}
+    </a>
+    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
         {% for year in years %}
-        <li><a href="{{ url('changeYear', {'eventYear':year}) }}">{{ year }}</a></li>
+            <a class="dropdown-item" href="{{ url('changeYear', {'eventYear':year}) }}">{{ year }}</a>
         {% endfor %}
-    </ul>
+    </div>
 </li>

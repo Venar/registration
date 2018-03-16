@@ -2,18 +2,16 @@
 
 {% block body %}
 <form action="{{ url('actionEditRegistration') }}" method="post" id="form_editRegistration">
-<div class="container bg-white">
+
+    <input type="hidden" value="{{ registration.registrationId|default('') }}"
+           id="Registration_ID" name="Registration_ID">
+    <input type="hidden" value="{{ transferredRegistration.registrationId|default('') }}" id="TransferredFrom"
+           name="TransferredFrom">
+
+    <div class="container bg-white">
     <div class="row">
         <div class="col-sm-12">
-            <input type="hidden" value="{{ registration.registrationId|default('') }}" id="Registration_ID" name="Registration_ID">
-            <input type="hidden" value="{{ transferredRegistration.registrationId|default('') }}" id="TransferredFrom" name="TransferredFrom">
-
             <h2 id="reg_header">
-                {% if registration is not null %}
-                    <a href="/registration/view/{{ registration.registrationId|default('') }}" class="btn btn-primary btn-sm">Back</a>&nbsp;-&nbsp;
-                {% else %}
-                    <a href="{{ url('listRegistrations') }}" class="btn btn-primary btn-sm">Back</a>&nbsp;-&nbsp;
-                {% endif %}
                 {% if registration is not null and registration.registrationId %}
                 Edit {{ (group.groupId is defined) ? 'Group ' : '' }}Membership - {{ registration.event.year }} - {{ registration.number }}
                 {% elseif transferredRegistration is not null and transferredRegistration.registrationId %}
@@ -25,6 +23,19 @@
             </h2>
         </div>
     </div>
+
+    <div class="row">
+        <div class="col-sm-3">
+            {% if registration is not null %}
+                <a href="/registration/view/{{ registration.registrationId|default('') }}"
+                   class="btn btn-primary btn-sm">Back - View Registration</a>
+            {% else %}
+                <a href="{{ url('listRegistrations') }}"
+                   class="btn btn-primary btn-sm">Back - List Registrations</a>
+            {% endif %}
+        </div>
+    </div>
+    <br>
 
     <div class="row">
         <div class="col-sm-3">
@@ -77,32 +88,32 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="btn-group" data-toggle="buttons">
-                <label class="btn btn-primary {{ ('ADREGSTANDARD' in currentBadgeTypes or 'MINOR' in currentBadgeTypes) ? 'active' : ''}}">
+                <label class="btn btn-primary btn-sm {{ ('ADREGSTANDARD' in currentBadgeTypes or 'MINOR' in currentBadgeTypes) ? 'active' : ''}}">
                     <input type="radio" name="regtype" value="ADREGSTANDARD"
                         {{ ('ADREGSTANDARD' in currentBadgeTypes or 'MINOR' in currentBadgeTypes) ? 'checked' : ''}}>
                     Standard (Minors detected by Birthdate)<br>
                 </label>
-                <label class="btn btn-primary {{ 'ADREGSPONSOR' in currentBadgeTypes ? 'active' : '' }}">
+                <label class="btn btn-primary btn-sm {{ 'ADREGSPONSOR' in currentBadgeTypes ? 'active' : '' }}">
                     <input type="radio" name="regtype" value="ADREGSPONSOR"
                         {{ 'ADREGSPONSOR' in currentBadgeTypes ? 'checked' : '' }}>
                     Sponsor<br>
                 </label>
-                <label class="btn btn-primary {{ 'ADREGCOMMSPONSOR' in currentBadgeTypes ? 'active' : '' }}">
+                <label class="btn btn-primary btn-sm {{ 'ADREGCOMMSPONSOR' in currentBadgeTypes ? 'active' : '' }}">
                     <input type="radio" name="regtype" value="ADREGCOMMSPONSOR"
                         {{ 'ADREGCOMMSPONSOR' in currentBadgeTypes ? 'checked' : '' }}>
                     Community Sponsor<br>
                 </label>
-                <label class="btn btn-primary {{ 'GUEST' in currentBadgeTypes ? 'active' : '' }}">
+                <label class="btn btn-primary btn-sm {{ 'GUEST' in currentBadgeTypes ? 'active' : '' }}">
                     <input type="radio" name="regtype" value="GUEST"
                         {{ 'GUEST' in currentBadgeTypes ? 'checked' : '' }}>
                     Guest<br>
                 </label>
-                <label class="btn btn-primary {{ 'VENDOR' in currentBadgeTypes ? 'active' : '' }}">
+                <label class="btn btn-primary btn-sm {{ 'VENDOR' in currentBadgeTypes ? 'active' : '' }}">
                     <input type="radio" name="regtype" value="VENDOR"
                         {{ 'VENDOR' in currentBadgeTypes ? 'checked' : '' }}>
                     Vendor<br>
                 </label>
-                <label class="btn btn-primary {{ 'EXHIBITOR' in currentBadgeTypes ? 'active' : '' }}">
+                <label class="btn btn-primary btn-sm {{ 'EXHIBITOR' in currentBadgeTypes ? 'active' : '' }}">
                     <input type="radio" name="regtype" value="EXHIBITOR"
                         {{ 'EXHIBITOR' in currentBadgeTypes ? 'checked' : '' }}>
                     Exhibitor<br>
@@ -118,153 +129,253 @@
     </div>
     <div class="row">
         <div class="col-sm-4">
-            <div class="input-group">
-                <span class="input-group-addon">Last Name</span>
-                <input class="form-control" id="lastname" name="LastName" type="text" value="{{ registration.lastname|default('') }}"
-                       placeholder="Last Name">
+            <div class="md-form">
+                <input type="text"
+                       id="lastName"
+                       name="lastName"
+                       class="form-control validate"
+                       value="{{ registration.lastName|default('') }}"
+                       required>
+                <label class="required" for="lastName">
+                    Last Name
+                    <i class="fa fa-asterisk red-text small" aria-hidden="true"></i>
+                </label>
             </div>
         </div>
         <div class="col-sm-4">
-            <div class="input-group">
-                <span class="input-group-addon">First Name</span>
-                <input class="form-control" id="firstname" name="FirstName" type="text" value="{{ registration.firstname|default('') }}"
-                       placeholder="First Name">
+            <div class="md-form">
+                <input type="text"
+                       id="firstName"
+                       name="firstName"
+                       class="form-control validate"
+                       value="{{ registration.firstName|default('') }}"
+                       required>
+                <label class="required" for="firstName">
+                    Last Name
+                    <i class="fa fa-asterisk red-text small" aria-hidden="true"></i>
+                </label>
             </div>
         </div>
         <div class="col-sm-4">
-            <div class="input-group">
-                <span class="input-group-addon">Middle Name</span>
-                <input class="form-control" id="middlename" name="MiddleName" type="text" value="{{ registration.middlename|default('') }}"
-                       placeholder="Middle Name">
+            <div class="md-form">
+                <input type="text"
+                       id="middleName"
+                       name="middleName"
+                       class="form-control validate"
+                       value="{{ registration.middleName|default('') }}"
+                       required>
+                <label for="middleName">
+                    Middle Name
+                </label>
             </div>
         </div>
     </div>
 
-    <br>
-
     <div class="row">
         <div class="col-sm-7">
-            <div class="input-group">
-                <span class="input-group-addon">Postal Mailing Address</span>
-                <input class="form-control" id="address1" name="Address" type="text" value="{{ registration.address|default('') }}"
-                       placeholder="123 Main St.">
+            <div class="md-form">
+                <input type="text"
+                       id="address1"
+                       name="address1"
+                       class="form-control validate"
+                       value="{{ registration.address|default('') }}"
+                       required>
+                <label for="address1">
+                    Postal Mailing Address
+                </label>
             </div>
         </div>
         <div class="col-sm-5">
-            <div class="input-group">
-                <span class="input-group-addon">Address 2</span>
-                <input class="form-control" id="address2" name="Address2" type="text" value="{{ registration.address2|default('') }}"
-                       placeholder="APT 12345">
+            <div class="md-form">
+                <input type="text"
+                       id="address2"
+                       name="address2"
+                       class="form-control validate"
+                       value="{{ registration.address2|default('') }}"
+                       required>
+                <label for="address2">
+                    Address Line 2
+                </label>
             </div>
         </div>
     </div>
-
-    <br>
 
     <div class="row">
         <div class="col-sm-7">
-            <div class="input-group">
-                <span class="input-group-addon">City</span>
-                <input class="form-control" id="city" name="City" type="text" value="{{ registration.city|default('') }}"
-                       placeholder="Bloomington">
+            <div class="md-form">
+                <input type="text"
+                       id="city"
+                       name="city"
+                       class="form-control validate"
+                       value="{{ registration.city|default('') }}"
+                       required>
+                <label for="city">
+                    City
+                </label>
             </div>
         </div>
         <div class="col-sm-3">
-            <div class="input-group">
-                <span class="input-group-addon">State</span>
-                <input class="form-control" id="state" name="State" type="text" value="{{ registration.state|default('') }}" placeholder="MN">
+            <div class="md-form">
+                <input type="text"
+                       id="state"
+                       name="state"
+                       class="form-control validate"
+                       value="{{ registration.state|default('') }}"
+                       required>
+                <label for="state">
+                    State
+                </label>
             </div>
         </div>
         <div class="col-sm-2">
-            <div class="input-group">
-                <span class="input-group-addon">Zip</span>
-                <input class="form-control" id="zip" name="Zip" type="text" value="{{ registration.zip|default('') }}" placeholder="12345">
+            <div class="md-form">
+                <input type="text"
+                       id="zip"
+                       name="zip"
+                       class="form-control validate"
+                       value="{{ registration.zip|default('') }}"
+                       required>
+                <label for="zip">
+                    Zip
+                </label>
             </div>
         </div>
     </div>
 
-    <br>
-
     <div class="row">
         <div class="col-sm-6">
-            <div class="input-group">
-                <span class="input-group-addon">Phone</span>
-                <input class="form-control" id="phone" name="Phone" type="text" value="{{ registration.phone|default('') }}"
+            <div class="md-form">
+                <input type="text"
+                       id="phone"
+                       name="phone"
+                       class="form-control validate"
+                       value="{{ registration.phone|default('') }}"
                        placeholder="(651) 555-1234">
+                <label for="phone">
+                    Phone
+                </label>
             </div>
         </div>
         <div class="col-sm-6">
-            <div class="input-group">
-                <span class="input-group-addon">E-Mail</span>
-                <input class="form-control" id="email" name="Email" type="text" value="{{ registration.email|default('') }}"
-                       placeholder="john.doe@gmail.com">
-            </div>
-        </div>
-    </div>
-
-    <br>
-
-    <div class="row">
-        <div class="col-sm-6">
-            <div class="input-group">
-                <span class="input-group-addon">Badge Name</span>
-                <input class="form-control" id="badgename" name="BadgeName" type="text" value="{{ registration.badgename|default('') }}"
-                       placeholder="Captain Tightpants">
+            <div class="md-form">
+                <input type="email"
+                       id="email"
+                       name="email"
+                       class="form-control validate"
+                       placeholder="john.doe@gmail.com"
+                       value="{{ registration.email|default('') }}">
+                <label class="w-100" for="email" data-error="Please enter a valid email"
+                       data-success="">
+                    Email
+                </label>
             </div>
         </div>
     </div>
 
     <div class="row">
-        <div class="col-sm-6">
-
+        <div class="col-6">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="md-form">
+                        <input type="text"
+                               id="BadgeName"
+                               name="BadgeName"
+                               class="form-control validate"
+                               value="{{ registration.badgeName|default('') }}"
+                               placeholder="Captain Tightpants"
+                               required>
+                        <label for="BadgeName">
+                            Badge Name
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="md-form">
+                        <input type="text"
+                               id="birthdate"
+                               name="birthdate"
+                               class="form-control validate"
+                               value="{{ registration is not null ? registration.birthday|date('m/d') : '' }}"
+                               placeholder="03/26"
+                               required>
+                        <label for="birthdate">
+                            Birthdate (mm/dd)
+                        </label>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="md-form">
+                        <input type="text"
+                               id="birthyear"
+                               name="birthyear"
+                               class="form-control validate"
+                               value="{{ registration is not null ? registration.birthday|date('Y') : '' }}"
+                               placeholder="2004"
+                               required>
+                        <label for="birthyear">
+                            Birthyear (YYYY)
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <br>
             <br>
 
             <div class="row">
                 <div class="col-sm-6">
-                    <div class="input-group">
-                        <span class="input-group-addon">Birthdate</span>
-                        <input class="form-control datepicker" id="birthdate" name="Birthday" type="text"
-                               value="{{ registration is not null ? registration.birthday|date('m/d') : '' }}" placeholder="03/26">
-                    </div>
+                    <p class="font-small text-muted" style="margin-bottom:0px;">Volunteer?</p>
+
+                    <input type="checkbox"
+                           id="volunteer"
+                           name="volunteer"
+                           class="switch-input"
+                            {{ registration is not null and registration.contactVolunteer ? 'Checked' : '' }}
+                    >
+                    <label for="volunteer" class="switch-label">
+                        <span class="toggle--on">Yes</span>
+                        <span class="toggle--off">No</span>
+                    </label>
                 </div>
-                <div class="col-sm-4">
-                    <div class="input-group">
-                        <span class="input-group-addon">Birthyear</span>
-                        <input class="form-control" id="birthyear" name="Birthyear" type="text"
-                               value="{{ registration is not null ? registration.birthday|date('Y') : '' }}"
-                               placeholder="">
+                <div class="col-sm-6">
+                    <p class="font-small text-muted" style="margin-bottom:0px;">Newsletter?</p>
+
+                    <input type="checkbox"
+                           id="newsletter"
+                           name="newsletter"
+                           class="switch-input"
+                            {{ registration is not null and registration.contactNewsletter ? 'Checked' : '' }}
+                    >
+                    <label for="newsletter" class="switch-label">
+                        <span class="toggle--on">Yes</span>
+                        <span class="toggle--off">No</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label for="comments">Comments</label>
+                        <textarea class="form-control rounded-0" name="comments" id="comments" rows="6"></textarea>
                     </div>
                 </div>
             </div>
             <br>
-
             <div class="row">
-                <div class="col-sm-4">
-                    <div class="btn-group" data-toggle="buttons">
-                        <label class="btn btn-primary {{ registration is not null and registration.contactVolunteer ? 'active' : '' }}">
-                            <input type="checkbox" name="volunteer" id="volunteer" {{ registration is not null and registration.contactVolunteer ? 'Checked' : '' }}>
-                                Volunteer?
-                        </label>
-                    </div>
+                <div class="col-sm-8">
                 </div>
+
                 <div class="col-sm-4">
-                    <div class="btn-group" data-toggle="buttons">
-                        <label class="btn btn-primary {{ registration is not null and registration.contactNewsletter ? 'active' : '' }}">
-                            <input type="checkbox" name="newsletter" id="newsletter" {{ registration is not null and registration.contactNewsletter ? 'Checked' : '' }}>
-                                Newsletter?
-                        </label>
-                    </div>
+                    <button id="save_form" type="button" class="btn btn-warning btn-lg">Save</button>
                 </div>
-            </div>
-        </div>
-        <div class="col-sm-6">
-            <div class="input-group">
-                <span class="input-group-addon">Comments</span>
-                <textarea class="form-control custom-control" name="comments" rows="6"
-                          placeholder="Information to be added to the log"></textarea>
             </div>
         </div>
     </div>
+    <br>
+    <br>
 
     <div class="row" id="alert_div" style="display: none">
         <div class="col-sm-12">
@@ -276,16 +387,6 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-sm-10">
-        </div>
-
-        <div class="col-sm-2">
-            <br><br>
-            <button id="save_form" type="button" class="btn btn-primary btn-lg">Save</button>
-            <br><br>
-        </div>
-    </div>
 
 
     <div class="row">
@@ -300,112 +401,114 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-5">
-            <div class="container">
-                <div class="row">
-                    <div class="col-sm-5">
-                        <table class="table table-striped" id="table_registrations">
-                            <thead>
-                            <tr height="15px">
-                                <th>Type</th>
-                                <th>Size</th>
-                                <th class="text-right">Remove</th>
-                            </tr>
-                            </thead>
-                            <tbody id="tshirt">
-                            </tbody>
-                        </table>
+        <div class="col-5">
+            <div class="row">
+                <div class="col-sm-12">
+                    <table class="table table-striped" id="table_registrations">
+                        <thead>
+                        <tr height="15px">
+                            <th>Type</th>
+                            <th>Size</th>
+                            <th class="text-right">Remove</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tshirt">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-5">
+                    <div class="form-group">
+                        <select class="form-control" name="shirt_type" id="shirt_type">
+                            <option value="" default="">Select T-Shirt...</option>
+                            <option value="MensTee">Men's T-Shirt</option>
+                            <option value="WomensTee">Women's T-Shirt</option>
+                        </select>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-sm-2">
-                        <div class="form-group">
-                            <select class="form-control" name="shirt_type" id="shirt_type">
-                                <option value="" default="">Select T-Shirt...</option>
-                                <option value="MensTee">Men's T-Shirt</option>
-                                <option value="WomensTee">Women's T-Shirt</option>
-                            </select>
-                        </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <select class="form-control" name="shirt_size" id="shirt_size">
+                            <option value="" default="">Select Size...</option>
+                            <option value="S">S</option>
+                            <option value="M">M</option>
+                            <option value="L">L</option>
+                            <option value="XL">XL</option>
+                            <option value="XLT">XLT (Mens Only)</option>
+                            <option value="2XL">2XL</option>
+                            <option value="2XLT">2XLT (Mens Only)</option>
+                            <option value="3XL">3XL (Mens Only)</option>
+                            <option value="3XLT">3XLT (Mens Only)</option>
+                            <option value="4XL">4XL (Mens Only)</option>
+                        </select>
                     </div>
-                    <div class="col-sm-2">
-                        <div class="form-group">
-                            <select class="form-control" name="shirt_size" id="shirt_size">
-                                <option value="" default="">Select Size...</option>
-                                <option value="S">S</option>
-                                <option value="M">M</option>
-                                <option value="L">L</option>
-                                <option value="XL">XL</option>
-                                <option value="XLT">XLT (Mens Only)</option>
-                                <option value="2XL">2XL</option>
-                                <option value="2XLT">2XLT (Mens Only)</option>
-                                <option value="3XL">3XL (Mens Only)</option>
-                                <option value="3XLT">3XLT (Mens Only)</option>
-                                <option value="4XL">4XL (Mens Only)</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-sm-1">
-                        <div class="form-group">
-                            <button id="add_shirt" type="button" class="btn btn-primary">Add</button>
-                        </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <button id="add_shirt" type="button" class="btn btn-primary btn-sm">Add</button>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-sm-4">
-            <table class="table table-striped" id="table_extras">
-                <thead>
-                <tr height="15px">
-                    <th>Type</th>
-                    <th class="text-right">Remove</th>
-                </tr>
-                </thead>
-                <tbody id="extras">
-                </tbody>
-            </table>
+        <div class="col-4">
+            <div class="row">
+                <div class="col-sm-12">
+                    <table class="table table-striped" id="table_extras">
+                        <thead>
+                        <tr height="15px">
+                            <th>Type</th>
+                            <th class="text-right">Remove</th>
+                        </tr>
+                        </thead>
+                        <tbody id="extras">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-8">
+                    <div class="form-group">
+                        <select class="form-control" name="extra" id="extra">
+                            <option value="" default="">Select Extra...</option>
+                            {% for extra in extras %}
+                                <option value="{{ extra.name }}">{{ extra.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <button id="add_extra" type="button" class="btn btn-primary btn-sm">Add Extra</button>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="col-sm-3">
+        <div class="col-3">
         {% if registration is not null and registration.registrationId %}
-            <a href="/registration/transfer/{{ registration.registrationId }}" class="btn btn-primary">Transfer Registration</a>
-            <br><br>
-            <a href="/registration/rollover/{{ registration.registrationId }}" class="btn btn-primary">Rollover Registration</a>
+            <a href="/registration/transfer/{{ registration.registrationId }}" class="btn btn-primary btn-sm">Transfer Registration</a>
+            <br>
+            <a href="/registration/rollover/{{ registration.registrationId }}" class="btn btn-primary btn-sm">Rollover Registration</a>
         {% endif %}
         {% if group is not null %}
-            <br><br>
-            <a href="/registration/group/add/{{ group.groupId }}" class="btn btn-primary">Add another registration to
+            <br>
+            <a href="/registration/group/add/{{ group.groupId }}" class="btn btn-primary btn-sm">Add another registration to
                 {{ group.name }}</a>
         {% endif %}
         {% if registration is not null and registration.registrationId %}
-            <br><br>
-            <a href="/registration/edit/" class="btn btn-primary">Add another registration</a>
+            <br>
+            <a href="/registration/edit/" class="btn btn-primary btn-sm">Add another registration</a>
         {% endif %}
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-5">
-        </div>
-        <div class="col-sm-4">
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <select class="form-control" name="extra" id="extra">
-                        <option value="" default="">Select Extra...</option>
-                        {% for extra in extras %}
-                        <option value="{{ extra.name }}">{{ extra.name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
-            <div class="col-sm-2">
-                <div class="form-group">
-                    <button id="add_extra" type="button" class="btn btn-primary">Add Extra</button>
-                </div>
-            </div>
+        <div class="col-sm-9">
         </div>
         <div class="col-sm-3">
             <h3>Staff:</h3>
             <div class="alert alert-danger" role="alert" id="staffdiv">
                 <div id="staffmsg">This member is also listed on staff for this year.</div>
-                <a href="javascript:void(0);" class="btn btn-primary" id="staffmodify">Remove</a>
+                <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="staffmodify">Remove</a>
             </div>
         </div>
     </div>

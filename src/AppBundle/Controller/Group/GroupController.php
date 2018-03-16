@@ -68,8 +68,8 @@ class GroupController extends Controller
     }
 
     /**
-     * @Route("/group/edit")
-     * @Route("/group/edit/")
+     * @Route("/group/edit", name="groupEdit")
+     * @Route("/group/edit/", name="groupEditSlash")
      * @Route("/group/edit/{groupId}")
      * @Security("has_role('ROLE_USER')")
      *
@@ -84,7 +84,10 @@ class GroupController extends Controller
         $entityManager = $this->getDoctrine()->getManager();
         $event = $this->getDoctrine()->getRepository(Event::class)->getSelectedEvent();
 
-        $group = $this->getDoctrine()->getRepository(Group::class)->find($groupId);
+        $group = null;
+        if ($groupId) {
+            $group = $this->getDoctrine()->getRepository(Group::class)->find($groupId);
+        }
 
         $vars['errors'] = [];
         if ($request->request->has('action') && $request->request->get('action') == 'save') {

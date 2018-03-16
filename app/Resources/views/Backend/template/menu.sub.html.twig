@@ -31,6 +31,9 @@
 {% endfor %}
 {% if is_granted('IS_AUTHENTICATED_FULLY') %}
     <li class="nav-item">
-        <a class="nav-link waves-effect waves-light" href="{{ url('admin') }}">Admin</a>
+        <a class="nav-link waves-effect waves-light" href="{{ url('admin') }}">
+            <i class="fas fa-cogs"></i>
+            Admin
+        </a>
     </li>
 {% endif %}

@@ -21,6 +21,9 @@ class BadgeRepository extends EntityRepository
      * @return bool
      */
     public function isStaff($registration) {
+        if (!$registration) {
+            return false;
+        }
         $badges = $registration->getBadges();
         foreach ($badges as $badge) {
             if ($badge->getBadgetype()->getName() == 'STAFF') {

@@ -13,10 +13,19 @@ class UserController extends Controller
 {
     public function currentUserAction()
     {
-        $user = $this->get('security.token_storage')->getToken()->getUser();
-        if ($user instanceof User) {
-            /** @var $user User */
-            return $this->render('user/currentuser.sub.html.twig', array('name' => $user->getUsername(), 'userid' => $user->getId()));
+        $securityContext = $this->container->get('security.authorization_checker');
+
+        if ($securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+            $user = $this->get('security.token_storage')->getToken()->getUser();
+            if ($user instanceof User) {
+                /** @var $user User */
+                $vars = [
+                    'name' => "{$user->getFirstName()} {$user->getLastname()}",
+                    'userid' => $user->getId(),
+                ];
+
+                return $this->render('user/currentuser.sub.html.twig', $vars);
+            }
         }
 
         return new Response();
