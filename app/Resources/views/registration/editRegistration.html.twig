@@ -54,7 +54,7 @@
             <select name="RegistrationType" id="RegistrationType">
                 {% for type in registrationTypes %}
                 {# @var type AppBundle\Entity\RegistrationType #}
-                <option value="{{ type.name }}" {{ selectedType is not null and selectedType.registrationtypeId == type.registrationTypeId ? 'selected' : '' }}>
+                <option value="{{ type.name }}" {{ selectedType is not null and selectedType.registrationTypeId == type.registrationTypeId ? 'selected' : '' }}>
                     {{ type.name }}
                 </option>
                 {% endfor %}
@@ -72,7 +72,7 @@
         <div class="col-sm-3">
             <select name="RegistrationStatus">
                 {% for status in registrationStatuses %}
-                    <option value="{{ status.status }}" {{ registration is not null and registration.registrationstatus.registrationstatusId == status.registrationStatusId ? 'selected' : '' }}>
+                    <option value="{{ status.status }}" {{ registration is not null and registration.registrationStatus.registrationStatusId == status.registrationStatusId ? 'selected' : '' }}>
                         {{ status.status }}
                     </option>
                 {% endfor %}

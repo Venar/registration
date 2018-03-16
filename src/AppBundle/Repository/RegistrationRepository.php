@@ -109,7 +109,7 @@ class RegistrationRepository extends EntityRepository
 
         $queryBuilder->select('r.id', 'r.number', 'r.email', 'r.firstName', 'r.lastName', 'r.badgeName'
             , 'r.confirmationNumber', 'rs.status', 'e.year', 'r.contactVolunteer', 'r.contactNewsletter'
-            , 'COUNT(g.id) as group_count'
+            , 'GROUP_CONCAT(DISTINCT g.id SEPARATOR \',\') as groups'
             , "($badgeListQuery)"
         )
             ->from(Registration::class, 'r')
@@ -164,10 +164,7 @@ class RegistrationRepository extends EntityRepository
             $tmp['LastName'] = $result['lastName'];
             $tmp['BadgeName'] = $result['badgeName'];
             $tmp['Reg_Status'] = $result['status'];
-            $tmp['group'] = '';
-            if ($result['group_count'] > 0) {
-                $tmp['group'] = 'X';
-            }
+            $tmp['group'] = $result['groups'];
             $tmp['Volunteer'] = '';
             if ($result['contactVolunteer']) {
                 $tmp['Volunteer'] = 'X';

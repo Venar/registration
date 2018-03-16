@@ -225,6 +225,9 @@
             if (is_exhibitor) {
                 td_badges.html(td_badges.html()+'<div class="circle" style="background: silver;">E</div>');
             }
+            if (group !== null) {
+                group = '<a href="{{ path('group_list_slash') }}'+group+'"><i class="fas fa-users"></i></a>';
+            }
 
             $('#table_registrations')
                 .append($('<tr>')

@@ -68,9 +68,9 @@ class GroupController extends Controller
     }
 
     /**
-     * @Route("/group/edit", name="groupEdit")
-     * @Route("/group/edit/", name="groupEditSlash")
-     * @Route("/group/edit/{groupId}")
+     * @Route("/group/edit", name="groupEditNew")
+     * @Route("/group/edit/", name="groupEditNewSlash")
+     * @Route("/group/edit/{groupId}", name="groupEditExisting")
      * @Security("has_role('ROLE_USER')")
      *
      * @param Request $request

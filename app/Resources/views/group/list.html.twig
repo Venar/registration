@@ -9,7 +9,7 @@
     </div>
     <div class="row">
         <div class="col-sm-3">
-            <a class="btn btn-primary btn-sm" href="{{ path('groupEdit') }}">New Group</a>
+            <a class="btn btn-primary btn-sm" href="{{ path('groupEditNew') }}">New Group</a>
         </div>
         <div class="col-sm-3">
             &nbsp;
@@ -47,7 +47,11 @@
                 <tbody>
                 {% for group in groups %}
                 <tr>
-                    <td><a href="/group/edit/{{ group.group.groupId }}">{{ group.group.name }}</a></td>
+                    <td>
+                        <a href="{{ path('groupEditExisting', {'groupId': group.group.groupId}) }}">
+                            {{ group.group.name }}
+                        </a>
+                    </td>
                     <td>{{ group.group.school }}</td>
                     <td>{{ group.group.leader }}</td>
                     <td>{{ group.count }}</td>

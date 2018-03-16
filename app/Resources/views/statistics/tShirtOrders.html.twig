@@ -1,43 +1,45 @@
 {% extends 'detour.html.twig' %}
 
 {% block body %}
-<script src="{{ asset('/libraries/highcharts/highcharts.js') }}"></script>
-<script src="{{ asset('/libraries/highcharts/modules/exporting.js') }}"></script>
+<script src="{{ asset('/node_modules/highcharts/highcharts.js') }}"></script>
+<script src="{{ asset('/node_modules/highcharts/modules/exporting.js') }}"></script>
 
-<div class="row">
-    <div class="col-lg-6">
-        <h2>T-Shirt Orders</h2>
-        <table class="small table">
-            <thead>
-            <tr>
-                <td>#</td>
-                <td>Size</td>
-            </tr>
-            </thead>
-            <tbody>
-            {% for shirt in data %}
-            <tr>
-                <td>{{ shirt[1] }}</td>
-                <td>{{ shirt[0] }}</td>
-            </tr>
-            {% endfor %}
-            <tr>
-                <td colspan="2">
-                    <hr>
-                </td>
-            </tr>
-            <tr>
-                <td>{{ totalCount }}</td>
-                <td>Total</td>
-            </tr>
-            </tbody>
-        </table>
-        <br>
-        <a href="{{ path('shirt_csv') }}">Download CSV File</a>
-        <br>
-    </div>
-    <div class="col-lg-6">
-        <div id="pie_chart" style="min-width: 500px; height: 400px; max-width: 600px; margin: 0 auto; float: left"></div>
+<div class="container bg-white">
+    <div class="row">
+        <div class="col-sm-6">
+            <h2>T-Shirt Orders</h2>
+            <br>
+            <a href="{{ path('shirt_csv') }}">Download CSV File</a>
+            <br>
+            <table class="table-sm">
+                <thead>
+                <tr>
+                    <td>#</td>
+                    <td>Size</td>
+                </tr>
+                </thead>
+                <tbody>
+                {% for shirt in data %}
+                <tr>
+                    <td>{{ shirt[1] }}</td>
+                    <td>{{ shirt[0] }}</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td colspan="2">
+                        <hr>
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{ totalCount }}</td>
+                    <td>Total</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-sm-6">
+            <div id="pie_chart" style="min-width: 500px; height: 400px; max-width: 600px; margin: 0 auto; float: left"></div>
+        </div>
     </div>
 </div>
 <script>

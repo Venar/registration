@@ -8,11 +8,11 @@
         <ul class="navbar-nav mr-auto">
             {{ render(controller('AppBundle:Backend/Template/Menu:menuRouting')) }}
         </ul>
+        <ul class="navbar-nav nav-flex-icons">
+            {{ render(controller('AppBundle:User/User:currentUser')) }}
+            {{ render(controller('AppBundle:Backend/Template/Menu:switchYears')) }}
+        </ul>
     </div>
-    <ul class="navbar-nav nav-flex-icons">
-        {{ render(controller('AppBundle:User/User:currentUser')) }}
-        {{ render(controller('AppBundle:Backend/Template/Menu:switchYears')) }}
-    </ul>
 </nav>
 
 <style>
