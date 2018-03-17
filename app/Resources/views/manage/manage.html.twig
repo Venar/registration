@@ -12,7 +12,7 @@
 
     <div class="row">
         <div class="col-sm-12">
-            <a href="{{ path('newRegistration') }}" class="btn btn-primary btn-sm">New Registration</a><br><br>
+            <a href="{{ path('newRegistration') }}" class="btn btn-warning btn-sm">New Registration</a><br><br>
             <script>
                 function changeYear(year) {
                     $('#year').val(year);
@@ -25,55 +25,72 @@
         </div>
     </div>
 
-    <form onsubmit="return false;">
-        <div class="row">
-            {#
-            <div class="col-sm-1">
-                <label for="input_regtype" class="col-sm-2 control-label">Reg&nbsp;Type</label>
-            </div>
-            <div class="col-sm-1">
-                <input type="hidden" value="{{ current_RegistrationType_ID }}" id="RegistrationType_ID">
-                {{ render(controller('AppBundle:Manage/Manage:registrationTypeList')) }}
-            </div>
-
-            <div class="col-sm-1">
-                <label for="input_regstatus" class="col-sm-2 control-label">Reg&nbsp;Status</label>
-            </div>
-            <div class="col-sm-2">
-                <div class="btn-group" id="input_regstatus">
-                    <input type="hidden" value="{{ current_RegistrationStatus_ID }}" id="RegistrationStatus_ID">
-                    <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown" id="button_RegistrationStatus">
-                        {{  current_RegistrationStatus }} <span class="caret"></span>
-                    </button>
-                    {{ render(controller('AppBundle:Manage/Manage:registrationStatusList')) }}
-                </div>
-            </div>
-
-            <div class="col-sm-1">
-                <label for="input_badgetype" class="col-sm-2 control-label">Badge</label>
-            </div>
-            <div class="col-sm-1">
-                <div class="btn-group">
-                    <input type="hidden" value="{{ current_BadgeType_ID }}" id="BadgeType_ID">
-                    <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown" id="button_BadgeType">
-                        {{ current_BadgeType }} <span class="caret"></span>
-                    </button>
-                    {{ render(controller('AppBundle:Manage/Manage:badgeTypeList')) }}
-                </div>
-            </div>
-            #}
-            <div class="col-sm-8">
-            </div>
-
-
-            <div class="col-sm-4">
-                <div class="input-append">
-                    <input type="text" id="search" name="search" value="{{ searchText }}" onKeyPress="return searchenter(this,event)" placeholder="Search">
-                    <button type="submit" class="btn btn-primary btn-sm" onclick="search_fn()">Search</button>
-                </div>
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="form-group">
+                <label for="registrationTypeId" class="control-label">
+                    <b>Reg&nbsp;Type:</b>
+                </label>
+                <select name="registrationTypeId" id="registrationTypeId" onclick="search_fn()">
+                    <option value="all">All</option>
+                    {% for registrationType in registrationTypes %}
+                        <option value="{{ registrationType.registrationTypeId }}"
+                                {{ (current_RegistrationTypeId == registrationType.registrationTypeId) ? 'selected' : '' }}
+                            >{{ registrationType.name }}</option>
+                    {% endfor %}
+                </select>
             </div>
         </div>
-    </form>
+
+        <div class="col-sm-3">
+            <div class="form-group">
+                <label for="registrationStatusId" class="control-label">
+                    <b>Reg&nbsp;Status:</b>
+                </label>
+                <select name="registrationStatusId" id="registrationStatusId" onclick="search_fn()">
+                    <option value="all">All</option>
+                    <option value="active">Active</option>
+                    {% for registrationStatus in registrationStatuses %}
+                        <option value="{{ registrationStatus.registrationStatusId }}"
+                                {{ (current_RegistrationStatusId == registrationStatus.registrationStatusId) ? 'selected' : '' }}
+                        >{{ registrationStatus.status }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="col-sm-3">
+            <div class="form-group">
+                <label for="badgeTypeId" class="control-label">
+                    <b>Badge Type:</b>
+                </label>
+                <select name="badgeTypeId" id="badgeTypeId" onclick="search_fn()">
+                    <option value="all">All</option>
+                    {% for badgeType in badgeTypes %}
+                        <option value="{{ badgeType.badgeTypeId }}"
+                                {{ (current_BadgeTypeId == badgeType.badgeTypeId) ? 'selected' : '' }}
+                        >{{ badgeType.description }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="col-sm-3">
+            <div class="form-group d-flex justify-content-center" style="margin-top: 1.2rem;">
+                <input type="search"
+                       id="search"
+                       name="search"
+                       value="{{ searchText }}"
+                       onKeyPress="return searchenter(this,event)"
+                       placeholder="Search"
+                       aria-label="Search"
+                       class="form-control">
+                <button class="btn btn-primary btn-sm my-0 p waves-effect waves-light" type="submit" onclick="search_fn()">
+                    <i class="fa fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-sm-12">
@@ -111,22 +128,32 @@
     <script>
 
         $( document ).ready(function(){
+            $('#registrationTypeId').change(function() {
+                search_fn();
+            });
+            $('#registrationStatusId').change(function() {
+                search_fn();
+            });
+            $('#badgeTypeId').change(function() {
+                search_fn();
+            });
+
             get_registration_list();
         });
 
         function get_registration_list() {
             var search_text           = $('#search').val();
-            var RegistrationType_ID   = $('#RegistrationType_ID').val();
-            var RegistrationStatus_ID = $('#RegistrationStatus_ID').val();
-            var BadgeType_ID          = $('#BadgeType_ID').val();
+            var registrationTypeId   = $('#registrationTypeId').find(":selected").val();
+            var registrationStatusId = $('#registrationStatusId').find(":selected").val();
+            var badgeTypeId          = $('#badgeTypeId').find(":selected").val();
             var page        = $('#page').val();
-            $.getJSON('/registrationlist',
+            $.getJSON('{{ path('ajaxRegistrationList') }}',
                 {
                     'search':search_text,
                     'page':page,
-                    'RegistrationType_ID':RegistrationType_ID,
-                    'RegistrationStatus_ID':RegistrationStatus_ID,
-                    'BadgeType_ID':BadgeType_ID
+                    'registrationTypeId':registrationTypeId,
+                    'registrationStatusId':registrationStatusId,
+                    'badgeTypeId':badgeTypeId
                 },
                 function(json) {
                     $('#tbody_registrations').empty();
@@ -193,8 +220,8 @@
                 }
             );
             window.history.pushState("object or string", "Anime Detour Registration", "/manage?search="+search_text
-                + "&RegistrationStatus_ID="+RegistrationStatus_ID+"&RegistrationType_ID="+RegistrationType_ID
-                + "&BadgeType_ID="+BadgeType_ID+"&page="+page);
+                + "&registrationStatusId="+registrationStatusId+"&registrationTypeId="+registrationTypeId
+                + "&badgeTypeId="+badgeTypeId+"&page="+page);
         }
 
         function add_registration(registration_id, year, number, last_name, first_name, badge_name, reg_status, Email, ConfirmationNumber, group, is_adult, is_minor, is_sponsor,
@@ -202,28 +229,28 @@
             var td_badges     = $('<td>');
 
             if (is_adult) {
-                td_badges.html(td_badges.html()+'<div class="circle" style="background: orange; color: white">A</div>');
+                td_badges.html(td_badges.html()+'<span class="badge badge-pill orange">A</span>');
             }
             if (is_minor) {
-                td_badges.html(td_badges.html()+'<div class="circle" style="background: yellow;">M</div>');
+                td_badges.html(td_badges.html()+'<span class="badge badge-pill yellow" style="color: #000000!important">M</span>');
             }
             if (is_sponsor) {
-                td_badges.html(td_badges.html()+'<div class="circle" style="background: blue; color: white">S</div>');
+                td_badges.html(td_badges.html()+'<span class="badge badge-pill blue">S</span>');
             }
             if (is_comsponsor) {
-                td_badges.html(td_badges.html()+'<div class="circle" style="background: purple;">C</div>');
+                td_badges.html(td_badges.html()+'<span class="badge badge-pill purple">C</span>');
             }
             if (is_staff) {
-                td_badges.html(td_badges.html()+'<div class="circle" style="background: red; color: white">D</div>');
+                td_badges.html(td_badges.html()+'<span class="badge badge-pill red">D</span>');
             }
             if (is_guest) {
-                td_badges.html(td_badges.html()+'<div class="circle" style="background: black;">G</div>');
+                td_badges.html(td_badges.html()+'<span class="badge badge-pill black">G</span>');
             }
             if (is_vendor) {
-                td_badges.html(td_badges.html()+'<div class="circle" style="background: green;">V</div>');
+                td_badges.html(td_badges.html()+'<span class="badge badge-pill green">V</span>');
             }
             if (is_exhibitor) {
-                td_badges.html(td_badges.html()+'<div class="circle" style="background: silver;">E</div>');
+                td_badges.html(td_badges.html()+'<span class="badge badge-pill silver" style="color: #000000!important">E</span>');
             }
             if (group !== null) {
                 group = '<a href="{{ path('group_list_slash') }}'+group+'"><i class="fas fa-users"></i></a>';
@@ -278,24 +305,6 @@
             }
             else
                 return true;
-        }
-
-        function changeType(id, description) {
-            $('#RegistrationType_ID').val(id);
-            $('#button_RegistrationType').html(description + ' <span class="caret">');
-            search_fn();
-        }
-
-        function changeStatus(id, description) {
-            $('#RegistrationStatus_ID').val(id);
-            $('#button_RegistrationStatus').html(description + ' <span class="caret">');
-            search_fn();
-        }
-
-        function changeBadge(id, description) {
-            $('#BadgeType_ID').val(id);
-            $('#button_BadgeType').html(description + ' <span class="caret">');
-            search_fn();
         }
 
         function search_fn() {
@@ -377,72 +386,68 @@
                 }, 1000);
         }
     </script>
-
-
-    <style>
-        .circle {
-            text-align: center;
-            display: inline-block;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            /* width and height can be anything, as long as they're equal */
-        }
-
-        .table-header-rotated th.row-header{
-            width: auto;
-        }
-
-        .table-header-rotated td{
-            width: 60px;
-            border-top: 1px solid #dddddd;
-            border-left: 1px solid #dddddd;
-            border-right: 1px solid #dddddd;
-            vertical-align: middle;
-            text-align: left;
-        }
-
-        .table-header-rotated th.rotate{
-            height: 80px;
-            width: 40px;
-            min-width: 40px;
-            max-width: 40px;
-            position: relative;
-            vertical-align: bottom;
-            padding: 0;
-            font-size: 12px;
-            line-height: 0.8;
-        }
-
-        .table-header-rotated th.rotate > div{
-            position: relative;
-            top: 0px;
-            left: 40px; /* 80 * tan(45) / 2 = 40 where 80 is the height on the cell and 45 is the transform angle*/
-            height: 100%;
-            -ms-transform:skew(-45deg,0deg);
-            -moz-transform:skew(-45deg,0deg);
-            -webkit-transform:skew(-45deg,0deg);
-            -o-transform:skew(-45deg,0deg);
-            transform:skew(-45deg,0deg);
-            overflow: hidden;
-            border-left: 1px solid #dddddd;
-        }
-
-        .table-header-rotated th.rotate span {
-            -ms-transform:skew(45deg,0deg) rotate(315deg);
-            -moz-transform:skew(45deg,0deg) rotate(315deg);
-            -webkit-transform:skew(45deg,0deg) rotate(315deg);
-            -o-transform:skew(45deg,0deg) rotate(315deg);
-            transform:skew(45deg,0deg) rotate(315deg);
-            position: absolute;
-            bottom: 30px; /* 40 cos(45) = 28 with an additional 2px margin*/
-            left: -25px; /*Because it looked good, but there is probably a mathematical link here as well*/
-            display: inline-block;
-        // width: 100%;
-            width: 85px; /* 80 / cos(45) - 40 cos (45) = 85 where 80 is the height of the cell, 40 the width of the cell and 45 the transform angle*/
-            text-align: left;
-        // white-space: nowrap; /*whether to display in one line or not*/
-        }
-    </style>
 </div>
+
+
+<style>
+    .badge-pill {
+        display: inline;
+        font-size: 110%;
+    }
+
+    .table-header-rotated th.row-header{
+        width: auto;
+    }
+
+    .table-header-rotated td{
+        width: 60px;
+        border-top: 1px solid #dddddd;
+        border-left: 1px solid #dddddd;
+        border-right: 1px solid #dddddd;
+        vertical-align: middle;
+        text-align: left;
+    }
+
+    .table-header-rotated th.rotate{
+        height: 80px;
+        width: 40px;
+        min-width: 40px;
+        max-width: 40px;
+        position: relative;
+        vertical-align: bottom;
+        padding: 0;
+        font-size: 12px;
+        line-height: 0.8;
+    }
+
+    .table-header-rotated th.rotate > div{
+        position: relative;
+        top: 0px;
+        left: 40px; /* 80 * tan(45) / 2 = 40 where 80 is the height on the cell and 45 is the transform angle*/
+        height: 100%;
+        -ms-transform:skew(-45deg,0deg);
+        -moz-transform:skew(-45deg,0deg);
+        -webkit-transform:skew(-45deg,0deg);
+        -o-transform:skew(-45deg,0deg);
+        transform:skew(-45deg,0deg);
+        overflow: hidden;
+        border-left: 1px solid #dddddd;
+    }
+
+    .table-header-rotated th.rotate span {
+        -ms-transform:skew(45deg,0deg) rotate(315deg);
+        -moz-transform:skew(45deg,0deg) rotate(315deg);
+        -webkit-transform:skew(45deg,0deg) rotate(315deg);
+        -o-transform:skew(45deg,0deg) rotate(315deg);
+        transform:skew(45deg,0deg) rotate(315deg);
+        position: absolute;
+        bottom: 30px; /* 40 cos(45) = 28 with an additional 2px margin*/
+        left: -25px; /*Because it looked good, but there is probably a mathematical link here as well*/
+        display: inline-block;
+    // width: 100%;
+        width: 85px; /* 80 / cos(45) - 40 cos (45) = 85 where 80 is the height of the cell, 40 the width of the cell and 45 the transform angle*/
+        text-align: left;
+    // white-space: nowrap; /*whether to display in one line or not*/
+    }
+</style>
 {% endblock %}

@@ -1,9 +1,0 @@
-<ul class="dropdown-menu">
-    <li><a href="javascript:void(0);" onclick="changeStatus('all', 'All')">All</a></li>
-    <li><a href="javascript:void(0);" onclick="changeStatus('active', 'Active')">Active</a></li>
-    {% for status in statusList %}
-        <li>
-            <a href="javascript:void(0);" onclick="changeStatus('{{ status.id }}', '{{ status.status }}')">{{ status.status }}</a>
-        </li>
-    {% endfor %}
-</ul>
