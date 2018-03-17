@@ -17,7 +17,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
-class rolloverController extends Controller
+class RolloverController extends Controller
 {
     /**
      * @Route("/registration/rollover/{registrationId}", name="rolloverRegistration")
@@ -40,6 +40,7 @@ class rolloverController extends Controller
             $vars['errorMessage'] = 'You cannot rollover an inactive registration!';
         }
 
+        /** @var Badge[] $badges */
         $badges = $registration->getBadges();
         $vars['badges'] = $badges;
 

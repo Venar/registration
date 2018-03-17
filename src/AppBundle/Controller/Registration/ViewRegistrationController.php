@@ -54,6 +54,8 @@ class ViewRegistrationController extends Controller
             'registrationStatus' => $registrationStatus,
             'history' => $registrationHistory,
             'badges' => $badges,
+            'registrationShirts' => $registration->getRegistrationShirts(),
+            'extras' => $registration->getExtras(),
             'info' => $info,
             'lastBadgeId' => $lastBadgeID,
         ];

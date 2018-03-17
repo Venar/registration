@@ -60,7 +60,7 @@ class RegistrationRepository extends EntityRepository
 
         $queryBuilder = $this->getEntityManager()->createQueryBuilder();
         try {
-            $count = $queryBuilder->select('count(r.registrationId)')
+            $count = $queryBuilder->select('count(r.id)')
                 ->from(Registration::class, 'r')
                 ->where('r.event = :event')
                 ->setParameter('event', $event)

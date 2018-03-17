@@ -22,8 +22,11 @@ class GroupRepository extends EntityRepository
             ->orderBy('g.name', 'ASC');
 
         if ($school != '') {
-            $queryBuilder->where($queryBuilder->expr()->like('rg.school', ':school'))
-                ->setParameter('school', "%$school%");
+            $queryBuilder
+                ->where($queryBuilder->expr()->like('g.school', ':school'))
+                ->orWhere($queryBuilder->expr()->like('g.name', ':name'))
+                ->setParameter('school', "%$school%")
+                ->setParameter('name', "%$school%");
         }
 
         return $queryBuilder->getQuery()->getResult();

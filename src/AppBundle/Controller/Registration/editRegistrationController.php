@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
-class editRegistrationController extends Controller
+class EditRegistrationController extends Controller
 {
 
     /**
@@ -168,9 +168,9 @@ class editRegistrationController extends Controller
                 $shirt = $registrationShirt->getShirt();
 
                 $tmp = array();
-                $tmp['RegistrationShirt_ID'] = $registrationShirt->getRegistrationShirtId();
-                $tmp['shirt_type'] = $shirt->getType();
-                $tmp['shirt_size'] = $shirt->getSize();
+                $tmp['registrationShirtId'] = $registrationShirt->getRegistrationShirtId();
+                $tmp['shirtType'] = $shirt->getType();
+                $tmp['shirtSize'] = $shirt->getSize();
                 $arrayShirts[] = $tmp;
             }
         }
@@ -257,11 +257,11 @@ class editRegistrationController extends Controller
         }
 
         if ($action == 'add') {
-            if ($request->query->has('shirt_type')
-                && $request->query->has('shirt_size')
+            if ($request->query->has('shirtType')
+                && $request->query->has('shirtSize')
             ) {
-                $shirtType = $request->query->get('shirt_type');
-                $shirtSize = $request->query->get('shirt_size');
+                $shirtType = $request->query->get('shirtType');
+                $shirtSize = $request->query->get('shirtSize');
 
                 $shirt = $entityManager->getRepository(Shirt::class)->getShirtFromTypeAndSize($shirtType, $shirtSize);
                 if (!$shirt) {
@@ -279,12 +279,12 @@ class editRegistrationController extends Controller
                 if ($registrationShirt->getRegistrationshirtId()) {
                     $returnData['success'] = true;
                     $returnData['message'] = 'Added shirt size ' . $shirtType . ' ' . $shirtSize . ' to registration';
-                    $returnData['RegistrationShirt_ID'] = $registrationShirt->getRegistrationshirtId();
+                    $returnData['registrationShirtId'] = $registrationShirt->getRegistrationshirtId();
                 }
             }
         } else if ($action == 'delete') {
-            if ($request->query->has('RegistrationShirt_ID')) {
-                $registrationShirtId = $request->query->get('RegistrationShirt_ID');
+            if ($request->query->has('registrationShirtId')) {
+                $registrationShirtId = $request->query->get('registrationShirtId');
                 $registrationShirt = $this->getDoctrine()
                     ->getRepository(RegistrationShirt::class)
                     ->find($registrationShirtId);
@@ -433,35 +433,35 @@ class editRegistrationController extends Controller
 
         $all_fields_sent = true;
         $fields = array(
-            'LastName' => 'last name',
-            'FirstName' => 'first name',
-            'MiddleName' => 'middle name',
-            'Address' => 'address',
-            'Address2' => 'address2',
-            'City' => 'city',
-            'State' => 'state',
-            'Zip' => 'zip',
-            'Phone' => 'phone number',
-            'Email' => 'e-mail address',
-            'BadgeName' => 'badge name',
-            'Birthday' => 'birthday',
-            'Birthyear' => 'birth year',
+            'lastName' => 'last name',
+            'firstName' => 'first name',
+            'middleName' => 'middle name',
+            'address' => 'address',
+            'address2' => 'address2',
+            'city' => 'city',
+            'state' => 'state',
+            'zip' => 'zip',
+            'phone' => 'phone number',
+            'email' => 'e-mail address',
+            'badgeName' => 'badge name',
+            'birthDate' => 'birthday',
+            'birthYear' => 'birth year',
         );
-        if (!$request->request->has('Registration_ID')) {
+        if (!$request->request->has('registrationId')) {
             $all_fields_sent = false;
-            $returnJson['message'] = 'Registration_ID was not set.';
+            $returnJson['message'] = 'registrationId was not set.';
         }
-        if (!$request->request->has('regtype') || !$request->request->get('regtype')) {
+        if (!$request->request->has('badgeTypeName') || !$request->request->get('badgeTypeName')) {
             $all_fields_sent = false;
             $returnJson['message'] = 'Registration Type was not set.';
         }
-        if (!$request->request->has('Birthday') || $request->request->get('Birthday') == '') {
+        if (!$request->request->has('birthDate') || $request->request->get('birthDate') == '') {
             $all_fields_sent = false;
             $returnJson['message'] = 'Birthday was not set.';
         }
-        if (!$request->request->has('Birthyear') || $request->request->get('Birthyear') == '') {
+        if (!$request->request->has('birthYear') || $request->request->get('birthYear') == '') {
             $all_fields_sent = false;
-            $returnJson['message'] = 'Birthyear was not set.';
+            $returnJson['message'] = 'Birth year was not set.';
         }
         if (!$request->request->has('RegistrationType') || !$request->request->get('RegistrationType')) {
             $all_fields_sent = false;
@@ -502,7 +502,7 @@ class editRegistrationController extends Controller
         $history = '';
         if ($all_fields_sent) {
             $registration = $this->getDoctrine()->getRepository(Registration::class)
-                ->find($request->request->get('Registration_ID'));
+                ->find($request->request->get('registrationId'));
 
             if (!$registration) {
                 $registration = new Registration();
@@ -536,19 +536,19 @@ class editRegistrationController extends Controller
 
             $regGroup = null;
             if ($registrationType->getName() == 'Group'
-                && $request->request->has('RegGroup_ID')
+                && $request->request->has('groupId')
             ) {
                 $regGroup = $this->getDoctrine()->getRepository(Group::class)
-                    ->find($request->request->get('RegGroup_ID'));
+                    ->find($request->request->get('groupId'));
             }
 
             foreach ($fields as $field => $fieldName) {
-                if ($field == 'Birthyear') {
+                if ($field == 'birthYear') {
 
                     continue;
                 }
-                if ($field == 'Birthday') {
-                    $tmpfield = $request->request->get('Birthday') . '/' . $request->request->get('Birthyear');
+                if ($field == 'birthDate') {
+                    $tmpfield = $request->request->get('birthDate') . '/' . $request->request->get('birthYear');
                     if (!strtotime($tmpfield)) {
                         $tmpfield = str_replace('-', '/', $tmpfield);
                     }
@@ -593,21 +593,21 @@ class editRegistrationController extends Controller
 
             $toDelete = [];
             $badgetypeFound = false;
-            $regtype = $request->request->get('regtype');
-            if ($regtype == 'ADREGSTANDARD') {
+            $badgeTypeName = $request->request->get('badgeTypeName');
+            if ($badgeTypeName == 'ADREGSTANDARD') {
                 if ($registration->getBirthday()->getTimestamp() > strtotime($event->getStartdate()->format('Y-m-d') . " -18 years")) {
-                    $regtype = 'MINOR';
+                    $badgeTypeName = 'MINOR';
                 }
             }
 
             $badges = $registration->getBadges();
             foreach ($badges as $badge) {
                 $badgeType = $badge->getBadgeType();
-                if (in_array($badgeType->getName(), $allow_one_badge_types) && $badgeType->getName() != $regtype) {
+                if (in_array($badgeType->getName(), $allow_one_badge_types) && $badgeType->getName() != $badgeTypeName) {
                     $toDelete[] = $badge;
-                    $history .= "BadgeType: {$badgeType->getName()} => $regtype<br>";
+                    $history .= "BadgeType: {$badgeType->getName()} => $badgeTypeName<br>";
                 }
-                if ($badgeType->getName() == $regtype) {
+                if ($badgeType->getName() == $badgeTypeName) {
                     $badgetypeFound = true;
                 }
             }
@@ -681,7 +681,7 @@ class editRegistrationController extends Controller
                 $badgeStatus = $this->getDoctrine()->getRepository(BadgeStatus::class)
                     ->getBadgeStatusFromStatus('NEW');
                 $badgeType = $this->getDoctrine()->getRepository(BadgeType::class)
-                    ->getBadgeTypeFromType($regtype);
+                    ->getBadgeTypeFromType($badgeTypeName);
                 $badge = new Badge();
                 $badge->setRegistration($registration);
                 $badge->setBadgeType($badgeType);
@@ -693,8 +693,7 @@ class editRegistrationController extends Controller
                 $entityManager->flush();
             }
 
-            $badges = $registration->getBadges();
-            $this->get('util_email')->generateAndSendConfirmationEmail($registration, $badges);
+            $this->get('util_email')->generateAndSendConfirmationEmail($registration);
 
             $registrationHistory = new History();
             $registrationHistory->setRegistration($registration);
@@ -716,7 +715,7 @@ class editRegistrationController extends Controller
             $returnJson['success'] = true;
             $returnJson['message'] = 'Registration Updated!';
 
-            $returnJson['Registration_ID'] = $registration->getRegistrationId();
+            $returnJson['registrationId'] = $registration->getRegistrationId();
             $returnJson['Number'] = $registration->getNumber();
         }
 
