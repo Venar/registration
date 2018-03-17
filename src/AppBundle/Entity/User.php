@@ -174,7 +174,7 @@ class User extends BaseUser
      *
      * @return string
      */
-    public function getLastname()
+    public function getLastName()
     {
         return $this->lastName;
     }

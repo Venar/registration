@@ -10,13 +10,24 @@
         </div>
     </div>
 
-    {% if registrationStatus.active != "true" %}
+    {% if not registrationStatus.active %}
     <div class="row">
         <div class="col-sm-12">
-            <div class="bs-callout bs-callout-danger" id="alert_subdiv">
-                <h4 id="alert_heading">Inactive Registration</h4>
-                <p id="alert_msg">{{ info }}</p>
+            <div class="card text-center w-100">
+                <div class="card-header danger-color-dark white-text">
+                    Inactive Registration
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title danger-text">This registration is not active.</h4>
+                    <p class="card-text">{{ info }}</p>
+                </div>
+                <div class="card-footer text-muted danger-color-dark white-text">
+                    <p class="mb-0">Last edited: {{ registration.modifiedDate|date("F j Y g:i A") }}
+                         by {{ registration.modifiedBy.firstName }} {{ registration.modifiedBy.lastName }}
+                    </p>
+                </div>
             </div>
+            <br>
         </div>
     </div>
     {% endif %}
@@ -35,8 +46,10 @@
                            style="width: 150px"><i class="fas fa-edit"></i> Edit</a>
                     </div>
                     <div class="col-sm-6">
+                        {% if registrationStatus.active %}
                         <a href="/print/single/{{ registration.registrationId }}" class="btn btn-primary"
                            style="width: 150px"><i class="fas fa-print"></i> Print All</a>
+                        {% endif %}
                     </div>
                 </div>
 
@@ -69,7 +82,7 @@
                                         </a>
                                     </td>
                                     <td>
-                                        {% if badge.badgeStatus.active %}
+                                        {% if registrationStatus.active and badge.badgeStatus.active %}
                                             <a href="{{ path('printing_single_WithSingleBadge',
                                                 {'badgeId': badge.badgeId, 'registrationId': registration.registrationId}) }}"
                                                class="btn btn-primary btn-sm" style="width: 100px">

@@ -216,7 +216,7 @@ class Registration
     /**
      * @var \AppBundle\Entity\User
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\User")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="modified_by", referencedColumnName="id")
      * })
@@ -829,7 +829,7 @@ class Registration
     }
 
     /**
-     * Get transferedto
+     * Get transferredTo
      *
      * @return \AppBundle\Entity\Registration
      */

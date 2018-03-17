@@ -28,4 +28,26 @@ class RegistrationStatusRepository extends EntityRepository
             return null;
         }
     }
+
+    /**
+     * @return RegistrationStatus[]
+     */
+    public function findAllActive()
+    {
+        $criteria = [
+            'active' => true,
+        ];
+        return $this->findBy($criteria);
+    }
+
+    /**
+     * @return RegistrationStatus[]
+     */
+    public function findAllInactive()
+    {
+        $criteria = [
+            'active' => false,
+        ];
+        return $this->findBy($criteria);
+    }
 }

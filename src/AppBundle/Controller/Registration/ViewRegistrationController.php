@@ -35,13 +35,16 @@ class ViewRegistrationController extends Controller
         $badges = $registration->getBadges();
 
         $info = '';
-        if ($registrationStatus->getActive()) {
+        if (!$registrationStatus->getActive()) {
             $info = $registrationStatus->getDescription();
-            if ($registrationStatus->getStatus() == 'Transfered') {
+            if ($registrationStatus->getStatus() == 'Transferred') {
                 $transferredRegistration = $registration->getTransferredTo();
-                $url = $this->generateUrl('viewRegistration', ['registrationId' => $transferredRegistration->getRegistrationId()]);
-                $info .= " Transferred to <a href='$url'>" . $transferredRegistration->getFirstname()
-                    . ' ' . $transferredRegistration->getLastname() . '</a>. ';
+                if ($transferredRegistration) {
+                    $url = $this->generateUrl('viewRegistration',
+                        ['registrationId' => $transferredRegistration->getRegistrationId()]);
+                    $info .= " Transferred to <a href='$url'>" . $transferredRegistration->getFirstname()
+                        . ' ' . $transferredRegistration->getLastname() . '</a>. ';
+                }
             }
         }
 

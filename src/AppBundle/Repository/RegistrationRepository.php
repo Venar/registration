@@ -79,18 +79,18 @@ class RegistrationRepository extends EntityRepository
     }
 
     /**
-     * @param String $searchText
-     * @param String $page
+     * @param String                $searchText
+     * @param String                $page
      * @param RegistrationType|null $registrationType
-     * @param RegistrationStatus|null $registrationStatus
-     * @param BadgeType|null $badgeType
+     * @param RegistrationStatus[]  $registrationStatuses
+     * @param BadgeType|null        $badgeType
      * @return Registration[]
      */
     public function searchFromManageRegistrations(
         $searchText,
         $page,
         ?RegistrationType $registrationType,
-        ?RegistrationStatus $registrationStatus,
+        array $registrationStatuses,
         ?BadgeType $badgeType
     )
     {
@@ -115,7 +115,7 @@ class RegistrationRepository extends EntityRepository
             ->from(Registration::class, 'r')
             ->innerJoin('r.registrationStatus', 'rs')
             ->innerJoin('r.event', 'e')
-            ->innerJoin(Badge::class, 'b', Join::WITH, 'r.id = b.registration')
+            ->innerJoin('r.badges', 'b')
             ->leftJoin('r.groups', 'g')
 
             ->andWhere($queryBuilder->expr()->orX(
@@ -136,6 +136,21 @@ class RegistrationRepository extends EntityRepository
             ->andWhere('r.event = :eventId')
             ->setParameter('eventId', $event->getId())
         ;
+
+        if ($registrationType) {
+            $queryBuilder->andWhere('r.registrationType = :registrationType')
+                ->setParameter('registrationType', $registrationType);
+        }
+
+        if (count($registrationStatuses) > 0) {
+            $queryBuilder->andWhere('r.registrationStatus IN (:registrationStatuses)')
+                ->setParameter('registrationStatuses', $registrationStatuses);
+        }
+
+        if ($badgeType) {
+            $queryBuilder->andWhere('b.badgeType = :badgeType')
+                ->setParameter('badgeType', $badgeType);
+        }
 
         $queryBuilder
             ->orderBy('r.lastName', 'ASC')

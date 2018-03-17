@@ -121,11 +121,22 @@ class ManageController extends Controller
         }
 
         $registrationStatusId = $request->query->get('registrationStatusId');
-        $registrationStatus = null;
-        if ($registrationStatusId) {
+        $registrationStatuses = [];
+        if ($registrationStatusId == 'active') {
+            $registrationStatuses = $this->getDoctrine()
+                ->getRepository(RegistrationStatus::class)
+                ->findAllActive();
+        } elseif ($registrationStatusId == 'inactive') {
+            $registrationStatuses = $this->getDoctrine()
+                ->getRepository(RegistrationStatus::class)
+                ->findAllInactive();
+        } else {
             $registrationStatus = $this->getDoctrine()
                 ->getRepository(RegistrationStatus::class)
                 ->find($registrationStatusId);
+            if ($registrationStatus) {
+                $registrationStatuses[] = $registrationStatus;
+            }
         }
 
         $badgeTypeId = $request->query->get('badgeTypeId');
@@ -144,7 +155,7 @@ class ManageController extends Controller
             $searchText,
             $page,
             $registrationType,
-            $registrationStatus,
+            $registrationStatuses,
             $badgeType
         );
 

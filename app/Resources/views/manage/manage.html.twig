@@ -51,6 +51,7 @@
                 <select name="registrationStatusId" id="registrationStatusId" onclick="search_fn()">
                     <option value="all">All</option>
                     <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
                     <option disabled>──────────────</option>
                     {% for registrationStatus in registrationStatuses %}
                         <option value="{{ registrationStatus.registrationStatusId }}"

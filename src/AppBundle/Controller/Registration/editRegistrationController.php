@@ -619,7 +619,7 @@ class EditRegistrationController extends Controller
             }
 
             if ($transferredFrom) {
-                $registration->setTransferedto($transferredFrom);
+                $transferredFrom->setTransferredTo($registration);
                 $url = $this->generateUrl('viewRegistration', ['registrationId' => $transferredFrom->getRegistrationId()]);
                 $history .= " Transferred From <a href='$url'>" . $transferredFrom->getFirstname()
                     . ' ' . $transferredFrom->getLastname() . '</a>. <br>';
