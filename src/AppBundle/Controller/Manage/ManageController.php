@@ -28,45 +28,36 @@ class ManageController extends Controller
         $searchText = $request->query->get('search');
         $page = $request->query->get('page');
 
-        $registrationTypeId = '';
-        $registrationTypeDescription = 'All';
+        $registrationTypeId = 'all';
         if ($request->query->has('registrationTypeId')) {
             $registrationTypeId = $request->query->get('registrationTypeId');
             $registrationType = $this->getDoctrine()
                 ->getRepository(RegistrationType::class)
                 ->find($registrationTypeId);
             if ($registrationType) {
-                $registrationTypeDescription = $registrationType->getDescription();
-            } else {
-                $registrationTypeId = 'all';
+                $registrationTypeId = $registrationType->getRegistrationTypeId();
             }
         }
 
-        $registrationStatusId = '';
-        $registrationStatusDescription = 'All';
+        $registrationStatusId = 'active';
         if ($request->query->has('registrationStatusId')) {
             $registrationStatusId = $request->query->get('registrationStatusId');
             $registrationStatus = $this->getDoctrine()
                 ->getRepository(RegistrationStatus::class)
                 ->find($registrationStatusId);
             if ($registrationStatus) {
-                $registrationStatusDescription = $registrationStatus->getDescription();
-            } else {
-                $registrationStatusId = 'active';
+                $registrationStatusId = $registrationStatus->getRegistrationStatusId();
             }
         }
 
-        $badgeTypeId = '';
-        $badgeTypeDescription = 'All';
+        $badgeTypeId = 'all';
         if ($request->query->has('badgeTypeId')) {
             $badgeTypeId = $request->query->get('badgeTypeId');
             $badgeType = $this->getDoctrine()
                 ->getRepository(BadgeType::class)
                 ->find($badgeTypeId);
             if ($badgeType) {
-                $badgeTypeDescription = $badgeType->getDescription();
-            } else {
-                $badgeTypeId = 'all';
+                $badgeTypeId = $badgeType->getBadgeTypeId();
             }
         }
 
@@ -88,9 +79,6 @@ class ManageController extends Controller
             'current_RegistrationTypeId' => $registrationTypeId,
             'current_RegistrationStatusId' => $registrationStatusId,
             'current_BadgeTypeId' => $badgeTypeId,
-            'current_RegistrationType' => $registrationTypeDescription,
-            'current_RegistrationStatus' => $registrationStatusDescription,
-            'current_BadgeType' => $badgeTypeDescription,
             'searchText' => $searchText,
             'page' => $page,
         ];
