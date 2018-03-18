@@ -140,13 +140,15 @@ class ASecureCartController extends Controller
                 $registration = new Registration();
                 $registration->setXml((String)$xmlPost);
                 $registration->setEvent($event);
-                $registration->setRegistrationstatus($registrationStatus);
-                $registration->setRegistrationtype($registrationType);
+                $registration->setRegistrationStatus($registrationStatus);
+                $registration->setRegistrationType($registrationType);
                 $name = explode('|', (String)$attributes['addon1']);
-                $registration->setFirstname(trim($name[0]));
-                $registration->setMiddlename(trim($name[1]));
-                $registration->setLastname(trim($name[2]));
-                $registration->setBadgename(trim((String)$attributes['addon2']));
+                $registration->setFirstName(trim($name[0]));
+                $registration->setMiddleName(trim($name[1]));
+                $registration->setLastName(trim($name[2]));
+                $badgeName = trim((String)$attributes['addon2']);
+                $badgeName = substr($badgeName, 0, 20);
+                $registration->setBadgeName($badgeName);
                 $registration->setEmail(trim((String)$attributes['addon3']));
 
                 $birthDate = (String)$attributes['addon4'];
@@ -191,8 +193,8 @@ class ASecureCartController extends Controller
                 $Badge = new Badge();
                 $badgeNumber = $entityManager->getRepository(Badge::class)->generateNumber();
                 $Badge->setNumber($badgeNumber);
-                $Badge->setBadgetype($badgeType);
-                $Badge->setBadgestatus($badgeStatus);
+                $Badge->setBadgeType($badgeType);
+                $Badge->setBadgeStatus($badgeStatus);
                 $Badge->setRegistration($registration);
                 $entityManager->persist($Badge);
 
@@ -207,7 +209,7 @@ class ASecureCartController extends Controller
                         ->getRepository(Shirt::class)
                         ->getShirtFromTypeAndSize($shirtType, $shirtSize);
                     if ($shirt) {
-                        $registrationShirt = new Registrationshirt();
+                        $registrationShirt = new RegistrationShirt();
                         $registrationShirt->setRegistration($registration);
                         $registrationShirt->setShirt($shirt);
                         $entityManager->persist($registrationShirt);
