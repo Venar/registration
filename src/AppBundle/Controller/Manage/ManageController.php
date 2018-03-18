@@ -38,7 +38,7 @@ class ManageController extends Controller
             if ($registrationType) {
                 $registrationTypeDescription = $registrationType->getDescription();
             } else {
-                $registrationTypeId = '';
+                $registrationTypeId = 'all';
             }
         }
 
@@ -52,7 +52,7 @@ class ManageController extends Controller
             if ($registrationStatus) {
                 $registrationStatusDescription = $registrationStatus->getDescription();
             } else {
-                $registrationStatusId = '';
+                $registrationStatusId = 'active';
             }
         }
 
@@ -66,7 +66,7 @@ class ManageController extends Controller
             if ($badgeType) {
                 $badgeTypeDescription = $badgeType->getDescription();
             } else {
-                $badgeTypeId = '';
+                $badgeTypeId = 'all';
             }
         }
 

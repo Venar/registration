@@ -19,7 +19,7 @@
                 </div>
                 <div class="card-body">
                     <h4 class="card-title danger-text">This registration is not active.</h4>
-                    <p class="card-text">{{ info }}</p>
+                    <p class="card-text">{{ info|raw }}</p>
                 </div>
                 <div class="card-footer text-muted danger-color-dark white-text">
                     <p class="mb-0">Last edited: {{ registration.modifiedDate|date("F j Y g:i A") }}

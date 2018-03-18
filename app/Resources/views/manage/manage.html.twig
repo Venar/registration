@@ -32,7 +32,7 @@
                     <b>Reg&nbsp;Type:</b>
                 </label>
                 <select name="registrationTypeId" id="registrationTypeId" onclick="search_fn()">
-                    <option value="all">All</option>
+                    <option value="all" {{ current_RegistrationTypeId == 'all' ? 'selected' : '' }}>All</option>
                     <option disabled>──────────────</option>
                     {% for registrationType in registrationTypes %}
                         <option value="{{ registrationType.registrationTypeId }}"
@@ -49,9 +49,9 @@
                     <b>Reg&nbsp;Status:</b>
                 </label>
                 <select name="registrationStatusId" id="registrationStatusId" onclick="search_fn()">
-                    <option value="all">All</option>
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
+                    <option value="all" {{ current_RegistrationStatusId == 'all' ? 'selected' : '' }}>All</option>
+                    <option value="active" {{ current_RegistrationStatusId == 'active' ? 'selected' : '' }}>Active</option>
+                    <option value="inactive" {{ current_RegistrationStatusId == 'inactive' ? 'selected' : '' }}>Inactive</option>
                     <option disabled>──────────────</option>
                     {% for registrationStatus in registrationStatuses %}
                         <option value="{{ registrationStatus.registrationStatusId }}"
@@ -68,7 +68,7 @@
                     <b>Badge Type:</b>
                 </label>
                 <select name="badgeTypeId" id="badgeTypeId" onclick="search_fn()">
-                    <option value="all">All</option>
+                    <option value="all" {{ current_BadgeTypeId == 'all' ? 'selected' : '' }}>All</option>
                     <option disabled>──────────────</option>
                     {% for badgeType in badgeTypes %}
                         <option value="{{ badgeType.badgeTypeId }}"

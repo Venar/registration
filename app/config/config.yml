@@ -39,6 +39,8 @@ framework:
 twig:
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
+    date:
+        timezone: America/Chicago
     globals:
         fos_csrf_provider: "@security.csrf.token_manager"
 

@@ -167,7 +167,7 @@ class RolloverController extends Controller
         $registrationHistory->setChangetext($history . '<br>Registration created from Rolled-over');
         $entityManager->persist($registrationHistory);
 
-        $oldRegistration->setTransferedto($registration);
+        $oldRegistration->setTransferredTo($registration);
         $oldRegistration->setRegistrationstatus($registrationStatusRollover);
         $entityManager->persist($oldRegistration);
         $entityManager->flush();
@@ -182,6 +182,6 @@ class RolloverController extends Controller
         $entityManager->flush();
 
         $params = ['registrationId' => $registrationId];
-        return $this->redirectToRoute('app_registration_viewregistration_viewregistrationpage', $params);
+        return $this->redirectToRoute('viewRegistration', $params);
     }
 }

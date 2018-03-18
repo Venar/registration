@@ -523,7 +523,13 @@
         {
             get_regshirtlist();
             get_regextralist();
+            setDefaults();
         });
+
+        function setDefaults() {
+            $("#RegistrationType option:first").attr('selected','selected');
+            $("#RegistrationStatus option:first").attr('selected','selected');
+        }
 
         function render_shirt(registrationShirtId, shirtType, shirtSize)
         {

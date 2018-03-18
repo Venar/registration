@@ -84,10 +84,6 @@ class EditRegistrationController extends Controller
         if ($registrationId) {
             $registration = $this->getDoctrine()->getRepository(Registration::class)->find($registrationId);
         }
-        $badges = [];
-        if ($registration) {
-            $badges = $registration->getBadges();
-        }
 
         $group = null;
         if ($groupId) {
@@ -99,7 +95,7 @@ class EditRegistrationController extends Controller
         }
 
         $transferredRegistration = null;
-        if ($transferredRegistration) {
+        if ($transferredFrom) {
             $transferredRegistration = $this->getDoctrine()->getRepository(Registration::class)->find($transferredFrom);
         }
         $transferredBadges = null;
@@ -107,6 +103,12 @@ class EditRegistrationController extends Controller
             $transferredBadges = $transferredRegistration->getBadges();
         }
 
+        $badges = [];
+        if ($registration) {
+            $badges = $registration->getBadges();
+        } elseif ($transferredRegistration) {
+            $badges = $transferredRegistration->getBadges();
+        }
         $currentBadgeTypes = [];
         foreach ($badges as $badge) {
             /** @var Badge $badge */
@@ -453,7 +455,7 @@ class EditRegistrationController extends Controller
         }
         if (!$request->request->has('badgeTypeName') || !$request->request->get('badgeTypeName')) {
             $all_fields_sent = false;
-            $returnJson['message'] = 'Registration Type was not set.';
+            $returnJson['message'] = 'Badge Type was not set.';
         }
         if (!$request->request->has('birthDate') || $request->request->get('birthDate') == '') {
             $all_fields_sent = false;
