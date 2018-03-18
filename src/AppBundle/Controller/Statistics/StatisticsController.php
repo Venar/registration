@@ -223,7 +223,7 @@ class StatisticsController extends Controller
                     $statsYear++;
                 }
                 $count = (int) $this->getStatsByRange($event, $statsStart, $day);
-                if ($lastCount != $count && $count != $totalForYear) {
+                if ($lastCount != $count && $count < $totalForYear) {
                     $dayFormat = date("$statsYear-m-d H:i:s", $day);
                     $tmpData[] = [strtotime($dayFormat) * 1000, $count];
                 }

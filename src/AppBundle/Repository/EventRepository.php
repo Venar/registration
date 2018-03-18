@@ -10,6 +10,14 @@ use Symfony\Component\HttpFoundation\Session\Session;
 class EventRepository extends EntityRepository
 {
     /**
+     * @return Event[]
+     */
+    public function findAll()
+    {
+        return $this->findBy([], ['year' => 'DESC']);
+    }
+
+    /**
      * @return Event|null
      */
     public function getCurrentEvent()
