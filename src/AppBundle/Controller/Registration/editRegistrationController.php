@@ -115,11 +115,12 @@ class EditRegistrationController extends Controller
             $currentBadgeTypes[] = $badge->getBadgeType()->getName();
         }
 
+        $registrationTypeRepository = $this->getDoctrine()->getRepository(RegistrationType::class);
         /** @var RegistrationType[] $registrationTypes */
-        $registrationTypes = $this->getDoctrine()->getRepository(RegistrationType::class)->findAll();
-        $selectedType = null;
+        $registrationTypes = $registrationTypeRepository->findAll();
+        $selectedType = $registrationTypeRepository->getRegistrationTypeFromType('Mail');
         if ($group) {
-            $selectedType = $this->getDoctrine()->getRepository(RegistrationType::class)->getRegistrationTypeFromType('Group');
+            $selectedType = $registrationTypeRepository->getRegistrationTypeFromType('Group');
         } elseif ($registration) {
             $selectedType = $registration->getRegistrationtype();
         }
