@@ -1,69 +1,60 @@
-Symfony Standard Edition
+Anime Twin Cities, Inc. Registration System
 ========================
 
-Welcome to the Symfony Standard Edition - a fully-functional Symfony
-application that you can use as the skeleton for your new applications.
+Prerequisites
+------------------
+You must have installed the following:
+* git (command line)
+    * https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
+* Mysql 
+    * You could also use mariaDb if on Linux
+    * Other Database engines may work, however this is untested
+    * Make sure you have created an empty database for the project
+    * Also make sure you have a user/password create with permissions for that database
+* Apache (nginx is untested, it may work or require additional configuration)
+* PHP 7.1+
+* yarn 
+    * https://yarnpkg.com/lang/en/docs/install/
+* composer 
+    * https://getcomposer.org/doc/00-intro.md
+* Configure php, git, yarn and composer to be in your $PATH for command line
 
-For details on how to download and get started with Symfony, see the
-[Installation][1] chapter of the Symfony Documentation.
+Development Install
+---------------
+1. Download the source code
+     1. In your development direction. 
+         * `git clone git@github.com:AnimeTwinCities/registration.git [<directory name>]`
+         * That will checkout the source code for the given directory
+     2. Enter the new directory
+         * `cd registration`
+         * If you provided a `[<directory name>]`, use that in place of registration
+2. Install package dependencies
+     1. Start composer install
+         * `composer install`
+         * You will  be asked questions during the install
+         * for example, make sure you have your database information ready
+         * For your mail information you could just provide your gmail setting
+     2. Start yarn install
+         * `cd web`
+         * `yarn install`
+         * return to the root directory
+             * `cd ..`
+3. Create Database
+     1. Use Doctrine to generate all tables
+         * `php bin/console doctrine:schema:update --force`
+     2. Create your first user (change user/email/password)
+         * `php app/console fos:user:create testuser test@example.com p@ssword --super-admin`
+4. Insert Seed data for registration badges
+     1. 
 
-What's inside?
---------------
 
-The Symfony Standard Edition is configured with the following defaults:
+Run Symfony Server
+------------------
+php bin/console server:start
 
-  * An AppBundle you can use to start coding;
-
-  * Twig as the only configured template engine;
-
-  * Doctrine ORM/DBAL;
-
-  * Swiftmailer;
-
-  * Annotations enabled for everything.
-
-It comes pre-configured with the following bundles:
-
-  * **FrameworkBundle** - The core Symfony framework bundle
-
-  * [**SensioFrameworkExtraBundle**][6] - Adds several enhancements, including
-    template and routing annotation capability
-
-  * [**DoctrineBundle**][7] - Adds support for the Doctrine ORM
-
-  * [**TwigBundle**][8] - Adds support for the Twig templating engine
-
-  * [**SecurityBundle**][9] - Adds security by integrating Symfony's security
-    component
-
-  * [**SwiftmailerBundle**][10] - Adds support for Swiftmailer, a library for
-    sending emails
-
-  * [**MonologBundle**][11] - Adds support for Monolog, a logging library
-
-  * **WebProfilerBundle** (in dev/test env) - Adds profiling functionality and
-    the web debug toolbar
-
-  * **SensioDistributionBundle** (in dev/test env) - Adds functionality for
-    configuring and working with Symfony distributions
-
-  * [**SensioGeneratorBundle**][13] (in dev/test env) - Adds code generation
-    capabilities
-
-  * **DebugBundle** (in dev/test env) - Adds Debug and VarDumper component
-    integration
-
-All libraries and bundles included in the Symfony Standard Edition are
-released under the MIT or BSD license.
-
-Enjoy!
-
-[1]:  https://symfony.com/doc/3.2/setup.html
-[6]:  https://symfony.com/doc/current/bundles/SensioFrameworkExtraBundle/index.html
-[7]:  https://symfony.com/doc/3.2/doctrine.html
-[8]:  https://symfony.com/doc/3.2/templating.html
-[9]:  https://symfony.com/doc/3.2/security.html
-[10]: https://symfony.com/doc/3.2/email.html
-[11]: https://symfony.com/doc/3.2/logging.html
-[12]: https://symfony.com/doc/3.2/assetic/asset_management.html
-[13]: https://symfony.com/doc/current/bundles/SensioGeneratorBundle/index.html
+Final Configurations
+------------------
+Login to the admin console
+    * 127.0.0.1:8000/admin
+         * The ip address / port may be different. If it is change it to /admin
+    * Create a new event year in the admin console. Mark it as active

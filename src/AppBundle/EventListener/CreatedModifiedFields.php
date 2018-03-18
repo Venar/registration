@@ -24,19 +24,30 @@ class CreatedModifiedFields
     }
 
     public function prePersist(LifecycleEventArgs $args) {
-        $entity = $args->getEntity();
+        try {
+            $entity = $args->getEntity();
+        } catch (\Exception $e) {
+            return;
+        }
 
-        if (!method_exists($entity, 'setCreatedDate')) {
+        if (!$entity || !method_exists($entity, 'setCreatedDate')) {
             return;
         }
 
         $userId = 1; // Default to 1 if not logged in. So the APIs that insert users will have an id.
-        $user = $this->container->get('security.token_storage')->getToken()->getUser();
+        $token = $this->container->get('security.token_storage')->getToken();
+        if (!$token) {
+            return;
+        }
+        $user = $token->getUser();
         if ($user instanceof User) {
             $userId = $user->getId();
         }
 
         $user = $args->getEntityManager()->getRepository('AppBundle:User')->find($userId);
+        if (!$user) {
+            return;
+        }
 
         $entity->setCreatedDate(new \DateTime("now"));
         $entity->setCreatedBy($user);
