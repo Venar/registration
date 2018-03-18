@@ -115,15 +115,17 @@
                 </thead>
                 <tbody id="tbody_registrations">
                 </tbody>
+                <thead>
+                    <tr class="unique-color">
+                        <th class="text-white" colspan="10" id="resultsFooter"></th>
+                    </tr>
+                    <tr class="">
+                        <th class="text-center" colspan="10" id="listPager">
+                        </th>
+                    </tr>
+                </thead>
             </table>
-        </div>
-    </div>
-    <div class="row unique-color">
-        <div class="col-sm-12 text-white">
             <input type="hidden" id="page" value="{{ page }}">
-            <b id="results_footer"></b>
-            <ul class="pager" id="list_pager">
-            </ul>
         </div>
     </div>
 
@@ -143,12 +145,18 @@
             get_registration_list();
         });
 
+        function changePage(page) {
+            $('#page').val(page);
+            get_registration_list();
+        }
+
         function get_registration_list() {
             var search_text           = $('#search').val();
             var registrationTypeId   = $('#registrationTypeId').find(":selected").val();
             var registrationStatusId = $('#registrationStatusId').find(":selected").val();
             var badgeTypeId          = $('#badgeTypeId').find(":selected").val();
             var page        = $('#page').val();
+            console.log(page);
             $.getJSON('{{ path('ajaxRegistrationList') }}',
                 {
                     'search':search_text,
@@ -159,7 +167,12 @@
                 },
                 function(json) {
                     $('#tbody_registrations').empty();
-                    $('#list_pager').empty();
+
+                    var resultsFooter = json.count_total+' Results. Showing Page '+json.page+' of '+Math.ceil(json.count_total/100)+', 100 per page';
+                    $('#resultsFooter').html(resultsFooter);
+
+                    var listPager = $('#listPager');
+                    listPager.empty();
 
                     // Populate Registration Results
                     for (i = 0; i < json.results.length; i++) {
@@ -170,54 +183,101 @@
 
                     // Populate Page Data
                     $('#page').val(json.page);
-                    if (json.page <= 1) {
-                        $('#list_pager').append($('<li>')
-                            .attr('class', 'previous disabled')
-                            .append($('<a>')
-                                .attr('href', 'javascript:void(0);')
-                                .attr('id',   'li_prev')
-                                .html('&larr; Previous')
+                    var totalPages = Math.ceil(json.count_total/100);
+
+                    var prevLi = $('<li>')
+                        .append($('<a>')
+                            .attr('class', 'page-link')
+                            .attr('id', 'pagePrev')
+                            .attr('href', 'javascript:void(0);')
+                            .attr('aria-label', 'Previous')
+                            .append($('<span>')
+                                .attr('aria-hidden', 'true')
+                                .html('&laquo;')
+                            )
+                            .append($('<span>')
+                                .attr('class', 'sr-only')
+                                .html('Previous')
                             )
                         );
-                    } else {
-                        $('#list_pager').append($('<li>')
-                            .attr('class', 'previous')
-                            .append($('<a>')
-                                .attr('href', 'javascript:void(0);')
-                                .attr('id',   'li_prev')
-                                .html('&larr; Previous')
+                    var nextLi = $('<li>')
+                        .append($('<a>')
+                            .attr('class', 'page-link')
+                            .attr('id', 'pageNext')
+                            .attr('href', 'javascript:void(0);')
+                            .attr('aria-label', 'Next')
+                            .append($('<span>')
+                                .attr('aria-hidden', 'true')
+                                .html('&raquo;')
+                            )
+                            .append($('<span>')
+                                .attr('class', 'sr-only')
+                                .html('Next')
                             )
                         );
-                        $('#li_prev').click(function() {
-                            $('#page').val(parseInt($('#page').val())-1);
-                            get_registration_list();
-                        })
+
+                    var pageination = $('<ul>')
+                        .attr('id', 'pageUl')
+                        .attr('class', 'pagination pg-blue')
+                        .append(prevLi)
+                    ;
+
+                    listPager.html(pageination);
+
+                    var pageUl = $('#pageUl');
+
+                    var paginatorMin = Math.max(json.page - 6, 1);
+                    var paginatorMax = Math.min(json.page + 6, totalPages);
+
+                    var renderPagination;
+                    for (renderPagination = paginatorMin; renderPagination <= paginatorMax; renderPagination++) {
+                        if (renderPagination === json.page) {
+                            pageUl.append($('<li>')
+                                .attr('class', 'page-item active')
+                                .append($('<a>')
+                                    .attr('class', 'page-link')
+                                    .attr('href', 'javascript:void(0);')
+                                    .html(renderPagination + '<span class="sr-only">(current)</span>')
+                                )
+                            );
+                        } else {
+                            pageUl.append($('<li>')
+                                .attr('class', 'page-item')
+                                .append($('<a>')
+                                    .attr('class', 'page-link')
+                                    .attr('href', 'javascript:void(0);')
+                                    .attr('data-page', renderPagination)
+                                    .html(renderPagination)
+                                    .click(function() {
+                                        console.log($( this ).attr('data-page'));
+                                        changePage($( this ).attr('data-page'));
+                                    })
+                                )
+                            );
+                        }
                     }
 
-                    var count = json.count_total+' Results. Showing Page '+json.page+' of '+Math.ceil(json.count_total/100)+', 100 per page';
-                    $('#results_footer').html(count);
-                    if (json.page * 100 >= json.count_total) {
-                        $('#list_pager').append($('<li>')
-                            .attr('class', 'next disabled')
-                            .append($('<a>')
-                                .attr('href', 'javascript:void(0);')
-                                .attr('id',   'li_prev')
-                                .html('Next &rarr;')
-                            )
-                        );
+                    pageination.append(nextLi);
+
+                    var pagePrev = $('#pagePrev');
+                    var pageNext = $('#pageNext');
+
+                    if ((json.page - 1) >= 1) {
+                        pagePrev.click(function() {
+                            changePage(json.page - 1);
+                        });
                     } else {
-                        $('#list_pager').append($('<li>')
-                            .attr('class', 'next')
-                            .append($('<a>')
-                                .attr('href', 'javascript:void(0);')
-                                .attr('id',   'li_next')
-                                .html('Next &rarr;')
-                            )
-                        );
-                        $('#li_next').click(function() {
-                            $('#page').val(parseInt($('#page').val())+1);
-                            get_registration_list();
-                        })
+                        pagePrev.prop( "disabled", true );
+                        pagePrev.addClass('disabled');
+                    }
+
+                    if ((json.page + 1) <= totalPages) {
+                        pageNext.click(function() {
+                            changePage(json.page + 1);
+                        });
+                    } else {
+                        pageNext.prop( "disabled", true );
+                        pageNext.addClass('disabled');
                     }
                 }
             );

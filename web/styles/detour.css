@@ -23,6 +23,11 @@ table.table a {
     color: #fe7f00;
 }
 
+table.table a.disabled {
+    margin: 0;
+    color: grey;
+}
+
 @media only screen and (max-width: 1000px) {
     .hideWhenSmall{
         display: none;
