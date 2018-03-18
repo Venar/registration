@@ -30,7 +30,7 @@ class GroupController extends Controller
         $showEmptyGroups = false;
         if (
             $request->query->has('showEmptyGroups')
-            && $request->query->get('showEmptyGroups') == '1'
+            && $request->query->get('showEmptyGroups')
         ) {
             $showEmptyGroups = true;
         }

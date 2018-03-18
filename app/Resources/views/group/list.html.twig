@@ -7,6 +7,7 @@
             <h2>Group Registrations</h2>
         </div>
     </div>
+    <form onsubmit="search()">
     <div class="row">
         <div class="col-sm-3">
             <a class="btn btn-primary btn-sm" href="{{ path('groupEditNew') }}">New Group</a>
@@ -19,18 +20,17 @@
             <label for="showEmptyGroups">Show Empty Groups</label>
         </div>
         <div class="col-sm-3">
-            <form class="form-search">
                 <div class="input-append">
                     <div class="form-group d-flex justify-content-center" style="margin-top: 1.2rem;">
                         <input type="search"
-                               id="search"
-                               name="search"
+                               id="searchText"
+                               name="searchText"
                                value="{{ searchText }}"
                                onKeyPress="return searchenter(this,event)"
                                placeholder="Search"
                                aria-label="Search"
                                class="form-control">
-                        <button class="btn btn-primary btn-sm my-0 p waves-effect waves-light" type="submit" onclick="search_fn()">
+                        <button class="btn btn-primary btn-sm my-0 p waves-effect waves-light" type="submit" onclick="search()">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -40,9 +40,9 @@
                         });
                     </script>
                 </div>
-            </form>
         </div>
     </div>
+    </form>
     <div class="row">
         <div class="col-sm-12">
             <table class="table table-striped table-sm">
@@ -81,7 +81,7 @@
 
     function search()
     {
-        searchText = document.getElementById('search').value;
+        searchText = document.getElementById('searchText').value;
         if(document.getElementById('showEmptyGroups').checked) {
             showEmptyGroups = 1;
         } else {
