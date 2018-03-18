@@ -35,11 +35,11 @@ class ValidateController extends Controller
             ->getRepository(Registration::class)
             ->getFromConfirmation($confirmation, $currentEvent);
         if ($registration instanceof Registration
-            && strtolower(trim($registration->getLastname())) == strtolower(trim($lastName))
+            && strtolower(trim($registration->getLastName())) == strtolower(trim($lastName))
         ) {
             $returnJson['status'] = 'inactive';
             $returnJson['active'] = false;
-            $registrationStatus = $registration->getRegistrationstatus();
+            $registrationStatus = $registration->getRegistrationStatus();
             if ($registrationStatus->getActive()) {
                 $returnJson['status'] = 'active';
                 $returnJson['active'] = true;

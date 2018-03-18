@@ -3,8 +3,10 @@
 namespace AppBundle\Service\Util;
 
 
+use AppBundle\Entity\Badge;
 use AppBundle\Entity\BadgeType;
 use AppBundle\Entity\Event;
+use AppBundle\Entity\Registration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\NonUniqueResultException;
 
@@ -31,9 +33,9 @@ class Percent
             ->getBadgeTypeFromType('STAFF');
 
         $allStaffBadges = $this->entityManager->createQueryBuilder()
-            ->select('b.badgeId')
-            ->from('AppBundle:Badge', 'b')
-            ->where("b.badgetype = :stafftype")
+            ->select('b.id')
+            ->from(Badge::class, 'b')
+            ->where("b.badgeType = :staffType")
             ->getDQL();
 
         $counts = [];
@@ -47,22 +49,22 @@ class Percent
             }
 
             $allBadgesSubQuery = $this->entityManager->createQueryBuilder()
-                ->select('b2.badgeId')
-                ->from('AppBundle:Badge', 'b2')
-                ->where("b2.badgetype = :type")
+                ->select('b2.id')
+                ->from(Badge::class, 'b2')
+                ->where("b2.badgeType = :type")
                 ->getDQL();
 
             $queryBuilder = $this->entityManager->createQueryBuilder();
             $queryBuilder
-                ->select('count(r.registrationId)')
-                ->from('AppBundle:Registration', 'r')
-                ->innerJoin('r.registrationstatus', 'rs')
-                ->where($queryBuilder->expr()->notIn('r.registrationId', $allStaffBadges))
-                ->andWhere($queryBuilder->expr()->in('r.registrationId', $allBadgesSubQuery))
+                ->select('count(r.id)')
+                ->from(Registration::class, 'r')
+                ->innerJoin('r.registrationStatus', 'rs')
+                ->where($queryBuilder->expr()->notIn('r.id', $allStaffBadges))
+                ->andWhere($queryBuilder->expr()->in('r.id', $allBadgesSubQuery))
                 ->andWhere('r.event = :event')
                 ->andWhere('rs.active = :active')
-                ->setParameter('stafftype', $badgeTypeStaff->getBadgetypeId())
-                ->setParameter('type', $badgeType->getBadgetypeId())
+                ->setParameter('staffType', $badgeTypeStaff->getBadgeTypeId())
+                ->setParameter('type', $badgeType->getBadgeTypeId())
                 ->setParameter('event', $event->getId())
                 ->setParameter('active', true)
             ;

@@ -20,7 +20,7 @@ class UserController extends Controller
             if ($user instanceof User) {
                 /** @var $user User */
                 $vars = [
-                    'name' => "{$user->getFirstName()} {$user->getLastname()}",
+                    'name' => "{$user->getFirstName()} {$user->getLastName()}",
                     'userid' => $user->getId(),
                 ];
 

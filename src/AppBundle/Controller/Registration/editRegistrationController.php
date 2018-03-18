@@ -628,8 +628,8 @@ class EditRegistrationController extends Controller
             if ($transferredFrom) {
                 $transferredFrom->setTransferredTo($registration);
                 $url = $this->generateUrl('viewRegistration', ['registrationId' => $transferredFrom->getRegistrationId()]);
-                $history .= " Transferred From <a href='$url'>" . $transferredFrom->getFirstname()
-                    . ' ' . $transferredFrom->getLastname() . '</a>. <br>';
+                $history .= " Transferred From <a href='$url'>" . $transferredFrom->getFirstName()
+                    . ' ' . $transferredFrom->getLastName() . '</a>. <br>';
             }
 
             $entityManager->persist($registration);
@@ -654,8 +654,8 @@ class EditRegistrationController extends Controller
                 $url = $this->generateUrl('viewRegistration', ['registrationId' => $registration->getRegistrationId()]);
                 $transferredToText= "<br>Registration Transferred to "
                     ."<a href='$url'>"
-                    ."{$registration->getFirstname()} {$registration->getLastname()}</a>";
-                $registrationHistory->setChangetext($transferredFromHistory . $transferredToText);
+                    ."{$registration->getFirstName()} {$registration->getLastName()}</a>";
+                $registrationHistory->setChangeText($transferredFromHistory . $transferredToText);
                 $entityManager->persist($registrationHistory);
                 $entityManager->flush();
             }

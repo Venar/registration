@@ -120,9 +120,9 @@ class TShirtOrdersController extends Controller
                 $shirt = $registrationShirt->getShirt();
                 $data = [
                     $registration->getNumber(),
-                    $registration->getLastname(),
-                    $registration->getFirstname(),
-                    $registration->getBadgename(),
+                    $registration->getLastName(),
+                    $registration->getFirstName(),
+                    $registration->getBadgeName(),
                     $badgeType,
                     $shirt->getType(),
                     $shirt->getSize(),

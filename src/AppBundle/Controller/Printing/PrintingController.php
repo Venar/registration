@@ -255,10 +255,10 @@ class PrintingController extends Controller
     {
         $badgeType = $badge->getBadgetype();
         $registrationNumber = $registration->getNumber();
-        $registrationName = $registration->getBadgename();
+        $registrationName = $registration->getBadgeName();
         $badgeNumber = $badge->getNumber();
         $badgeType = $badgeType->getName();
-        $confirmationNumber = $registration->getConfirmationnumber();
+        $confirmationNumber = $registration->getConfirmationNumber();
         $groups = $registration->getGroups();
         $groupName = '';
         foreach ($groups as $group) {

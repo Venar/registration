@@ -331,7 +331,7 @@ class Registration
      *
      * @return Registration
      */
-    public function setLastname($lastName)
+    public function setLastName($lastName)
     {
         $this->lastName = $lastName;
 
@@ -585,6 +585,9 @@ class Registration
      */
     public function getBadgeName()
     {
+        if (!$this->badgeName) {
+            return $this->getFirstName();
+        }
         return $this->badgeName;
     }
 

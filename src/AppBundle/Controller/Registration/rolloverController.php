@@ -101,12 +101,12 @@ class RolloverController extends Controller
 
         $registration = new Registration();
         $registration->setEvent($nextEvent);
-        $registration->setRegistrationstatus($registrationStatusNew);
-        $registration->setRegistrationtype($registrationType);
-        $registration->setFirstname($oldRegistration->getFirstname());
-        $registration->setMiddlename($oldRegistration->getMiddlename());
-        $registration->setLastname($oldRegistration->getLastname());
-        $registration->setBadgename($oldRegistration->getBadgename());
+        $registration->setRegistrationStatus($registrationStatusNew);
+        $registration->setRegistrationType($registrationType);
+        $registration->setFirstName($oldRegistration->getFirstName());
+        $registration->setMiddleName($oldRegistration->getMiddleName());
+        $registration->setLastName($oldRegistration->getLastName());
+        $registration->setBadgename($oldRegistration->getBadgeName());
         $registration->setEmail($oldRegistration->getEmail());
         $registration->setBirthday($oldRegistration->getBirthday());
         $registration->setAddress($oldRegistration->getAddress());

@@ -72,7 +72,7 @@ class RegistrationRepository extends EntityRepository
         }
 
         // Get count from only row returned.
-        $number = ucwords(substr($registration->getLastname(), 0, 1))
+        $number = ucwords(substr($registration->getLastName(), 0, 1))
             . str_pad($count + 1, 4, '0', STR_PAD_LEFT);
 
         return $number;

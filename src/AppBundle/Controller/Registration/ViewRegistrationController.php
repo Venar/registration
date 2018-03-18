@@ -42,8 +42,8 @@ class ViewRegistrationController extends Controller
                 if ($transferredRegistration) {
                     $url = $this->generateUrl('viewRegistration',
                         ['registrationId' => $transferredRegistration->getRegistrationId()]);
-                    $info .= " Transferred to <a href='$url'>" . $transferredRegistration->getFirstname()
-                        . ' ' . $transferredRegistration->getLastname() . '</a>. ';
+                    $info .= " Transferred to <a href='$url'>" . $transferredRegistration->getFirstName()
+                        . ' ' . $transferredRegistration->getLastName() . '</a>. ';
                 }
             }
         }
