@@ -55,6 +55,6 @@ php bin/console server:start
 Final Configurations
 ------------------
 Login to the admin console
-    * 127.0.0.1:8000/admin
-         * The ip address / port may be different. If it is change it to /admin
-    * Create a new event year in the admin console. Mark it as active
+* 127.0.0.1:8000/admin
+     * The ip address / port may be different. If it is change it to /admin
+* Create a new event year in the admin console. Mark it as active
