@@ -33,7 +33,7 @@ class EditRegistrationController extends Controller
 
     /**
      * @Route("/registration/transfer/{transferredFrom}", name="registrationTransfer")
-     * @Security("has_role('ROLE_USER')")
+     * @Security("has_role('ROLE_REGSTAFF')")
      *
      * @param String $transferredFrom
      * @return Response
@@ -56,7 +56,7 @@ class EditRegistrationController extends Controller
 
     /**
      * @Route("/registration/group/add/{groupId}", name="registrationAddToGroup")
-     * @Security("has_role('ROLE_USER')")
+     * @Security("has_role('ROLE_REGSTAFF')")
      *
      * @param String $groupId
      * @return Response
@@ -77,7 +77,7 @@ class EditRegistrationController extends Controller
      * @Route("/registration/edit/{registrationId}", name="actionEditRegistration")
      * @Route("/registration/edit/{registrationId}/{regGroupId}")
      * @Route("/registration/edit/{registrationId}/{regGroupId}/{transferredFrom}")
-     * @Security("has_role('ROLE_USER')")
+     * @Security("has_role('ROLE_REGSTAFF')")
      *
      * @param String $registrationId
      * @param String $groupId
@@ -159,7 +159,7 @@ class EditRegistrationController extends Controller
 
     /**
      * @Route("/getregshirtlist/{registrationId}")
-     * @Security("has_role('ROLE_USER')")
+     * @Security("has_role('ROLE_REGSTAFF')")
      *
      * @param String $registrationId
      * @return JsonResponse
@@ -190,7 +190,7 @@ class EditRegistrationController extends Controller
 
     /**
      * @Route("/ajaxstaffmodify/{registrationId}/{action}")
-     * @Security("has_role('ROLE_USER')")
+     * @Security("has_role('ROLE_REGSTAFF')")
      *
      * @param String $registrationId
      * @param String $action
@@ -244,7 +244,7 @@ class EditRegistrationController extends Controller
 
     /**
      * @Route("/editregshirtlist/{registrationId}/{action}")
-     * @Security("has_role('ROLE_USER')")
+     * @Security("has_role('ROLE_REGSTAFF')")
      *
      * @param Request $request
      * @param String $registrationId
@@ -323,7 +323,7 @@ class EditRegistrationController extends Controller
 
     /**
      * @Route("/registration/list/extra/{registrationId}")
-     * @Security("has_role('ROLE_USER')")
+     * @Security("has_role('ROLE_REGSTAFF')")
      *
      * @param String $registrationId
      * @return JsonResponse
@@ -349,7 +349,7 @@ class EditRegistrationController extends Controller
 
     /**
      * @Route("/registration/ajax/extra/{registrationId}/{action}")
-     * @Security("has_role('ROLE_USER')")
+     * @Security("has_role('ROLE_REGSTAFF')")
      *
      * @param Request $request
      * @param String $registrationId
@@ -427,7 +427,7 @@ class EditRegistrationController extends Controller
 
     /**
      * @Route("/registration/ajax/edit")
-     * @Security("has_role('ROLE_USER')")
+     * @Security("has_role('ROLE_REGSTAFF')")
      *
      * @param Request $request
      * @return JsonResponse

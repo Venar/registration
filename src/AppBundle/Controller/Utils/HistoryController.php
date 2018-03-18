@@ -23,7 +23,7 @@ class HistoryController extends Controller
      * @Route("/history/", name="edit_history")
      * @Route("/history/{curPageNum}", name="edit_history_WithPageNum")
      * @Route("/history/{curPageNum}/", name="edit_history_WithPageNum_slash")
-     * @Security("has_role('ROLE_USER')")
+     * @Security("has_role('ROLE_SUBHEAD')")
      *
      * @param Request $request
      * @param int $curPageNum

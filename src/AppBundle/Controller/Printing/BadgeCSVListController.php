@@ -20,7 +20,7 @@ class BadgeCSVListController extends Controller
 {
     /**
      * @Route("/print/csv/{type}", name="print_csv")
-     * @Security("has_role('ROLE_USER')")
+     * @Security("has_role('ROLE_SUBHEAD')")
      *
      * @param string $type
      */

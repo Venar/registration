@@ -22,7 +22,7 @@ class TShirtOrdersController extends Controller
 {
     /**
      * @Route("/shirts/list", name="shirt_list")
-     * @Security("has_role('ROLE_USER')")
+     * @Security("has_role('ROLE_MERCH')")
      */
     public function tShirtOrders()
     {

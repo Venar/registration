@@ -11,6 +11,7 @@ namespace AppBundle\Controller\Registration;
 
 use AppBundle\Entity\Registration;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -18,6 +19,7 @@ class ConfirmationEmailController extends Controller
 {
     /**
      * @Route("/registration/resend/{registrationId}", name="resendConfirmation")
+     * @Security("has_role('ROLE_REGSTAFF')")
      *
      * @param String $registrationId
      * @return Response

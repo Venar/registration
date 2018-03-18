@@ -18,7 +18,7 @@ class PrintingListController extends Controller
 {
     /**
      * @Route("/printing/list", name="printing_list")
-     * @Security("has_role('ROLE_USER')")
+     * @Security("has_role('ROLE_ADMIN')")
      *
      * @return Response
      */

@@ -25,7 +25,7 @@ class ManageController extends Controller
     /**
      * @Route("/", name="homepage")
      * @Route("/manage/", name="listRegistrations")
-     * @Security("has_role('ROLE_USER')")
+     * @Security("has_role('ROLE_REGSTAFF')")
      *
      * @param Request $request
      * @return Response
@@ -95,7 +95,7 @@ class ManageController extends Controller
 
     /**
      * @Route("/registration/list/ajax", name="ajaxRegistrationList")
-     * @Security("has_role('ROLE_USER')")
+     * @Security("has_role('ROLE_REGSTAFF')")
      *
      * @param Request $request
      * @return JsonResponse

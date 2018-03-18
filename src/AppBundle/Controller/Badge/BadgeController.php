@@ -27,7 +27,7 @@ class BadgeController extends Controller
 {
     /**
      * @Route("/badge/status/{registrationId}/{badgeId}", name="badge_status")
-     * @Security("has_role('ROLE_USER')")
+     * @Security("has_role('ROLE_REGSTAFF')")
      *
      *
      * @param String $registrationId RegistrationId for active registration
@@ -53,7 +53,7 @@ class BadgeController extends Controller
 
     /**
      * @Route("/badge/modify/{registrationId}/{badgeId}/{action}", name="badge_modify")
-     * @Security("has_role('ROLE_USER')")
+     * @Security("has_role('ROLE_REGSTAFF')")
      *
      * @param Request $request
      * @param String $registrationId RegistrationId for active registration

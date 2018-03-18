@@ -28,7 +28,7 @@ class RolloverController extends Controller
 {
     /**
      * @Route("/registration/rollover/{registrationId}", name="rolloverRegistration")
-     * @Security("has_role('ROLE_USER')")
+     * @Security("has_role('ROLE_REGSTAFF')")
      *
      * @param String $registrationId
      * @return Response
@@ -67,7 +67,7 @@ class RolloverController extends Controller
 
     /**
      * @Route("registration/rollover/confirm/{registrationId}", name="rolloverRegistrationConfirm")
-     * @Security("has_role('ROLE_USER')")
+     * @Security("has_role('ROLE_REGSTAFF')")
      *
      * @param String $registrationId
      * @return Response

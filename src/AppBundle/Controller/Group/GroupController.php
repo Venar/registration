@@ -24,7 +24,7 @@ class GroupController extends Controller
      * @Route("/group/list", name="group_list")
      * @Route("/group/list/", name="group_list_slash")
      * @Route("/group/list/{curPageNum}", name="group_list_withPageNum")
-     * @Security("has_role('ROLE_USER')")
+     * @Security("has_role('ROLE_REGSTAFF')")
      *
      * @param Request $request
      * @return Response
@@ -78,7 +78,7 @@ class GroupController extends Controller
      * @Route("/group/edit", name="groupEditNew")
      * @Route("/group/edit/", name="groupEditNewSlash")
      * @Route("/group/edit/{groupId}", name="groupEditExisting")
-     * @Security("has_role('ROLE_USER')")
+     * @Security("has_role('ROLE_REGSTAFF')")
      *
      * @param Request $request
      * @param String $groupId

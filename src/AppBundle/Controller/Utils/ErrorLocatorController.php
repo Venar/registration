@@ -20,7 +20,7 @@ class ErrorLocatorController extends Controller
 {
     /**
      * @Route("/error/finder", name="error_finder")
-     * @Security("has_role('ROLE_USER')")
+     * @Security("has_role('ROLE_SUBHEAD')")
      */
     public function get_errorFinder() {
         $vars = [];
