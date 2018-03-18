@@ -148,6 +148,9 @@ class ASecureCartController extends Controller
                 $registration->setLastName(trim($name[2]));
                 $badgeName = trim((String)$attributes['addon2']);
                 $badgeName = substr($badgeName, 0, 20);
+                if (!$badgeName) {
+                    $badgeName = $registration->getFirstName();
+                }
                 $registration->setBadgeName($badgeName);
                 $registration->setEmail(trim((String)$attributes['addon3']));
 

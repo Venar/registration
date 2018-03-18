@@ -574,6 +574,11 @@ class EditRegistrationController extends Controller
                 $registration->$fieldLowerSet($value);
             }
 
+            if ($registration->getBadgeName() == '') {
+                $registration->setBadgeName($registration->getFirstName());
+                $history .= "(blank) badge name: {$registration->getBadgeName()} => {$registration->getBadgeName()}<br>";
+            }
+
             $registration->setContactVolunteer(false);
             if ($request->request->has('volunteer') && $request->request->get('volunteer')) {
                 $registration->setContactVolunteer(true);
