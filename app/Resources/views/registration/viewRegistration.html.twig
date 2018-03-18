@@ -42,16 +42,25 @@
                 </div>
                 <div class="row">
                     <div class="col-sm-6">
-                        <a href="/registration/edit/{{ registration.registrationId }}" class="btn btn-primary"
+                        <a href="/registration/edit/{{ registration.registrationId }}" class="btn btn-primary btn-sm"
                            style="width: 150px"><i class="fas fa-edit"></i> Edit</a>
                     </div>
                     <div class="col-sm-6">
                         {% if registrationStatus.active %}
-                        <a href="/print/single/{{ registration.registrationId }}" class="btn btn-primary"
+                        <a href="/print/single/{{ registration.registrationId }}" class="btn btn-primary btn-sm"
                            style="width: 150px"><i class="fas fa-print"></i> Print All</a>
                         {% endif %}
                     </div>
                 </div>
+                {% if registration.email %}
+                <div class="row">
+                    <div class="col-sm-6">
+                        <a href="{{ path('resendConfirmation', {'registrationId': registration.registrationId}) }}"
+                           class="btn btn-primary btn-sm" style="width: 150px">
+                            <i class="fas fa-envelope"></i> Resend Email</a>
+                    </div>
+                </div>
+                {% endif %}
 
                 <div class="row">
                     <div class="col-sm-12">

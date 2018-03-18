@@ -1,0 +1,17 @@
+{% extends 'detour.html.twig' %}
+
+{% block body %}
+<div class="container bg-white">
+    <div class="row">
+        <div class="col-sm-12">
+            <h2>
+                Confirmation Email re-sent to {{ registration.firstName }} {{ registration.lastName }}
+            </h2>
+            <p>
+                Return to
+                <a href="{{ path('viewRegistration', {'registrationId': registration.registrationId}) }}">Registration</a> page.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
