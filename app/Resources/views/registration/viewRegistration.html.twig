@@ -52,7 +52,7 @@
                         {% endif %}
                     </div>
                 </div>
-                {% if registration.email %}
+                {% if registration.email and registrationStatus.active %}
                 <div class="row">
                     <div class="col-sm-6">
                         <a href="{{ path('resendConfirmation', {'registrationId': registration.registrationId}) }}"
@@ -62,6 +62,7 @@
                 </div>
                 {% endif %}
 
+                {% if registrationStatus.active %}
                 <div class="row">
                     <div class="col-sm-12">
                         <h3>Badges</h3>
@@ -107,7 +108,6 @@
                     </div>
                 </div>
 
-                {% if registrationStatus.active == "true" %}
                 <div class="row">
                     <div class="col-sm-12">
                         <h3>Danger Zone</h3>
