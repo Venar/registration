@@ -353,6 +353,10 @@ DROP TABLE IF EXISTS UserPermission;
 
 UPDATE registration SET birthday = NULL WHERE CAST(birthday AS CHAR(20)) = '0000-00-00 00:00:00';
 
+/**
+Doctrine Updates to re-add keys to tables
+ */
+
 ALTER TABLE badge CHANGE registration_id registration_id INT DEFAULT NULL, CHANGE badge_type_id badge_type_id INT DEFAULT NULL, CHANGE badge_status_id badge_status_id INT DEFAULT NULL;
 ALTER TABLE badge ADD CONSTRAINT FK_FEF0481D5A5B5F29 FOREIGN KEY (badge_status_id) REFERENCES badge_status (id);
 ALTER TABLE badge ADD CONSTRAINT FK_FEF0481DC3C8852F FOREIGN KEY (badge_type_id) REFERENCES badge_type (id);
@@ -411,3 +415,16 @@ ALTER TABLE user RENAME INDEX uniq_2da1797792fc23a8 TO UNIQ_8D93D64992FC23A8;
 ALTER TABLE user RENAME INDEX uniq_2da17977a0d96fbf TO UNIQ_8D93D649A0D96FBF;
 ALTER TABLE user RENAME INDEX uniq_2da17977c05fb297 TO UNIQ_8D93D649C05FB297;
 ALTER TABLE user RENAME INDEX login TO username;
+
+
+/**
+New Tables/rows as of 2.5 updates
+ */
+
+CREATE TABLE event_badge_type (id INT AUTO_INCREMENT NOT NULL, event_id INT DEFAULT NULL, badge_type_id INT DEFAULT NULL, created_by INT DEFAULT NULL, modified_by INT DEFAULT NULL, artworkPath VARCHAR(255) DEFAULT NULL, created_date DATETIME DEFAULT NULL, modified_date DATETIME DEFAULT NULL, INDEX FK_EventBadgeType_BadgeType_ID (badge_type_id), INDEX FK_EventBadgeType_Event_ID (event_id), INDEX FK_Event_CreatedBy (created_by), INDEX FK_Event_ModifiedBy (modified_by), UNIQUE INDEX event_badgeTypeId_unique (badge_type_id, event_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
+ALTER TABLE event_badge_type ADD CONSTRAINT FK_703E621F71F7E88B FOREIGN KEY (event_id) REFERENCES event (id);
+ALTER TABLE event_badge_type ADD CONSTRAINT FK_703E621FC3C8852F FOREIGN KEY (badge_type_id) REFERENCES badge_type (id);
+ALTER TABLE event_badge_type ADD CONSTRAINT FK_703E621FDE12AB56 FOREIGN KEY (created_by) REFERENCES `user` (id);
+ALTER TABLE event_badge_type ADD CONSTRAINT FK_703E621F25F94802 FOREIGN KEY (modified_by) REFERENCES `user` (id);
+ALTER TABLE event ADD pre_registration_start DATETIME DEFAULT NULL, ADD pre_registration_end DATETIME DEFAULT NULL;
+

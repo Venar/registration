@@ -29,6 +29,7 @@
         "symfony/swiftmailer-bundle": "^2.3.10",
         "symfony/symfony": "3.4.*",
         "twig/twig": "^1.0||^2.0",
+        "vich/uploader-bundle": "^1.8",
         "whiteoctober/tcpdf-bundle": "^1.0"
     },
     "require-dev": {

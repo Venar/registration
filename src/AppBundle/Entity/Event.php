@@ -29,6 +29,20 @@ class Event
     /**
      * @var \DateTime
      *
+     * @ORM\Column(name="pre_registration_start", type="datetime", nullable=true)
+     */
+    private $preRegistrationStart;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="pre_registration_end", type="datetime", nullable=true)
+     */
+    private $preRegistrationEnd;
+
+    /**
+     * @var \DateTime
+     *
      * @ORM\Column(name="start_date", type="datetime", nullable=false)
      */
     private $startDate;
@@ -128,6 +142,54 @@ class Event
     public function getYear()
     {
         return $this->year;
+    }
+
+    /**
+     * Set preRegistrationStart
+     *
+     * @param \DateTime $preRegistrationStart
+     *
+     * @return Event
+     */
+    public function setPreRegistrationStart($preRegistrationStart)
+    {
+        $this->preRegistrationStart = $preRegistrationStart;
+
+        return $this;
+    }
+
+    /**
+     * Get preRegistrationStart
+     *
+     * @return \DateTime
+     */
+    public function getPreRegistrationStart()
+    {
+        return $this->preRegistrationStart;
+    }
+
+    /**
+     * Set preRegistrationEnd
+     *
+     * @param \DateTime $preRegistrationEnd
+     *
+     * @return Event
+     */
+    public function setPreRegistrationEnd($preRegistrationEnd)
+    {
+        $this->preRegistrationEnd = $preRegistrationEnd;
+
+        return $this;
+    }
+
+    /**
+     * Get preRegistrationEnd
+     *
+     * @return \DateTime
+     */
+    public function getPreRegistrationEnd()
+    {
+        return $this->preRegistrationEnd;
     }
 
     /**
