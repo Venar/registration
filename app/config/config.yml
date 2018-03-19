@@ -105,7 +105,8 @@ vich_uploader:
     mappings:
         badge_images:
             uri_prefix:         '%app.path.badge_images%'
-            upload_destination: '%kernel.root_dir%/../web/uploads/images/badges'
+            upload_destination: '%kernel.root_dir%/images/badges'
+            namer:              Vich\UploaderBundle\Naming\UniqidNamer
 
 easy_admin:
     design:

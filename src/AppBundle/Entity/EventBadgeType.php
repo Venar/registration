@@ -299,7 +299,6 @@ class EventBadgeType
     /**
      * Alias For EasyAdmin
      *
-     * @return string
      */
     public function setImage($image)
     {

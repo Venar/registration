@@ -13,9 +13,16 @@ easy_admin:
                     - badgeType
                     - { property: 'image', type: 'image', base_path: '%app.path.badge_images%' }
 
-            form:
+            new:
                 fields:
                     - { property: 'badgeType' }
                     - { property: 'event' }
                     - { type: 'group', css_class: 'col-sm-5', label: 'Badge Image' }
-                    - { property: 'imageFile', type: 'vich_image' }
+                    - { property: 'imageFile', type: 'vich_image', base_path: '%app.path.badge_images%' }
+
+            edit:
+                fields:
+                    - { property: 'badgeType', type_options: { disabled: true } }
+                    - { property: 'event', type_options: { disabled: true } }
+                    - { type: 'group', css_class: 'col-sm-5', label: 'Badge Image' }
+                    - { property: 'imageFile', type: 'vich_image', base_path: '%app.path.badge_images%' }
