@@ -49,7 +49,7 @@ class IssuesController extends Controller
         };
         $vars['searchText'] = $searchText;
 
-        $registrations = $registrationRepository->getRegistrationsWithRevokedBadges($searchText);
+        $registrations = $registrationRepository->getRegistrationsWithInactiveBadges($searchText);
         $count = count($registrations);
         $vars['total'] = $count;
 

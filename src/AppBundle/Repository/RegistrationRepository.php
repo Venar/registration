@@ -421,7 +421,7 @@ class RegistrationRepository extends EntityRepository
      * @param int $offset
      * @return Registration[]
      */
-    public function getRegistrationsWithRevokedBadges($searchText, $limit = null, $offset = null)
+    public function getRegistrationsWithInactiveBadges($searchText, $limit = null, $offset = null)
     {
         $queryBuilder = $this->getEntityManager()->createQueryBuilder();
 
