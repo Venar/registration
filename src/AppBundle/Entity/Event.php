@@ -9,6 +9,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -19,6 +20,11 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Event
 {
+    public function __construct()
+    {
+        $this->eventBadgeTypes = new ArrayCollection();
+    }
+
     /**
      * @var string
      *
@@ -90,6 +96,14 @@ class Event
     private $modifiedDate;
 
     /**
+     * @var EventBadgeType[]
+     *
+     * One Product has Many Features.
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\EventBadgeType", mappedBy="event")
+     */
+    private $eventBadgeTypes;
+
+    /**
      * @var integer
      *
      * @ORM\Column(name="id", type="integer")
@@ -122,6 +136,32 @@ class Event
     public function __toString()
     {
         return $this->getYear();
+    }
+
+    /**
+     * Get events
+     *
+     * @return EventBadgeType[]|\Doctrine\Common\Collections\Collection
+     */
+    public function getEventBadgeTypes()
+    {
+        return $this->eventBadgeTypes;
+    }
+
+    /**
+     * @param EventBadgeType $eventBadgeType
+     */
+    public function addRegistrationShirt(EventBadgeType $eventBadgeType)
+    {
+        $this->eventBadgeTypes->add($eventBadgeType);
+    }
+
+    /**
+     * @param EventBadgeType $eventBadgeType
+     */
+    public function removeRegistrationShirt(EventBadgeType $eventBadgeType)
+    {
+        $this->eventBadgeTypes->removeElement($eventBadgeType);
     }
 
     /**

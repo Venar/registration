@@ -60,7 +60,7 @@ class EventBadgeType
     /**
      * @var \AppBundle\Entity\Event
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Event")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Event", inversedBy="eventBadgeTypes")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="event_id", referencedColumnName="id", nullable=true)
      * })
@@ -70,7 +70,7 @@ class EventBadgeType
     /**
      * @var \AppBundle\Entity\BadgeType
      *
-     * @ORM\ManyToOne(targetEntity="BadgeType")
+     * @ORM\ManyToOne(targetEntity="BadgeType", inversedBy="eventBadgeTypes")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="badge_type_id", referencedColumnName="id")
      * })

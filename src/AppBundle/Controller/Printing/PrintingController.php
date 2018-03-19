@@ -12,6 +12,7 @@ namespace AppBundle\Controller\Printing;
 use AppBundle\Entity\Badge;
 use AppBundle\Entity\BadgeType;
 use AppBundle\Entity\Event;
+use AppBundle\Entity\EventBadgeType;
 use AppBundle\Entity\History;
 use AppBundle\Entity\Registration;
 use AppBundle\Service\TCPDF\BadgePDF;
@@ -26,11 +27,31 @@ class PrintingController extends Controller
     /** @var $pdf BadgePDF */
     protected $pdf;
 
+    /**
+     * @throws PrintingException
+     */
     protected function setUpPDF()
     {
         $event = $this->getDoctrine()->getRepository(Event::class)->getSelectedEvent();
 
-        $imageFile = "images/badge_backgrounds/{$event->getYear()}/" . 'ADREGSTANDARD.jpg';
+        $eventBadgeTypes = $event->getEventBadgeTypes();
+
+        if (count($eventBadgeTypes) == 0) {
+            throw new PrintingException('No event badge types found for this year!');
+        }
+
+        $imageFile = '';
+        foreach ($eventBadgeTypes as $eventBadgeType) {
+            if ($eventBadgeType->getArtworkPath()) {
+                $imageFile = $this->getParameter('app.path.badge_upload_location')
+                    . '/'
+                    . $eventBadgeType->getArtworkPath();
+            }
+        }
+
+        if (!$imageFile) {
+            throw new PrintingException('No event badge types found with artwork for this year!');
+        }
 
         $size = GetImageSize($imageFile); // Read the size
         $width = $size[0];
@@ -81,7 +102,11 @@ class PrintingController extends Controller
      */
     public function printSinglePage($registrationId, $badgeId = '')
     {
-        $this->setUpPDF();
+        try {
+            $this->setUpPDF();
+        } catch (PrintingException $e) {
+            return new Response($e->getMessage(), 500);
+        }
 
         $registration = $this->getDoctrine()->getRepository(Registration::class)->find($registrationId);
         if (!$registration) {
@@ -114,7 +139,11 @@ class PrintingController extends Controller
      */
     protected function printBulk($type, $page)
     {
-        $this->setUpPDF();
+        try {
+            $this->setUpPDF();
+        } catch (PrintingException $e) {
+            return new Response($e->getMessage(), 500);
+        }
 
         $badgeTypeRepository = $this->getDoctrine()->getRepository(BadgeType::class);
         $event = $this->getDoctrine()->getRepository(Event::class)->getSelectedEvent();
@@ -173,6 +202,7 @@ class PrintingController extends Controller
             ->select([
                 'r.number',
                 'r.badgeName',
+                'b.id as badgeId',
                 'b.number as badgeNumber',
                 'bt.name as type',
                 'g.name as groupName',
@@ -232,13 +262,10 @@ class PrintingController extends Controller
             ->getArrayResult();
 
         foreach ($registrations as $registration) {
-            $regNumber = $registration['number'];
-            $regName = $registration['badgeName'];
-            $badgeNumber = $registration['badgeNumber'];
-            $badgeType = $registration['type'];
+            $badgeId = $registration['badgeId'];
+            $badge = $this->getDoctrine()->getRepository(Badge::class)->find($badgeId);
             $groupName = $registration['groupName'];
-            $confirmationNumber = $registration['confirmationNumber'];
-            $this->addBadge($regNumber, $regName, $badgeNumber, $badgeType, $groupName, $confirmationNumber);
+            $this->addBadge($registration, $badge, $groupName);
         }
 
         return $this->pdf->Output("BulkBadge_{$type}_{$limit}_{$offset}.pdf", 'I');
@@ -274,12 +301,6 @@ class PrintingController extends Controller
      */
     protected function addBadgeFromRegistrationAndBadge($registration, $badge)
     {
-        $badgeType = $badge->getBadgetype();
-        $registrationNumber = $registration->getNumber();
-        $registrationName = $registration->getBadgeName();
-        $badgeNumber = $badge->getNumber();
-        $badgeType = $badgeType->getName();
-        $confirmationNumber = $registration->getConfirmationNumber();
         $groups = $registration->getGroups();
         $groupName = '';
         foreach ($groups as $group) {
@@ -288,30 +309,57 @@ class PrintingController extends Controller
             }
             $groupName .= $group->getName();
         }
-        $this->addBadge($registrationNumber, $registrationName, $badgeNumber, $badgeType, $groupName, $confirmationNumber);
+        $this->addBadge($registration, $badge, $groupName);
     }
 
     /**
-     * @param $regNumber String
-     * @param $regName String
-     * @param $badgeNumber String
-     * @param $badgeType String
-     * @param $groupName String
-     * @param $confirmationNumber String
+     * @param Registration $registration
+     * @param Badge        $badge
+     * @param string       $groupName
      */
-    private function addBadge($regNumber, $regName, $badgeNumber, $badgeType, $groupName, $confirmationNumber)
+    private function addBadge(Registration $registration, Badge $badge, $groupName)
     {
         $this->pdf->addPage();
         $event = $this->getDoctrine()->getRepository(Event::class)->getSelectedEvent();
 
-        $imageFile = "images/badge_backgrounds/{$event->getYear()}/" . $badgeType . '.jpg';
+        $eventBadgeType = $this
+            ->getDoctrine()
+            ->getRepository(EventBadgeType::class)
+            ->findFromEventAndBadgeType($event, $badge->getBadgeType());
+
+        $imageFile = '';
+        if ($eventBadgeType && $eventBadgeType->getArtworkPath()) {
+            $imageFile = $this->getParameter('app.path.badge_upload_location')
+                . '/'
+                . $eventBadgeType->getArtworkPath();
+        }
+
+        if (!$imageFile) {
+            return;
+        }
 
         if ($this->pdf->getIsLandscape()) {
-            $this->addBadgeFrontLandscape($regNumber, $regName, $badgeNumber, $groupName, $imageFile);
-            $this->addBadgeBackLandscape($regNumber, $badgeNumber, $confirmationNumber);
+            $this->addBadgeFrontLandscape(
+                $registration->getNumber(),
+                $registration->getBadgeName(),
+                $badge->getNumber(),
+                $groupName,
+                $imageFile);
+            $this->addBadgeBackLandscape(
+                $registration->getNumber(),
+                $badge->getNumber(),
+                $registration->getConfirmationNumber());
         } else {
-            $this->addBadgeFrontPortrait($regNumber, $regName, $badgeNumber, $groupName, $imageFile);
-            $this->addBadgeBackPortrait($regNumber, $badgeNumber, $confirmationNumber);
+            $this->addBadgeFrontPortrait(
+                $registration->getNumber(),
+                $registration->getBadgeName(),
+                $badge->getNumber(),
+                $groupName,
+                $imageFile);
+            $this->addBadgeBackPortrait(
+                $registration->getNumber(),
+                $badge->getNumber(),
+                $registration->getConfirmationNumber());
         }
     }
 

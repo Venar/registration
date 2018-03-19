@@ -10,6 +10,8 @@
 namespace AppBundle\Repository;
 
 
+use AppBundle\Entity\BadgeType;
+use AppBundle\Entity\Event;
 use AppBundle\Entity\EventBadgeType;
 use Doctrine\ORM\EntityRepository;
 
@@ -20,6 +22,26 @@ class EventBadgeTypeRepository extends EntityRepository
      */
     public function findAll()
     {
-        return $this->findBy([], []);
+        return parent::findBy([], []);
+    }
+    /**
+     * @return EventBadgeType
+     */
+    public function findOneBy(array $criteria, array $orderBy = null)
+    {
+        return parent::findOneBy($criteria, $orderBy);
+    }
+
+    /**
+     * @param Event     $event
+     * @param BadgeType $badgeType
+     * @return EventBadgeType
+     */
+    public function findFromEventAndBadgeType(Event $event, BadgeType $badgeType) : EventBadgeType
+    {
+        return $this->findOneBy([
+            'event' => $event,
+            'badgeType' => $badgeType,
+        ]);
     }
 }

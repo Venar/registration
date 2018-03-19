@@ -9,6 +9,7 @@ imports:
 parameters:
     locale: en
     app.path.badge_images: /uploads/images/badges
+    app.path.badge_upload_location: '%kernel.root_dir%/images/badges'
 
 framework:
     #esi: ~
@@ -105,7 +106,7 @@ vich_uploader:
     mappings:
         badge_images:
             uri_prefix:         '%app.path.badge_images%'
-            upload_destination: '%kernel.root_dir%/images/badges'
+            upload_destination: '%app.path.badge_upload_location%'
             namer:              Vich\UploaderBundle\Naming\UniqidNamer
 
 easy_admin:
@@ -114,12 +115,12 @@ easy_admin:
         color_scheme: 'light'
         menu:
             - { route: 'homepage', label: 'Return to Homepage', icon: 'arrow-left' }
+            - { entity: 'EventBadgeType', icon: 'id-badge' }
             - label: 'IT'
               icon: 'laptop'
               children:
                 - { entity: 'Event', icon: 'calendar' }
                 - { entity: 'User', icon: 'user-circle' }
-                - { entity: 'EventBadgeType', icon: 'id-badge' }
     site_name: 'Anime Detour'
 
     list:

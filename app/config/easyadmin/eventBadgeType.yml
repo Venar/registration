@@ -7,6 +7,7 @@ easy_admin:
             search:
                 sort: ['modifiedDate', 'DESC']
             list:
+                title: 'Badge Types for Event Year'
                 sort: ['modifiedDate', 'DESC']
                 fields:
                     - event

@@ -970,7 +970,7 @@ class Registration
     /**
      * @param RegistrationShirt $registrationShirt
      */
-    public function addRegistration(RegistrationShirt $registrationShirt)
+    public function addRegistrationShirt(RegistrationShirt $registrationShirt)
     {
         $this->registrationShirts->add($registrationShirt);
     }
