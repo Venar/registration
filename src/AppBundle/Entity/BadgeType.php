@@ -77,6 +77,10 @@ class BadgeType
     private $modifiedBy;
 
 
+    public function __toString()
+    {
+        return $this->description;
+    }
 
     /**
      * Set name

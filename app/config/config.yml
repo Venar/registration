@@ -8,6 +8,7 @@ imports:
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: en
+    app.path.badge_images: /uploads/images/badges
 
 framework:
     #esi: ~
@@ -99,6 +100,13 @@ white_october_tcpdf:
         pdf_page_format: 'LETTER'
         pdf_unit: 'pt'
 
+vich_uploader:
+    db_driver: orm
+    mappings:
+        badge_images:
+            uri_prefix:         '%app.path.badge_images%'
+            upload_destination: '%kernel.root_dir%/../web/uploads/images/badges'
+
 easy_admin:
     design:
         brand_color: '#fe7f00'
@@ -110,6 +118,7 @@ easy_admin:
               children:
                 - { entity: 'Event', icon: 'calendar' }
                 - { entity: 'User', icon: 'user-circle' }
+                - { entity: 'EventBadgeType', icon: 'id-badge' }
     site_name: 'Anime Detour'
 
     list:

@@ -119,6 +119,10 @@ class Event
     private $modifiedBy;
 
 
+    public function __toString()
+    {
+        return $this->getYear();
+    }
 
     /**
      * Set year

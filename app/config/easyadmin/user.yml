@@ -10,7 +10,7 @@ easy_admin:
                 sort: ['lastName', 'ASC']
                 dql_filter: 'entity.enabled = true'
                 fields:
-                    - lastname
+                    - lastName
                     - firstName
                     - { property: 'roles' }
                     - email
@@ -18,9 +18,9 @@ easy_admin:
 
             show:
                 fields:
-                    - username
-                    - lastname
-                    - firstname
+                    - userName
+                    - lastName
+                    - firstName
                     - email
                     - enabled
                     - lastLogin

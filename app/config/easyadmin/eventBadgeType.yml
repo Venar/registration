@@ -1,0 +1,21 @@
+easy_admin:
+    entities:
+        EventBadgeType:
+            disabled_actions: ['delete']
+            label: 'Badge Types for Event Year'
+            class: AppBundle\Entity\EventBadgeType
+            search:
+                sort: ['modifiedDate', 'DESC']
+            list:
+                sort: ['modifiedDate', 'DESC']
+                fields:
+                    - event
+                    - badgeType
+                    - { property: 'image', type: 'image', base_path: '%app.path.badge_images%' }
+
+            form:
+                fields:
+                    - { property: 'badgeType' }
+                    - { property: 'event' }
+                    - { type: 'group', css_class: 'col-sm-5', label: 'Badge Image' }
+                    - { property: 'imageFile', type: 'vich_image' }

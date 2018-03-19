@@ -30,7 +30,7 @@ use Symfony\Component\HttpFoundation\File\File;
  *             columns={"badge_type_id", "event_id"})
  *     },
  *     )
- * @ORM\Entity(repositoryClass="AppBundle\Repository\EventBadgeType")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\EventBadgeTypeRepository")
  * @Vich\Uploadable
  */
 class EventBadgeType
@@ -52,7 +52,7 @@ class EventBadgeType
     private $artworkPath;
 
     /**
-     * @Vich\UploadableField(mapping="guest_images", fileNameProperty="image")
+     * @Vich\UploadableField(mapping="badge_images", fileNameProperty="image")
      * @var File
      */
     private $imageFile;
@@ -294,5 +294,25 @@ class EventBadgeType
     public function getArtworkPath()
     {
         return $this->artworkPath;
+    }
+
+    /**
+     * Alias For EasyAdmin
+     *
+     * @return string
+     */
+    public function setImage($image)
+    {
+        $this->setArtworkPath($image);
+    }
+
+    /**
+     * Alias For EasyAdmin
+     *
+     * @return string
+     */
+    public function getImage()
+    {
+        return $this->getArtworkPath();
     }
 }
