@@ -45,7 +45,7 @@ Development Install
      2. Create your first user (change user/email/password)
          * `php app/console fos:user:create testuser test@example.com p@ssword --super-admin`
 4. Insert Seed data for registration badges
-     1. 
+     1. Run the sql file located at: app/config/seedData.sql
 
 
 Run Symfony Server
