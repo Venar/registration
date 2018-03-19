@@ -12,6 +12,7 @@ namespace AppBundle\Controller\Printing;
 use AppBundle\Entity\Badge;
 use AppBundle\Entity\BadgeType;
 use AppBundle\Entity\Event;
+use AppBundle\Entity\History;
 use AppBundle\Entity\Registration;
 use AppBundle\Service\TCPDF\BadgePDF;
 use Doctrine\ORM\Query\Expr\Join;
@@ -89,6 +90,19 @@ class PrintingController extends Controller
         }
 
         $badge = $this->getDoctrine()->getRepository(Badge::class)->find($badgeId);
+
+        if ($badge) {
+            $message = "Printing single {$badge->getBadgeType()->getDescription()} "
+            . "badge #{$badge->getNumber()}. ";
+        } else {
+            $message = 'Printing all badges.';
+        }
+
+        $registrationHistory = new History();
+        $registrationHistory->setRegistration($registration);
+        $registrationHistory->setChangetext($message);
+        $this->getDoctrine()->getManager()->persist($registrationHistory);
+        $this->getDoctrine()->getManager()->flush();
 
         return $this->printSingle($registration, $badge);
     }
