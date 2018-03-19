@@ -10,6 +10,7 @@
 namespace AppBundle\Controller\Registration;
 
 use AppBundle\Entity\Badge;
+use AppBundle\Entity\Event;
 use AppBundle\Entity\History;
 use AppBundle\Entity\Registration;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -30,6 +31,7 @@ class ViewRegistrationController extends Controller
     public function viewRegistrationPage($registrationId)
     {
         $registration = $this->getDoctrine()->getRepository(Registration::class)->find($registrationId);
+        $currentEvent = $this->getDoctrine()->getRepository(Event::class)->getCurrentEvent();
 
         if (!$registration instanceof Registration) {
             return $this->redirectToRoute('listRegistrations');
@@ -60,6 +62,7 @@ class ViewRegistrationController extends Controller
         $vars = [
             'registration' => $registration,
             'event' => $event,
+            'currentEvent' => $currentEvent,
             'registrationType' => $registrationType,
             'registrationStatus' => $registrationStatus,
             'history' => $registrationHistory,

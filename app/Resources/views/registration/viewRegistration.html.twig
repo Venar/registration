@@ -9,10 +9,12 @@
 
 {% block body %}
 <div class="container bg-white">
+    {% set inThePast = (registration.event.id == currentEvent.id ? '' : 'disabled') %}
+
     <div class="row">
         <div class="col-sm-12">
             <h2 class="page-header">
-                <span>{{ registration.firstname }} {{ registration.lastname }} ({{ registration.number }})</span>
+                {{ registration.event.year }} - {{ registration.firstname }} {{ registration.lastname }} ({{ registration.number }})
             </h2>
         </div>
     </div>
@@ -50,12 +52,12 @@
                     </div>
                     <div class="row">
                         <div class="col-sm-6">
-                            <a href="/registration/edit/{{ registration.registrationId }}" class="btn btn-primary btn-sm"
+                            <a href="/registration/edit/{{ registration.registrationId }}" class="btn btn-primary btn-sm {{ inThePast }}"
                                style="width: 150px"><i class="fas fa-edit"></i> Edit</a>
                         </div>
                         <div class="col-sm-6">
                             {% if registrationStatus.active and is_granted('ROLE_SUBHEAD') %}
-                            <a href="/print/single/{{ registration.registrationId }}" class="btn btn-primary btn-sm"
+                            <a href="/print/single/{{ registration.registrationId }}" class="btn btn-primary btn-sm {{ inThePast }}"
                                style="width: 150px"><i class="fas fa-print"></i> Print All</a>
                             {% endif %}
                         </div>
@@ -64,7 +66,7 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <a href="{{ path('resendConfirmation', {'registrationId': registration.registrationId}) }}"
-                               class="btn btn-primary btn-sm" style="width: 150px">
+                               class="btn btn-primary btn-sm {{ inThePast }}" style="width: 150px">
                                 <i class="fas fa-envelope"></i> Resend Email</a>
                         </div>
                     </div>
@@ -94,7 +96,7 @@
                                     <td colspan="3">
                                         {% if is_granted('ROLE_REGSTAFF') %}
                                         <a href="{{ path('badge_status',
-                                            {'badgeId': badge.badgeId , 'registrationId': registration.registrationId}) }}">
+                                            {'badgeId': badge.badgeId , 'registrationId': registration.registrationId}) }}" class="{{ inThePast }}">
                                             <div class="h-100 rounded {{ badge.badgeType.name }} {{ badge.badgeStatus.active ? '' : 'invalid' }}">
                                                 <i class="fas fa-edit"></i>
                                                 &nbsp;&nbsp;{{ badge.number }} - {{ badge.badgeType.description }}  ({{ badge.badgeStatus.status }})
@@ -111,7 +113,7 @@
                                         {% if registrationStatus.active and badge.badgeStatus.active and is_granted('ROLE_REGSTAFF') %}
                                             <a href="{{ path('printing_single_WithSingleBadge',
                                                 {'badgeId': badge.badgeId, 'registrationId': registration.registrationId}) }}"
-                                               class="btn btn-primary btn-sm" style="width: 100px">
+                                               class="btn btn-primary btn-sm {{ inThePast }}" style="width: 100px">
                                                 <i class="fas fa-print"></i>
                                                 Print
                                             </a>
@@ -132,11 +134,11 @@
                     </div>
                     <div class="row">
                         <div class="col-sm-6">
-                            <a href="/registration/transfer/{{ registration.registrationId }}" class="btn btn-danger btn-sm"
+                            <a href="/registration/transfer/{{ registration.registrationId }}" class="btn btn-danger btn-sm {{ inThePast }}"
                                style="width: 150px">Transfer</a>
                         </div>
                         <div class="col-sm-6">
-                            <a href="/registration/rollover/{{ registration.registrationId }}" class="btn btn-danger btn-sm"
+                            <a href="/registration/rollover/{{ registration.registrationId }}" class="btn btn-danger btn-sm {{ inThePast }}"
                                style="width: 150px">Rollover</a>
                         </div>
                     </div>
