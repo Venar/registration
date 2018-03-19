@@ -29,15 +29,17 @@ class MenuController extends Controller
                         [
                             'title' => 'Groups',
                             'url' => 'group_list',
+                            'access' => 'ROLE_REGSTAFF',
                         ],
                     ]
                 ],
                 [
-                    'name' => 'Manage Registrations',
+                    'name' => 'Registrations',
                     'items' => [
                         [
-                            'title' => 'Manage Registrations',
+                            'title' => 'Registrations',
                             'url' => 'listRegistrations',
+                            'access' => 'ROLE_USER',
                         ],
                     ]
                 ],
@@ -47,6 +49,7 @@ class MenuController extends Controller
                         [
                             'title' => 'Statistics',
                             'url' => 'statistics',
+                            'access' => 'ROLE_REGSTAFF',
                         ],
                     ]
                 ],
@@ -56,26 +59,32 @@ class MenuController extends Controller
                         [
                             'title' => 'Registration Form',
                             'url' => 'form_registration',
+                            'access' => 'ROLE_USER',
                         ],
                         [
                             'title' => 'Transfer Form',
                             'url' => 'form_transfer',
+                            'access' => 'ROLE_USER',
                         ],
                         [
                             'title' => 'List Badges to Print',
                             'url' => 'printing_list',
+                            'access' => 'ROLE_REGSTAFF',
                         ],
                         [
                             'title' => 'T-Shirt Orders',
                             'url' => 'shirt_list',
+                            'access' => 'ROLE_MERCH',
                         ],
                         [
                             'title' => 'Edit History',
                             'url' => 'edit_history',
+                            'access' => 'ROLE_SUBHEAD',
                         ],
                         [
                             'title' => 'Error Finder',
                             'url' => 'error_finder',
+                            'access' => 'ROLE_SUBHEAD',
                         ],
                     ]
                 ],

@@ -10,14 +10,16 @@
     {% if section.items|length == 1 %}
         {% if section.items[0] is defined %}
             {% set firstItem = section.items[0] %}
-            {% if false %}
-                <li class="nav-item active">
-                    <a class="nav-link" href="{{ path(firstItem.url) }}">{{ section.name }} <span class="sr-only">(current)</span></a>
-                </li>
-            {% else %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path(firstItem.url) }}">{{ section.name }}</a>
-                </li>
+            {% if is_granted(firstItem.access) %}
+                {% if false %}
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{{ path(firstItem.url) }}">{{ section.name }} <span class="sr-only">(current)</span></a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path(firstItem.url) }}">{{ section.name }}</a>
+                    </li>
+                {% endif %}
             {% endif %}
         {% endif %}
     {% endif %}
@@ -28,7 +30,7 @@
                 {{ section.name }}
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                {% for item in section.items %}
+                {% for item in section.items if is_granted(item.access) %}
                     <a class="dropdown-item" href="{{ path(item.url) }}">{{ item.title }}</a>
                 {% endfor %}
             </div>
@@ -36,7 +38,7 @@
     {% endif %}
     </li>
 {% endfor %}
-{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+{% if is_granted('ROLE_ADMIN') %}
     <li class="nav-item">
         <a class="nav-link waves-effect waves-light" href="{{ url('admin') }}">
             <i class="fas fa-cogs"></i>
