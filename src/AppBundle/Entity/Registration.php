@@ -23,6 +23,7 @@ class Registration
     public function __construct()
     {
         $this->badges = new ArrayCollection();
+        $this->history = new ArrayCollection();
         $this->groups = new ArrayCollection();
         $this->registrationShirts = new ArrayCollection();
         $this->extras = new ArrayCollection();
@@ -235,6 +236,12 @@ class Registration
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\Badge", mappedBy="registration")
      */
     private $badges;
+
+    /**
+     * One Product has Many Features.
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\History", mappedBy="registration")
+     */
+    private $history;
 
     /**
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Group", inversedBy="registrations")
@@ -893,9 +900,35 @@ class Registration
     /**
      * @param Badge $badge
      */
-    public function removeBadge($badge)
+    public function removeBadge(Badge $badge)
     {
         $this->badges->removeElement($badge);
+    }
+
+    /**
+     * Get history
+     *
+     * @return History[]|\Doctrine\Common\Collections\Collection
+     */
+    public function getHistory()
+    {
+        return $this->history;
+    }
+
+    /**
+     * @param History $history
+     */
+    public function addHistory(History $history)
+    {
+        $this->history->add($history);
+    }
+
+    /**
+     * @param History $history
+     */
+    public function removeHistory(History $history)
+    {
+        $this->history->removeElement($history);
     }
 
     /**

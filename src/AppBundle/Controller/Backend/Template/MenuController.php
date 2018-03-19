@@ -82,6 +82,11 @@ class MenuController extends Controller
                             'access' => 'ROLE_SUBHEAD',
                         ],
                         [
+                            'title' => 'Issues History (Lost/Revoked)',
+                            'url' => 'issuesList',
+                            'access' => 'ROLE_SUBHEAD',
+                        ],
+                        [
                             'title' => 'Error Finder',
                             'url' => 'error_finder',
                             'access' => 'ROLE_SUBHEAD',

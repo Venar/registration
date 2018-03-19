@@ -52,7 +52,7 @@ class History
     /**
      * @var \AppBundle\Entity\Registration
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Registration")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Registration", inversedBy="history")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="registration_id", referencedColumnName="id")
      * })

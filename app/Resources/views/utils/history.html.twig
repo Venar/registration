@@ -51,9 +51,9 @@
                 {% for registrationHistory in registrationHistories %}
                 <tr class="info">
                     <td><a href="/registration/view/{{ registrationHistory.registration.registrationId }}">{{ registrationHistory.registration.registrationId }}</a></td>
-                    <td>{{ registrationHistory.createdby.firstname }} {{ registrationHistory.createdby.lastname }}</td>
-                    <td>{{ registrationHistory.createddate|date('M d, Y g:i a') }}</td>
-                    <td>{{ registrationHistory.changetext|raw }}</td>
+                    <td>{{ registrationHistory.createdBy.firstName }} {{ registrationHistory.createdBy.lastName }}</td>
+                    <td>{{ registrationHistory.createdDate|date('M d, Y g:i a') }}</td>
+                    <td>{{ registrationHistory.changeText|raw }}</td>
                 </tr>
                 {% endfor %}
                 </tbody>

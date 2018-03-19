@@ -414,4 +414,36 @@ class RegistrationRepository extends EntityRepository
             return null;
         }
     }
+
+    /**
+     * @param String $searchText
+     * @param int $limit
+     * @param int $offset
+     * @return Registration[]
+     */
+    public function getRegistrationsWithRevokedBadges($searchText, $limit = null, $offset = null)
+    {
+        $queryBuilder = $this->getEntityManager()->createQueryBuilder();
+
+        $queryBuilder->select('r')
+            ->from(Registration::class, 'r')
+            ->innerJoin('r.badges', 'b')
+            ->innerJoin('b.badgeStatus', 'bs')
+            ->where('bs.active = :active')
+            //->setParameter('registrationId', "$searchText")
+            //->setParameter('changeText', "%$searchText%")
+            //->setParameter('firstName', "%$searchText%")
+            ->setParameter('active', false)
+            ->orderBy('r.modifiedDate', 'DESC')
+        ;
+
+        $query = $queryBuilder->getQuery();
+        if ($limit) {
+            $query = $query->setMaxResults($limit);
+        }
+        if ($offset) {
+            $query = $query->setFirstResult($offset);
+        }
+        return $query->getResult();
+    }
 }
