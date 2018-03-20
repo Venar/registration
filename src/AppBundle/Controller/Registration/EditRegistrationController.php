@@ -576,14 +576,19 @@ class EditRegistrationController extends Controller
                     if (!strtotime($tmpfield)) {
                         $tmpfield = str_replace('-', '/', $tmpfield);
                     }
-                    $newDate = new \DateTime($tmpfield);
-                    if ($registration->getRegistrationId()) {
-                        $oldDate = $registration->getBirthday()->format('m/d/y');
-                        if ($oldDate != $newDate->format('m/d/y')) {
-                            $history .= "$field: $oldDate => {$newDate->format('m/d/y')}<br>";
+                    try {
+                        $newDate = new \DateTime($tmpfield);
+                        if ($registration->getRegistrationId()) {
+                            $oldDate = $registration->getBirthday()->format('m/d/y');
+                            if ($oldDate != $newDate->format('m/d/y')) {
+                                $history .= "$field: $oldDate => {$newDate->format('m/d/y')}<br>";
+                            }
                         }
+                        $registration->setBirthday($newDate);
                     }
-                    $registration->setBirthday($newDate);
+                    catch (\Exception $e) {
+
+                    }
 
                     continue;
                 }
