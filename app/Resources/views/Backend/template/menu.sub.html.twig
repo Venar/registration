@@ -13,11 +13,11 @@
             {% if is_granted(firstItem.access) %}
                 {% if false %}
                     <li class="nav-item active">
-                        <a class="nav-link" href="{{ path(firstItem.url) }}">{{ section.name }} <span class="sr-only">(current)</span></a>
+                        <a class="nav-link" href="{{ path(firstItem.url) }}">{{ section.name|raw }} <span class="sr-only">(current)</span></a>
                     </li>
                 {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path(firstItem.url) }}">{{ section.name }}</a>
+                        <a class="nav-link" href="{{ path(firstItem.url) }}">{{ section.name|raw }}</a>
                     </li>
                 {% endif %}
             {% endif %}
@@ -40,7 +40,7 @@
 {% endfor %}
 {% if is_granted('ROLE_ADMIN') %}
     <li class="nav-item">
-        <a class="nav-link waves-effect waves-light" href="{{ url('admin') }}">
+        <a class="nav-link waves-effect waves-dark" href="{{ url('admin') }}">
             <i class="fas fa-cogs"></i>
             Admin
         </a>

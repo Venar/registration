@@ -111,17 +111,17 @@ vich_uploader:
 
 easy_admin:
     design:
-        brand_color: '#fe7f00'
+        brand_color: '#3f729b'
         color_scheme: 'light'
         menu:
-            - { route: 'homepage', label: 'Return to Homepage', icon: 'arrow-left' }
+            - { route: 'homepage', label: 'Return to Registration Db', icon: 'arrow-left' }
             - { entity: 'EventBadgeType', icon: 'id-badge' }
             - label: 'IT'
               icon: 'laptop'
               children:
                 - { entity: 'Event', icon: 'calendar' }
                 - { entity: 'User', icon: 'user-circle' }
-    site_name: 'Anime Detour'
+    site_name: '<img src="/images/ADLogo270.png" alt="Anime Detour" style="width:220px;">'
 
     list:
         actions: [{ name: 'edit', icon: 'pencil' }, '-delete']

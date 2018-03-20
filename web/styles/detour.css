@@ -36,10 +36,16 @@ table.table a.disabled {
 
 .navbar .dropdown-menu a:hover {
     color: #fe7f00!important;
+    font-weight: bold;
 }
 .navbar.navbar-dark .breadcrumb .nav-item.active>.nav-link, .navbar.navbar-dark .navbar-nav .nav-item.active>.nav-link {
     background-color: inherit;
     color: #fe7f00;
+}
+
+.navbar.navbar-dark .breadcrumb .nav-item .nav-link:hover, .navbar.navbar-dark .navbar-nav .nav-item .nav-link:hover {
+        color:#FE7F00;
+        font-weight: bold;
 }
 
 html, body {
