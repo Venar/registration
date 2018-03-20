@@ -557,7 +557,7 @@ class Group
     /**
      * Get registrations
      *
-     * @return \Doctrine\Common\Collections\Collection|Registration[]
+     * @return Registration[]|\Doctrine\Common\Collections\Collection
      */
     public function getRegistrations()
     {

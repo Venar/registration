@@ -13,6 +13,7 @@ use AppBundle\Entity\Badge;
 use AppBundle\Entity\BadgeType;
 use AppBundle\Entity\Event;
 use AppBundle\Entity\EventBadgeType;
+use AppBundle\Entity\Group;
 use AppBundle\Entity\History;
 use AppBundle\Entity\Registration;
 use AppBundle\Service\TCPDF\BadgePDF;
@@ -20,7 +21,9 @@ use Doctrine\ORM\Query\Expr\Join;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class PrintingController extends Controller
 {
@@ -133,6 +136,35 @@ class PrintingController extends Controller
     }
 
     /**
+     * @Route("/print/group/{groupId}", name="printGroup")
+     * @Security("has_role('ROLE_SUBHEAD')")
+     *
+     * @param string $groupId
+     * @return string|Response
+     */
+    public function printSingleGroup($groupId) {
+        try {
+            $this->setUpPDF();
+        } catch (PrintingException $e) {
+            return new Response($e->getMessage(), 500);
+        }
+
+        $group = $this->getDoctrine()->getRepository(Group::class)->find($groupId);
+
+        /** @var Registration[] $registrations */
+        $registrations = $group->getRegistrations();
+
+        foreach ($registrations as $registration) {
+            $badges = $registration->getBadges();
+            foreach ($badges as $badge) {
+                $this->addBadge($registration, $badge, $group->getName());
+            }
+        }
+
+        return $this->pdf->Output("GroupBadges_{$group->getName()}.pdf", 'I');
+    }
+
+    /**
      * @param String $type
      * @param int $page
      * @return mixed
@@ -200,6 +232,7 @@ class PrintingController extends Controller
 
         $queryBuilder
             ->select([
+                'r.id',
                 'r.number',
                 'r.badgeName',
                 'b.id as badgeId',
@@ -261,11 +294,10 @@ class PrintingController extends Controller
             ->setFirstResult($offset)
             ->getArrayResult();
 
-        foreach ($registrations as $registration) {
-            $badgeId = $registration['badgeId'];
-            $badge = $this->getDoctrine()->getRepository(Badge::class)->find($badgeId);
-            $groupName = $registration['groupName'];
-            $this->addBadge($registration, $badge, $groupName);
+        foreach ($registrations as $registrationArray) {
+            $registration = $this->getDoctrine()->getRepository(Registration::class)->find($registrationArray['id']);
+            $badge = $this->getDoctrine()->getRepository(Badge::class)->find($registrationArray['badgeId']);
+            $this->addBadge($registration, $badge, $registrationArray['groupName']);
         }
 
         return $this->pdf->Output("BulkBadge_{$type}_{$limit}_{$offset}.pdf", 'I');

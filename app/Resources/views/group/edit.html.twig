@@ -255,7 +255,7 @@
             <a href="{{ path('registrationAddToGroup', {'groupId': group.groupId}) }}" class="btn btn-warning btn-sm">
                 Add new group member
             </a>
-            <a href="/registration/group/add/{{ group.groupId }}" class="btn btn-primary btn-sm">
+            <a href="{{ path('printGroup', {'groupId': group.groupId}) }}" class="btn btn-primary btn-sm">
                 <i class="fas fa-print"></i> Print Group
             </a>
             <table class="table table-striped table-sm">

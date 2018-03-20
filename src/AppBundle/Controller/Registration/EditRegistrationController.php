@@ -465,14 +465,6 @@ class EditRegistrationController extends Controller
             $all_fields_sent = false;
             $returnJson['message'] = 'Badge Type was not set.';
         }
-        if (!$request->request->has('birthDate') || $request->request->get('birthDate') == '') {
-            $all_fields_sent = false;
-            $returnJson['message'] = 'Birthday was not set.';
-        }
-        if (!$request->request->has('birthYear') || $request->request->get('birthYear') == '') {
-            $all_fields_sent = false;
-            $returnJson['message'] = 'Birth year was not set.';
-        }
         if (!$request->request->has('RegistrationType') || !$request->request->get('RegistrationType')) {
             $all_fields_sent = false;
             $returnJson['message'] = 'RegistrationType was not set.';
@@ -487,6 +479,28 @@ class EditRegistrationController extends Controller
         if (!$registrationType) {
             $all_fields_sent = false;
             $returnJson['message'] = "RegistrationType '{$request->request->get('RegistrationType')}' didn't exist. Configuration Error.";
+        }
+
+        $tmpBadgeTypeName = 'ADREGSTANDARD';
+        if ($request->request->has('badgeTypeName')) {
+            $tmpBadgeTypeName = $request->request->get('badgeTypeName');
+        }
+
+        $attendeeBadgeTypes = [
+            'ADREGSTANDARD',
+            'MINOR',
+            'ADREGSPONSOR',
+            'ADREGCOMMSPONSOR',
+        ];
+        if (in_array($tmpBadgeTypeName, $attendeeBadgeTypes)){
+            if (!$request->request->has('birthDate') || $request->request->get('birthDate') == '') {
+                $all_fields_sent = false;
+                $returnJson['message'] = 'Birthday was not set.';
+            }
+            if (!$request->request->has('birthYear') || $request->request->get('birthYear') == '') {
+                $all_fields_sent = false;
+                $returnJson['message'] = 'Birth year was not set.';
+            }
         }
 
         $registrationStatus = $this->getDoctrine()->getRepository(RegistrationStatus::class)
