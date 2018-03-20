@@ -4,11 +4,11 @@ easy_admin:
             disabled_actions: ['delete']
             label: 'Badge Types for Event Year'
             class: AppBundle\Entity\EventBadgeType
-            search:
-                sort: ['modifiedDate', 'DESC']
             list:
                 title: 'Badge Types for Event Year'
-                sort: ['modifiedDate', 'DESC']
+                sort: 'event'
+                search:
+                    sort: ['event', 'DESC']
                 fields:
                     - event
                     - badgeType

@@ -44,7 +44,7 @@ class MenuController extends Controller
                     ]
                 ],
                 [
-                    'name' => 'Statistics',
+                    'name' => '<i class="fas fa-chart-pie"></i> Statistics',
                     'items' => [
                         [
                             'title' => 'Statistics',

@@ -27,14 +27,17 @@
                 <li><a href="#zipMap">{{ year }} Registrations by Region</a></li>
             </ul>
         </div>
+        <div class="col-sm-5">
+            <div id="pie_chart" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+        </div>
         <div class="col-sm-4">
             <h3>Registrations By {{ "NOW"|date('F jS') }}</h3>
             <table class="table table-striped table-sm">
                 <thead class="unique-color">
-                    <tr class="text-white">
-                        <td>Year</td>
-                        <td>Count</td>
-                    </tr>
+                <tr class="text-white">
+                    <td>Year</td>
+                    <td>Count</td>
+                </tr>
                 </thead>
                 <tbody>
                 {% for countArray in countByCurrentDate %}
@@ -51,9 +54,6 @@
                 {% endfor %}
                 </tbody>
             </table>
-        </div>
-        <div class="col-sm-5">
-            <div id="pie_chart" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
         </div>
     </div>
     <div class="row">
@@ -104,7 +104,8 @@
                 }
             },
             title: {
-                text: 'Total Registrations, {{ year }}'
+                text: '<h3>Total Registrations, {{ year }}</h3>',
+                useHTML: true
             },
             tooltip: {
                 pointFormat: '\{series.name\}: <b> (\{point.y\}) {point.percentage:.1f}%</b>'
@@ -172,7 +173,8 @@
                 type: 'pie'
             },
             title: {
-                text: '{{ year }} Registrations by Age'
+                text: '<h3>Registrations by Age</h3>',
+                useHTML: true
             },
             legend: {
                 enabled: true,
@@ -221,7 +223,8 @@
                 zoomType: 'x'
             },
             title: {
-                text: 'Total Registrations by month against other years'
+                text: '<h3>Registrations by year</h3>',
+                useHTML: true
             },
             subtitle: {
                 text: 'Source: registration database'
@@ -263,7 +266,8 @@
                 type: 'area'
             },
             title: {
-                text: '{{ year }} Registrations by Type'
+                text: '<h3>Registrations by Type</h3>',
+                useHTML: true
             },
             subtitle: {
                 text: 'Source: registration database'
@@ -325,7 +329,8 @@
             },
 
             title: {
-                text: 'Anime Detour {{ year }} Registrations by Region'
+                text: '<h3>Registrations by Region</h3>',
+                useHTML: true
             },
 
             legend: {
@@ -424,4 +429,12 @@
 
 
 </script>
+<style>
+    .highcharts-title {
+        font-size: inherit;!important;
+        width: 90%;!important;
+        left: 8.5px;!important;
+    }
+</style>
+
 {% endblock %}

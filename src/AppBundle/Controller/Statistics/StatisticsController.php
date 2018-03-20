@@ -25,7 +25,7 @@ class StatisticsController extends Controller
 {
     /**
      * @Route("/stats", name="statistics")
-     * @Security("has_role('ROLE_USER')")
+     * @Security("has_role('ROLE_STATISTICS')")
      */
     public function showStatisticsForCurrentYear()
     {
