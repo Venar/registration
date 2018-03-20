@@ -252,7 +252,12 @@
             {% if group is not null and group.groupId %}
             <br>
             <h3>Group Members:</h3>
-            <a href="/registration/group/add/{{ group.groupId }}" class="btn btn-warning btn-sm">Add new group member</a>
+            <a href="{{ path('registrationAddToGroup', {'groupId': group.groupId}) }}" class="btn btn-warning btn-sm">
+                Add new group member
+            </a>
+            <a href="/registration/group/add/{{ group.groupId }}" class="btn btn-primary btn-sm">
+                <i class="fas fa-print"></i> Print Group
+            </a>
             <table class="table table-striped table-sm">
                 <thead class="unique-color">
                     <tr class="text-white">
@@ -266,7 +271,7 @@
                     <tr>
                         <td>{{ registration.number }}</td>
                         <td>
-                            <a href="/registration/edit/{{ registration.registrationId }}">
+                            <a href="{{ path('viewRegistration', {'registrationId': registration.registrationId}) }}">
                                 {{ registration.firstname }} {{ registration.lastname }}
                             </a>
                         </td>
