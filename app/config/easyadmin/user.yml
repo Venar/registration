@@ -5,25 +5,26 @@ easy_admin:
             label: 'Users list'
             class: AppBundle\Entity\User
             search:
-                sort: ['lastname', 'ASC']
+                sort: ['lastName', 'ASC']
             list:
-                sort: ['lastname', 'ASC']
+                sort: ['lastName', 'ASC']
                 dql_filter: 'entity.enabled = true'
                 fields:
-                    - lastname
+                    - lastName
                     - firstName
+                    - { property: 'roles' }
                     - email
                     - { property: 'enabled', type: 'boolean' }
 
             show:
                 fields:
-                    - username
-                    - lastname
-                    - firstname
+                    - userName
+                    - lastName
+                    - firstName
                     - email
                     - enabled
                     - lastLogin
-                    - { property: 'roles', type: 'choice', type_options: { multiple: true, choices: { 'ROLE_USER': 'ROLE_USER', 'ROLE_ADMIN': 'ROLE_ADMIN' } } }
+                    - { property: 'roles', type: 'choice', type_options: { multiple: true, choices: { 'Basic User': 'ROLE_USER', 'Merchandise': 'ROLE_MERCH', 'Volunteers': 'ROLE_VOLUNTEERS', 'Statistics':'ROLE_STATISTICS', 'Registration Subhead': 'ROLE_SUBHEAD', 'Admin': 'ROLE_ADMIN' } } }
                     - createdBy
                     - createdDate
                     - modifiedBy
@@ -35,7 +36,7 @@ easy_admin:
                 actions: ['show', '-delete']
                 fields:
                     - { type: 'group', css_class: 'col-sm-6', label: 'Basic information' }
-                    - { property: 'lastname', type_options: { required: true } }
+                    - { property: 'lastName', type_options: { required: true } }
                     - { property: 'firstName', type_options: { required: true } }
                     - { property: 'email', type: 'email', type_options: { required: true } }
                     - { type: 'group', css_class: 'col-sm-6', label: 'Login information' }
@@ -44,13 +45,13 @@ easy_admin:
                     - { property: 'plainPassword', label: 'Password', type: 'password', type_options: { required: false } }
                     - { type: 'group', css_class: 'col-sm-12', label: 'Permissions' }
                     - { property: 'enabled' }
-                    - { property: 'roles', type: 'choice', type_options: { multiple: true, choices: { 'ROLE_USER': 'ROLE_USER', 'ROLE_ADMIN': 'ROLE_ADMIN' } } }
+                    - { property: 'roles', type: 'choice', type_options: { multiple: true, choices: { 'Basic User': 'ROLE_USER', 'Merchandise': 'ROLE_MERCH', 'Volunteers': 'ROLE_VOLUNTEERS', 'Statistics':'ROLE_STATISTICS', 'Registration Subhead': 'ROLE_SUBHEAD', 'Admin': 'ROLE_ADMIN' } } }
                 form_options: { validation_groups: ['Profile'] }
             new:
                 title: 'Add new User'
                 fields:
                     - { type: 'group', css_class: 'col-sm-6', label: 'Basic information' }
-                    - { property: 'lastname', type_options: { required: true } }
+                    - { property: 'lastName', type_options: { required: true } }
                     - { property: 'firstName', type_options: { required: true } }
                     - { property: 'email', type: 'email', type_options: { required: true } }
                     - { type: 'group', css_class: 'col-sm-6', label: 'Login information' }
@@ -59,5 +60,5 @@ easy_admin:
                     - { property: 'plainPassword', label: 'Password', type: 'password', type_options: { required: false } }
                     - { type: 'group', css_class: 'col-sm-12', label: 'Permissions' }
                     - { property: 'enabled', type_options: { required: true } }
-                    - { property: 'roles', type: 'choice', type_options: { multiple: true, choices: { 'ROLE_USER': 'ROLE_USER', 'ROLE_ADMIN': 'ROLE_ADMIN' } } }
+                    - { property: 'roles', type: 'choice', type_options: { multiple: true, choices: { 'Basic User': 'ROLE_USER', 'Merchandise': 'ROLE_MERCH', 'Volunteers': 'ROLE_VOLUNTEERS', 'Registration Subhead': 'ROLE_SUBHEAD', 'Admin': 'ROLE_ADMIN' } } }
                 form_options: { validation_groups: ['Registration'] }

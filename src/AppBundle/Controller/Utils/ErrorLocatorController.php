@@ -1,7 +1,16 @@
 <?php
+/**
+ * Copyright (c) 2018. Anime Twin Cities, Inc.
+ *
+ * This project, including all of the files and their contents, is licensed under the terms of MIT License
+ *
+ * See the LICENSE file in the root of this project for details.
+ */
 
 namespace AppBundle\Controller\Utils;
 
+use AppBundle\Entity\Event;
+use AppBundle\Entity\Registration;
 use Doctrine\ORM\Query\Expr\Join;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -11,27 +20,27 @@ class ErrorLocatorController extends Controller
 {
     /**
      * @Route("/error/finder", name="error_finder")
-     * @Security("has_role('ROLE_USER')")
+     * @Security("has_role('ROLE_SUBHEAD')")
      */
     public function get_errorFinder() {
         $vars = [];
-        $currentYear = $this->get('repository_event')->getSelectedEvent();
+        $currentYear = $this->getDoctrine()->getRepository(Event::class)->getSelectedEvent();
 
         $queryBuilder = $this->get('doctrine.orm.entity_manager')->createQueryBuilder();
-        $queryBuilder->select('r2.firstname', 'r2.lastname', 'YEAR(r2.birthday) as year', 'count(r2.registrationId) as NameCount')
-            ->from('AppBundle\Entity\Registration', 'r2')
-            ->innerJoin('AppBundle\Entity\Registration', 'r', Join::WITH, 'r.registrationId = r2.registrationId')
+        $queryBuilder->select('r2.firstName', 'r2.lastName', 'YEAR(r2.birthday) as year', 'count(r2.id) as NameCount')
+            ->from(Registration::class, 'r2')
+            ->innerJoin(Registration::class, 'r', Join::WITH, 'r.id = r2.id')
             ->where('r2.event = :event')
-            ->groupBy('r2.firstname', 'r2.lastname', 'year')
+            ->groupBy('r2.firstName', 'r2.lastName', 'year')
             ->having('NameCount > 1')
             ->setParameter('event', $currentYear)
             ;
 
         $vars['duplicatesYear'] = $queryBuilder->getQuery()->getResult();
         foreach ($vars['duplicatesYear'] as &$duplicate) {
-            $registrations = $this->get('repository_registration')->getFromFirstLastBirthyear(
-                $duplicate['firstname'],
-                $duplicate['lastname'],
+            $registrations = $this->getDoctrine()->getRepository(Registration::class)->getFromFirstLastBirthyear(
+                $duplicate['firstName'],
+                $duplicate['lastName'],
                 $duplicate['year'],
                 $currentYear
             );
@@ -39,26 +48,28 @@ class ErrorLocatorController extends Controller
         }
 
         $queryBuilder = $this->get('doctrine.orm.entity_manager')->createQueryBuilder();
-        $queryBuilder->select('r2.firstname', 'r2.lastname', 'r2.email', 'count(r2.registrationId) as NameCount')
-            ->from('AppBundle\Entity\Registration', 'r2')
-            ->innerJoin('AppBundle\Entity\Registration', 'r', Join::WITH, 'r.registrationId = r2.registrationId')
+        $queryBuilder->select('r2.firstName', 'r2.lastName', 'r2.email', 'count(r2.id) as NameCount')
+            ->from(Registration::class, 'r2')
+            ->innerJoin(Registration::class, 'r', Join::WITH, 'r.id = r2.id')
             ->where('r2.event = :event')
-            ->groupBy('r2.firstname', 'r2.lastname', 'r2.email')
+            ->groupBy('r2.firstName', 'r2.lastName', 'r2.email')
             ->having('NameCount > 1')
             ->setParameter('event', $currentYear)
         ;
         $vars['duplicatesEmail'] = $queryBuilder->getQuery()->getResult();
         foreach ($vars['duplicatesEmail'] as &$duplicate) {
-            $registrations = $this->get('repository_registration')->getFromFirstLastEmail(
-                $duplicate['firstname'],
-                $duplicate['lastname'],
+            $registrations = $this->getDoctrine()->getRepository(Registration::class)->getFromFirstLastEmail(
+                $duplicate['firstName'],
+                $duplicate['lastName'],
                 $duplicate['email'],
                 $currentYear
             );
             $duplicate['registrations'] = $registrations;
         }
 
-        $vars['tooYoung'] = $this->get('repository_registration')->getRegistrationsLessThanAYearOld($currentYear);
+        $vars['tooYoung'] = $this->getDoctrine()
+            ->getRepository(Registration::class)
+            ->getRegistrationsLessThanAYearOld($currentYear);
 
         return $this->render('utils/errorLocator.html.twig', $vars);
     }

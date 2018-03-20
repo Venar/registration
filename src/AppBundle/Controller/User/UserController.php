@@ -1,4 +1,11 @@
 <?php
+/**
+ * Copyright (c) 2018. Anime Twin Cities, Inc.
+ *
+ * This project, including all of the files and their contents, is licensed under the terms of MIT License
+ *
+ * See the LICENSE file in the root of this project for details.
+ */
 
 namespace AppBundle\Controller\User;
 
@@ -11,44 +18,21 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class UserController extends Controller
 {
-    /**
-     * @Route("/user/list", name="listUsers")
-     * @Route("/user/list/", name="listUsers_withSlash")
-     * @Route("/user/list/{curPageNum}", name="listUsers_withPageNum")
-     * @Security("has_role('ROLE_ADMIN')")
-     *
-     * @param Request $request
-     * @param String $curPageNum Current page number
-     * @return Response
-     */
-    public function listUsers(Request $request, $curPageNum = '1')
+    public function currentUserAction()
     {
-        $vars = [];
+        $securityContext = $this->container->get('security.authorization_checker');
 
-        $searchText = '';
-        if ($request->query->has('searchText')) {
-            $searchText = $request->query->get('searchText');
-        }
+        if ($securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+            $user = $this->get('security.token_storage')->getToken()->getUser();
+            if ($user instanceof User) {
+                /** @var $user User */
+                $vars = [
+                    'name' => "{$user->getFirstName()} {$user->getLastName()}",
+                    'userid' => $user->getId(),
+                ];
 
-        $users = $this->get('repository_user')->findAll();
-
-        $vars['users'] = $users;
-
-        $vars['totalResults'] = count($users);
-        $vars['searchText'] = $searchText;
-
-        $roles = $this->get('security.role_hierarchy');
-        //var_dump($roles);
-
-        return $this->render('user/list.html.twig', $vars);
-    }
-
-    public function indexAction()
-    {
-        $user = $this->get('security.token_storage')->getToken()->getUser();
-        if ($user instanceof User) {
-            /** @var $user User */
-            return $this->render('user/currentuser.sub.html.twig', array('name' => $user->getUsername(), 'userid' => $user->getId()));
+                return $this->render('user/currentuser.sub.html.twig', $vars);
+            }
         }
 
         return new Response();

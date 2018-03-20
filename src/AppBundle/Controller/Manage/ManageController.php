@@ -1,7 +1,18 @@
 <?php
+/**
+ * Copyright (c) 2018. Anime Twin Cities, Inc.
+ *
+ * This project, including all of the files and their contents, is licensed under the terms of MIT License
+ *
+ * See the LICENSE file in the root of this project for details.
+ */
 
 namespace AppBundle\Controller\Manage;
 
+use AppBundle\Entity\BadgeType;
+use AppBundle\Entity\Registration;
+use AppBundle\Entity\RegistrationStatus;
+use AppBundle\Entity\RegistrationType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -24,45 +35,36 @@ class ManageController extends Controller
         $searchText = $request->query->get('search');
         $page = $request->query->get('page');
 
-        $registrationTypeID = '';
-        $registrationTypeDescription = 'All';
-        if ($request->query->has('RegistrationType_ID')) {
-            $registrationTypeID = $request->query->get('RegistrationType_ID');
+        $registrationTypeId = 'all';
+        if ($request->query->has('registrationTypeId')) {
+            $registrationTypeId = $request->query->get('registrationTypeId');
             $registrationType = $this->getDoctrine()
-                ->getRepository('AppBundle:Registrationtype')
-                ->find($registrationTypeID);
+                ->getRepository(RegistrationType::class)
+                ->find($registrationTypeId);
             if ($registrationType) {
-                $registrationTypeDescription = $registrationType->getDescription();
-            } else {
-                $registrationTypeID = '';
+                $registrationTypeId = $registrationType->getRegistrationTypeId();
             }
         }
 
-        $registrationStatusID = '';
-        $registrationStatusDescription = 'All';
-        if ($request->query->has('RegistrationStatus_ID')) {
-            $registrationStatusID = $request->query->get('RegistrationStatus_ID');
+        $registrationStatusId = 'active';
+        if ($request->query->has('registrationStatusId')) {
+            $registrationStatusId = $request->query->get('registrationStatusId');
             $registrationStatus = $this->getDoctrine()
-                ->getRepository('AppBundle:Registrationstatus')
-                ->find($registrationStatusID);
+                ->getRepository(RegistrationStatus::class)
+                ->find($registrationStatusId);
             if ($registrationStatus) {
-                $registrationStatusDescription = $registrationStatus->getDescription();
-            } else {
-                $registrationStatusID = '';
+                $registrationStatusId = $registrationStatus->getRegistrationStatusId();
             }
         }
 
-        $badgeTypeID = '';
-        $badgeTypeDescription = 'All';
-        if ($request->query->has('BadgeType_ID')) {
-            $badgeTypeID = $request->query->get('BadgeType_ID');
+        $badgeTypeId = 'all';
+        if ($request->query->has('badgeTypeId')) {
+            $badgeTypeId = $request->query->get('badgeTypeId');
             $badgeType = $this->getDoctrine()
-                ->getRepository('AppBundle:Badgetype')
-                ->find($badgeTypeID);
+                ->getRepository(BadgeType::class)
+                ->find($badgeTypeId);
             if ($badgeType) {
-                $badgeTypeDescription = $badgeType->getDescription();
-            } else {
-                $badgeTypeID = '';
+                $badgeTypeId = $badgeType->getBadgeTypeId();
             }
         }
 
@@ -70,13 +72,20 @@ class ManageController extends Controller
             $page = 1;
         }
 
+        /** @var RegistrationType[] $registrationTypes */
+        $registrationTypes = $this->getDoctrine()->getRepository(RegistrationType::class)->findAll();
+        /** @var RegistrationStatus[] $registrationStatuses */
+        $registrationStatuses = $this->getDoctrine()->getRepository(RegistrationStatus::class)->findAll();
+        /** @var BadgeType[] $badgeTypes */
+        $badgeTypes = $this->getDoctrine()->getRepository(BadgeType::class)->findAll();
+
         $vars = [
-            'current_RegistrationType_ID' => $registrationTypeID,
-            'current_RegistrationStatus_ID' => $registrationStatusID,
-            'current_BadgeType_ID' => $badgeTypeID,
-            'current_RegistrationType' => $registrationTypeDescription,
-            'current_RegistrationStatus' => $registrationStatusDescription,
-            'current_BadgeType' => $badgeTypeDescription,
+            'registrationTypes' => $registrationTypes,
+            'registrationStatuses' => $registrationStatuses,
+            'badgeTypes' => $badgeTypes,
+            'current_RegistrationTypeId' => $registrationTypeId,
+            'current_RegistrationStatusId' => $registrationStatusId,
+            'current_BadgeTypeId' => $badgeTypeId,
             'searchText' => $searchText,
             'page' => $page,
         ];
@@ -85,7 +94,7 @@ class ManageController extends Controller
     }
 
     /**
-     * @Route("/registrationlist")
+     * @Route("/registration/list/ajax", name="ajaxRegistrationList")
      * @Security("has_role('ROLE_USER')")
      *
      * @param Request $request
@@ -98,86 +107,53 @@ class ManageController extends Controller
         $searchText = $request->query->get('search');
         $page = $request->query->get('page');
 
-        $registrationTypeID = $request->query->get('RegistrationType_ID');
-        $registrationType = $this->getDoctrine()
-            ->getRepository('AppBundle:Registrationtype')
-            ->find($registrationTypeID);
+        $registrationTypeId = $request->query->get('registrationTypeId');
+        $registrationType = null;
+        if ($registrationTypeId) {
+            $registrationType = $this->getDoctrine()
+                ->getRepository(RegistrationType::class)
+                ->find($registrationTypeId);
+        }
 
-        $registrationStatusID = $request->query->get('RegistrationStatus_ID');
-        $registrationStatus = $this->getDoctrine()
-            ->getRepository('AppBundle:Registrationstatus')
-            ->find($registrationStatusID);
+        $registrationStatusId = $request->query->get('registrationStatusId');
+        $registrationStatuses = [];
+        if ($registrationStatusId == 'active') {
+            $registrationStatuses = $this->getDoctrine()
+                ->getRepository(RegistrationStatus::class)
+                ->findAllActive();
+        } elseif ($registrationStatusId == 'inactive') {
+            $registrationStatuses = $this->getDoctrine()
+                ->getRepository(RegistrationStatus::class)
+                ->findAllInactive();
+        } else {
+            $registrationStatus = $this->getDoctrine()
+                ->getRepository(RegistrationStatus::class)
+                ->find($registrationStatusId);
+            if ($registrationStatus) {
+                $registrationStatuses[] = $registrationStatus;
+            }
+        }
 
-        $badgeTypeID = $request->query->get('BadgeType_ID');
-        $badgeType = $this->getDoctrine()
-            ->getRepository('AppBundle:Badgetype')
-            ->find($badgeTypeID);
+        $badgeTypeId = $request->query->get('badgeTypeId');
+        $badgeType = null;
+        if ($badgeTypeId) {
+            $badgeType = $this->getDoctrine()
+                ->getRepository(BadgeType::class)
+                ->find($badgeTypeId);
+        }
 
         if ($page <= 1 || !is_numeric($page)) {
             $page = 1;
         }
 
-        $returnJson = $this->get('repository_registration')->searchFromManageRegistrations(
+        $returnJson = $this->getDoctrine()->getRepository(Registration::class)->searchFromManageRegistrations(
             $searchText,
             $page,
             $registrationType,
-            $registrationStatus,
+            $registrationStatuses,
             $badgeType
         );
 
         return new JsonResponse($returnJson);
-        /*
-        return new Response(
-            '{"page":1,"count_total":"1","count_returned":1,"results":[{"Registration_ID":"17051","ConfirmationNumber":"65a32d4b005d0149","Email":"sjnandez@gmail.com","Year":"2018","Number":"H0001","Badge_Type":null,"FirstName":"Stephanie","LastName":"Hernandez","BadgeName":"Stephanie Hernandez","Reg_Status":"New","group":"","Volunteer":"","Newsletter":"X","is_adult":1,"is_minor":0,"is_sponsor":0,"is_comsponsor":0,"is_guest":0,"is_vendor":0,"is_staff":0,"is_exhibitor":0}]}'
-        );
-        */
-    }
-
-    public function registrationStatusListAction()
-    {
-        $registrationStatusList = [];
-
-        $registrationStatuses = $this->get('repository_registrationstatus')->findAll();
-        foreach ($registrationStatuses as $registrationStatus) {
-            $id = $registrationStatus->getRegistrationstatusId();
-            $registrationStatusList[] = [
-                'id' => $id,
-                'status' => $registrationStatus->getStatus(),
-            ];
-        }
-
-        return $this->render('manage/registrationstatuslist.sub.html.twig', array('statusList' => $registrationStatusList));
-    }
-
-    public function registrationTypeListAction()
-    {
-        $registrationTypeList = [];
-
-        $registrationTypes = $this->get('repository_registrationtype')->findAll();
-        foreach ($registrationTypes as $registrationType) {
-            $id = $registrationType->getRegistrationtypeId();
-            $registrationTypeList[] = [
-                'id' => $id,
-                'type' => $registrationType->getName(),
-            ];
-        }
-
-        return $this->render('manage/registrationtypelist.sub.html.twig', array('typeList' => $registrationTypeList));
-    }
-
-    public function badgeTypeListAction()
-    {
-        $badgeTypeList = [];
-
-        $badgeTypes = $this->get('repository_badgetype')->findAll();
-        foreach ($badgeTypes as $badgeType) {
-            $id = $badgeType->getBadgetypeId();
-            $badgeTypeList[] = [
-                'id' => $id,
-                'name' => $badgeType->getDescription(),
-            ];
-        }
-
-        return $this->render('manage/badgetypelist.sub.html.twig', array('badgeTypeList' => $badgeTypeList));
     }
 }

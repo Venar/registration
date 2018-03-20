@@ -17,12 +17,11 @@ parameters:
     mailer_port: 587
     mailer_user: ~
     mailer_password: ~
+    mailer_from: it@animedetour.com
+    mailer_fromName: IT <Anime Detour>
 
     # A secret key that's used to generate certain security-related tokens
     secret: ThisTokenIsNotSoSecretChangeIt
 
     # Used for security to validate post-back calls from ASecureCart
     postback.sha1_key.asecurecart: ~
-
-    google_client_id: ~
-    google_client_secret: ~

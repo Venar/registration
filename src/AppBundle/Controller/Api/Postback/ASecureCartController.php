@@ -1,12 +1,27 @@
 <?php
+/**
+ * Copyright (c) 2018. Anime Twin Cities, Inc.
+ *
+ * This project, including all of the files and their contents, is licensed under the terms of MIT License
+ *
+ * See the LICENSE file in the root of this project for details.
+ */
 
 namespace AppBundle\Controller\Api\Postback;
 
 use AppBundle\Entity\Badge;
+use AppBundle\Entity\BadgeStatus;
+use AppBundle\Entity\BadgeType;
+use AppBundle\Entity\Event;
+use AppBundle\Entity\Extra;
 use AppBundle\Entity\Registration;
-use AppBundle\Entity\Registrationerror;
+use AppBundle\Entity\RegistrationError;
 use AppBundle\Entity\Registrationextra;
 use AppBundle\Entity\Registrationshirt;
+use AppBundle\Entity\RegistrationStatus;
+use AppBundle\Entity\RegistrationType;
+use AppBundle\Entity\Shirt;
+use Doctrine\ORM\ORMException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -34,178 +49,199 @@ class ASecureCartController extends Controller
             $postBackSignature = $request->request->get('PostbackSignature');
         }
 
-        $generatedHash = base64_encode(hash_hmac('sha1', $xmlPost, $key, true));
-        if ($generatedHash != $postBackSignature) {
-            $error = "Postback Signature didn't match. Generated: '" . $generatedHash
-                . "', Postback: '" . $postBackSignature . "'";
-            $this->createRegistrationError($error, $xmlPost);
-
-            $response = new Response();
-            $response->setStatusCode(401);
-            return $response;
-        }
-
-        $xml = new \SimpleXMLElement($xmlPost);
-
-        $cartItems = $xml->cart->cart_items->cart_item;
-        foreach ($cartItems as $cartItem) {
-            /* @var $cartItem \SimpleXMLElement */
-
-            $attributes = $cartItem->attributes();
-
-            $regType = (String)$attributes['id'];
-            if (strpos($regType, 'OUTREACH') !== false) {
-                //This is a donation, not a registration, skipping
-                continue;
-            }
-
-            if (strpos($regType, 'ADREGSTANDARD') !== false) {
-                $regType = 'ADREGSTANDARD';
-            }
-
-            $badgeType = $this->get('repository_badgetype')->getBadgeTypeFromType($regType);
-            if (!$badgeType) {
-                $error = "BadgeType didn't load correctly: '" . $regType . "'";
+        try {
+            $generatedHash = base64_encode(hash_hmac('sha1', $xmlPost, $key, true));
+            if ($generatedHash != $postBackSignature) {
+                $error = "Postback Signature didn't match. Generated: '" . $generatedHash
+                    . "', Postback: '" . $postBackSignature . "'";
                 $this->createRegistrationError($error, $xmlPost);
 
-                continue;
+                $response = new Response();
+                $response->setStatusCode(401);
+                return $response;
             }
 
-            $badgeStatus = $this->get('repository_badgestatus')->getBadgeStatusFromStatus('NEW');
-            if (!$badgeType) {
-                $error = "BadgeStatus 'NEW' didn't exist. Configuration Error.";
-                $this->createRegistrationError($error, $xmlPost);
+            $xml = new \SimpleXMLElement($xmlPost);
 
-                continue;
-            }
+            $cartItems = $xml->cart->cart_items->cart_item;
+            foreach ($cartItems as $cartItem) {
+                /* @var $cartItem \SimpleXMLElement */
 
-            $registrationType = $this->get('repository_registrationtype')->getRegistrationTypeFromType('Online');
-            if (!$registrationType) {
-                $error = "RegistrationType 'Online' didn't exist. Configuration Error.";
-                $this->createRegistrationError($error, $xmlPost);
+                $attributes = $cartItem->attributes();
 
-                continue;
-            }
+                $regType = (String)$attributes['id'];
+                if (strpos($regType, 'OUTREACH') !== false) {
+                    //This is a donation, not a registration, skipping
+                    continue;
+                }
 
-            $registrationStatus = $this->get('repository_registrationstatus')->getRegistrationStatusFromStatus('New');
-            if (!$registrationStatus) {
-                $error = "RegistrationStatus 'New' didn't exist. Configuration Error.";
-                $this->createRegistrationError($error, $xmlPost);
+                if (strpos($regType, 'ADREGSTANDARD') !== false) {
+                    $regType = 'ADREGSTANDARD';
+                }
 
-                continue;
-            }
-
-            $event = $this->get('repository_event')->getCurrentEvent();
-            if (!$event) {
-                $error = "Could not load current event.";
-                $this->createRegistrationError($error, $xmlPost);
-
-                continue;
-            }
-
-            // Addon1 First | Middle | Last
-            // Addon2 Badge Name
-            // Addon3 email
-            // Addon4 Birthday
-            // Addon5
-            // Addon6 Mens/Womens Shirt
-            // size   Shirt Size
-            // Addon9 SponsorBreakfast Extra 'SponsorBreakfast' or 'Decline' or '' if not a sponsor type
-
-            // hAddon1 Address 1
-            // hAddon2 Adrress 2
-            // hAddon3 City | State | zip
-            // hAddon4 phone
-            // hAddon5 Contact Newsletter
-            // hAddon6 Contact Volunteer
-            $registration = new Registration();
-            $registration->setXml((String)$xmlPost);
-            $registration->setEvent($event);
-            $registration->setRegistrationstatus($registrationStatus);
-            $registration->setRegistrationtype($registrationType);
-            $name = explode('|', (String)$attributes['addon1']);
-            $registration->setFirstname(trim($name[0]));
-            $registration->setMiddlename(trim($name[1]));
-            $registration->setLastname(trim($name[2]));
-            $registration->setBadgename(trim((String)$attributes['addon2']));
-            $registration->setEmail(trim((String)$attributes['addon3']));
-
-            $birthDate = (String)$attributes['addon4'];
-            if (!strtotime($birthDate)) {
-                $birthDate = str_replace('-', '/', $birthDate);
-            }
-
-            $registration->setBirthday(new \DateTime($birthDate));
-            $registration->setAddress((String)$attributes['haddon1']);
-            $registration->setAddress2((String)$attributes['haddon2']);
-            $address = explode('|', (String)$attributes['haddon3']);
-            $registration->setCity(trim($address[0]));
-            $registration->setState(trim($address[1]));
-            $registration->setZip(trim($address[2]));
-            $registration->setPhone((String)$attributes['haddon4']);
-            $contactNewsletter = (String) $attributes['haddon5'];
-            $registration->setContactNewsletter((bool) $contactNewsletter);
-            $contactVolunteer = (String) $attributes['haddon5'];
-            $registration->setContactVolunteer((bool) $contactVolunteer);
-            $number = $this->get('repository_registration')->generateNumber($registration);
-            $registration->setNumber($number);
-
-            if ($badgeType->getName() == 'ADREGSTANDARD' &&
-                ($registration->getBirthday()->getTimestamp() > strtotime($event->getStartdate()->format('m/d/y') . " -18 years"))
-            ) {
-                $badgeType = $this->get('repository_badgetype')->getBadgeTypeFromType('MINOR');
+                /** @var BadgeType $badgeType */
+                $badgeType = $entityManager
+                    ->getRepository(BadgeType::class)
+                    ->getBadgeTypeFromType($regType);
                 if (!$badgeType) {
-                    $error = "BadgeType didn't load correctly: 'MINOR'";
+                    $error = "BadgeType didn't load correctly: '" . $regType . "'";
                     $this->createRegistrationError($error, $xmlPost);
 
                     continue;
                 }
-            }
 
-            $entityManager->persist($registration);
-            $entityManager->flush();
-
-            $Badge = new Badge();
-            $badgeNumber = $this->get('repository_badge')->generateNumber();
-            $Badge->setNumber($badgeNumber);
-            $Badge->setBadgetype($badgeType);
-            $Badge->setBadgestatus($badgeStatus);
-            $Badge->setRegistration($registration);
-            $entityManager->persist($Badge);
-
-            $shirt_type = explode(' ', (String)$attributes['addon6']);
-            if (array_key_exists(0, $shirt_type)
-                && $shirt_type[0] != ''
-                && (String)$attributes['size'] != ''
-            ) {
-                $shirtType = $shirt_type[0];
-                $shirtSize = (String)$attributes['size'];
-                $shirt = $this->get('repository_shirt')->getShirtFromTypeAndSize($shirtType, $shirtSize);
-                if ($shirt) {
-                    $registrationShirt = new Registrationshirt();
-                    $registrationShirt->setRegistration($registration);
-                    $registrationShirt->setShirt($shirt);
-                    $entityManager->persist($registrationShirt);
-                } else {
-                    $error = 'Shirt Couldn\'t be applied to registration! ' . $registration->getNumber() . ' '
-                        . (String)$attributes['addon6'] . ' ' . (String)$attributes['size'];
+                $badgeStatus = $entityManager
+                    ->getRepository(BadgeStatus::class)
+                    ->getBadgeStatusFromStatus('NEW');
+                if (!$badgeType) {
+                    $error = "BadgeStatus 'NEW' didn't exist. Configuration Error.";
                     $this->createRegistrationError($error, $xmlPost);
+
+                    continue;
                 }
+
+                $registrationType = $entityManager
+                    ->getRepository(RegistrationType::class)
+                    ->getRegistrationTypeFromType('Online');
+                if (!$registrationType) {
+                    $error = "RegistrationType 'Online' didn't exist. Configuration Error.";
+                    $this->createRegistrationError($error, $xmlPost);
+
+                    continue;
+                }
+
+                $registrationStatus = $entityManager
+                    ->getRepository(RegistrationStatus::class)
+                    ->getRegistrationStatusFromStatus('New');
+                if (!$registrationStatus) {
+                    $error = "RegistrationStatus 'New' didn't exist. Configuration Error.";
+                    $this->createRegistrationError($error, $xmlPost);
+
+                    continue;
+                }
+
+                /** @var Event $event */
+                $event = $entityManager->getRepository(Event::class)->getCurrentEvent();
+                if (!$event) {
+                    $error = "Could not load current event.";
+                    $this->createRegistrationError($error, $xmlPost);
+
+                    continue;
+                }
+
+                // Addon1 First | Middle | Last
+                // Addon2 Badge Name
+                // Addon3 email
+                // Addon4 Birthday
+                // Addon5
+                // Addon6 Mens/Womens Shirt
+                // size   Shirt Size
+                // Addon9 SponsorBreakfast Extra 'SponsorBreakfast' or 'Decline' or '' if not a sponsor type
+
+                // hAddon1 Address 1
+                // hAddon2 Adrress 2
+                // hAddon3 City | State | zip
+                // hAddon4 phone
+                // hAddon5 Contact Newsletter
+                // hAddon6 Contact Volunteer
+                $registration = new Registration();
+                $registration->setXml((String)$xmlPost);
+                $registration->setEvent($event);
+                $registration->setRegistrationStatus($registrationStatus);
+                $registration->setRegistrationType($registrationType);
+                $name = explode('|', (String)$attributes['addon1']);
+                $registration->setFirstName(trim($name[0]));
+                $registration->setMiddleName(trim($name[1]));
+                $registration->setLastName(trim($name[2]));
+                $badgeName = trim((String)$attributes['addon2']);
+                $badgeName = substr($badgeName, 0, 20);
+                if (!$badgeName) {
+                    $badgeName = $registration->getFirstName();
+                }
+                $registration->setBadgeName($badgeName);
+                $registration->setEmail(trim((String)$attributes['addon3']));
+
+                $birthDate = (String)$attributes['addon4'];
+                if (!strtotime($birthDate)) {
+                    $birthDate = str_replace('-', '/', $birthDate);
+                }
+
+                $registration->setBirthday(new \DateTime($birthDate));
+                $registration->setAddress((String)$attributes['haddon1']);
+                $registration->setAddress2((String)$attributes['haddon2']);
+                $address = explode('|', (String)$attributes['haddon3']);
+                $registration->setCity(trim($address[0]));
+                $registration->setState(trim($address[1]));
+                $registration->setZip(trim($address[2]));
+                $registration->setPhone((String)$attributes['haddon4']);
+                $contactNewsletter = (String)$attributes['haddon5'];
+                $registration->setContactNewsletter((bool)$contactNewsletter);
+                $contactVolunteer = (String)$attributes['haddon5'];
+                $registration->setContactVolunteer((bool)$contactVolunteer);
+                $number = $entityManager
+                    ->getRepository(Registration::class)
+                    ->generateNumber($registration);
+                $registration->setNumber($number);
+
+                if ($badgeType->getName() == 'ADREGSTANDARD' &&
+                    ($registration->getBirthday()->getTimestamp() > strtotime($event->getStartdate()->format('m/d/y') . " -18 years"))
+                ) {
+                    $badgeType = $entityManager
+                        ->getRepository(BadgeType::class)
+                        ->getBadgeTypeFromType('MINOR');
+                    if (!$badgeType) {
+                        $error = "BadgeType didn't load correctly: 'MINOR'";
+                        $this->createRegistrationError($error, $xmlPost);
+
+                        continue;
+                    }
+                }
+
+                $entityManager->persist($registration);
+                $entityManager->flush();
+
+                $Badge = new Badge();
+                $badgeNumber = $entityManager->getRepository(Badge::class)->generateNumber();
+                $Badge->setNumber($badgeNumber);
+                $Badge->setBadgeType($badgeType);
+                $Badge->setBadgeStatus($badgeStatus);
+                $Badge->setRegistration($registration);
+                $entityManager->persist($Badge);
+
+                $shirt_type = explode(' ', (String)$attributes['addon6']);
+                if (array_key_exists(0, $shirt_type)
+                    && $shirt_type[0] != ''
+                    && (String)$attributes['size'] != ''
+                ) {
+                    $shirtType = $shirt_type[0];
+                    $shirtSize = (String)$attributes['size'];
+                    $shirt = $entityManager
+                        ->getRepository(Shirt::class)
+                        ->getShirtFromTypeAndSize($shirtType, $shirtSize);
+                    if ($shirt) {
+                        $registrationShirt = new RegistrationShirt();
+                        $registrationShirt->setRegistration($registration);
+                        $registrationShirt->setShirt($shirt);
+                        $entityManager->persist($registrationShirt);
+                    } else {
+                        $error = 'Shirt Couldn\'t be applied to registration! ' . $registration->getNumber() . ' '
+                            . (String)$attributes['addon6'] . ' ' . (String)$attributes['size'];
+                        $this->createRegistrationError($error, $xmlPost);
+                    }
+                }
+
+                $breakfastOption = (String)$attributes['addon5'];
+                if (strpos($breakfastOption, 'SponsorBreakfast') !== false) {
+                    $extra = $entityManager->getRepository(Extra::class)->getExtraFromName('SponsorBreakfast');
+                    $registration->addExtra($extra);
+                }
+
+                $entityManager->flush();
+
+                $this->get('util_email')->generateAndSendConfirmationEmail($registration);
             }
-
-            $breakfastOption = (String)$attributes['addon5'];
-            if (strpos($breakfastOption, 'SponsorBreakfast') !== false) {
-                $extra = $this->get('repository_extra')->getExtraFromName('SponsorBreakfast');
-                $registrationExtra = new Registrationextra();
-                $registrationExtra->setRegistration($registration);
-                $registrationExtra->setExtra($extra);
-                $entityManager->persist($registrationExtra);
-            }
-
-            $entityManager->flush();
-
-            $badges = $this->get('repository_badge')->getBadgesFromRegistration($registration);
-            $this->get('repository_registration')->sendConfirmationEmail($registration, $badges);
+        } catch (ORMException $e) {
+            $this->get('util_email')->sendErrorMessageToRegistration($e->getMessage());
         }
         $response = new Response();
 
@@ -242,37 +278,17 @@ class ASecureCartController extends Controller
     /**
      * @param String $error
      * @param String $xmlPost
+     * @throws ORMException
      */
     protected function createRegistrationError($error, $xmlPost)
     {
         $entityManager = $this->get('doctrine.orm.entity_manager');
 
-        $registrationError = new Registrationerror();
+        $registrationError = new RegistrationError();
         $registrationError->setDescription($error);
         $registrationError->setXml($xmlPost);
-        $this->sendErrorEmail($registrationError);
+        $this->get('util_email')->sendErrorMessageToRegistration($registrationError);
         $entityManager->persist($registrationError);
         $entityManager->flush();
-    }
-
-    /**
-     * @param Registrationerror $registrationError
-     */
-    protected function sendErrorEmail($registrationError)
-    {
-        $event = $this->get('repository_event')->getCurrentEvent();
-
-        $message = \Swift_Message::newInstance()
-            ->setSubject("Anime Detour {$event->getYear()} Registration Error")
-            ->setFrom('it@animedetour.com', 'Anime Detour IT')
-            ->setTo('it@animedetour.com')
-            ->setSender('it@animedetour.com')
-            ->setBody(
-                $registrationError->getDescription(),
-                'text/html'
-            )
-        ;
-        $mailer = $this->get('swiftmailer.mailer');
-        $mailer->send($message);
     }
 }

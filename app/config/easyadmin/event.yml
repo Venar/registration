@@ -7,25 +7,22 @@ easy_admin:
             list:
                 fields:
                     - { property: 'year' }
-                    - { property: 'startdate', format: 'M jS Y', type_options: { required: true } }
-                    - { property: 'enddate', format: 'M jS Y', type_options: { required: true } }
-                    - { property: 'theme' }
-                    - { property: 'attendancecap' }
+                    - { property: 'startDate', format: 'M jS Y', type_options: { required: true } }
+                    - { property: 'endDate', format: 'M jS Y', type_options: { required: true } }
+                    - { property: 'attendanceCap' }
             form:
                 actions:
                     - { name: 'makeActive', icon: 'plus-square' }
                 fields:
                     - { property: 'year' }
                     - {
-                        property: 'startdate',
+                        property: 'startDate',
                         format: 'n/j/Y',
                         type: 'date'
                       }
                     - {
-                        property: 'enddate',
+                        property: 'endDate',
                         format: 'n/j/Y',
                         type: 'date'
                       }
-                    - { property: 'theme' }
-                    - { property: 'attendancecap' }
-                    - { property: 'finalattendance' }
+                    - { property: 'attendanceCap' }

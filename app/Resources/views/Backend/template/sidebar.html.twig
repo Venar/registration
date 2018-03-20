@@ -1,0 +1,29 @@
+{##
+ # Copyright (c) 2018. Anime Twin Cities, Inc.
+ #
+ # This project, including all of the files and their contents, is licensed under the terms of MIT License
+ #
+ # See the LICENSE file in the root of this project for details.
+#}
+<nav class="navbar navbar-expand-md navbar-dark fixed-top unique-color">
+    <a class="navbar-brand" href="/"><img src="{{ asset('images/ADLogo270.png') }}" alt="Anime Detour"></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            {{ render(controller('AppBundle:Backend/Template/Menu:menuRouting')) }}
+        </ul>
+        <ul class="navbar-nav nav-flex-icons">
+            {{ render(controller('AppBundle:User/User:currentUser')) }}
+            {{ render(controller('AppBundle:Backend/Template/Menu:switchYears')) }}
+        </ul>
+    </div>
+</nav>
+
+<style>
+    .social {
+        color: #dbe4e7;
+    }
+</style>

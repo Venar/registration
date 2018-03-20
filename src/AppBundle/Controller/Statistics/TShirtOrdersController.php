@@ -1,7 +1,19 @@
 <?php
+/**
+ * Copyright (c) 2018. Anime Twin Cities, Inc.
+ *
+ * This project, including all of the files and their contents, is licensed under the terms of MIT License
+ *
+ * See the LICENSE file in the root of this project for details.
+ */
 
 namespace AppBundle\Controller\Statistics;
 
+use AppBundle\Entity\Event;
+use AppBundle\Entity\Registration;
+use AppBundle\Entity\RegistrationShirt;
+use AppBundle\Entity\Shirt;
+use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -10,18 +22,19 @@ class TShirtOrdersController extends Controller
 {
     /**
      * @Route("/shirts/list", name="shirt_list")
-     * @Security("has_role('ROLE_USER')")
+     * @Security("has_role('ROLE_MERCH')")
      */
     public function tShirtOrders()
     {
         $vars = [];
 
-        $event = $this->get('repository_event')->getSelectedEvent();
-        $shirts = $this->get('repository_shirt')->findAll();
+        $event = $this->getDoctrine()->getRepository(Event::class)->getSelectedEvent();
+        $shirts = $this->getDoctrine()->getRepository(Shirt::class)->findAll();
 
-        $subQuery = $this->get('doctrine.orm.default_entity_manager')->createQueryBuilder()
-            ->select('r')
-            ->from('AppBundle:Registration', 'r')
+        $subQuery = $this
+            ->getDoctrine()
+            ->getRepository(Registration::class)
+            ->createQueryBuilder('r')
             ->where("r.event = :event")
             ->getDQL();
 
@@ -30,17 +43,22 @@ class TShirtOrdersController extends Controller
         foreach ($shirts as $shirt) {
             $queryBuilder = $this->get('doctrine.orm.default_entity_manager')->createQueryBuilder();
             $queryBuilder
-                ->select('count(rs.registrationshirtId)')
-                ->from('AppBundle\Entity\Registrationshirt', 'rs')
+                ->select('count(rs.registrationShirtId)')
+                ->from(RegistrationShirt::class, 'rs')
                 ->where($queryBuilder->expr()->in('rs.registration', $subQuery))
                 ->andWhere('rs.shirt = :shirt')
                 ->setParameter('shirt', $shirt)
                 ->setParameter('event', $event)
             ;
-            $count = (int) $queryBuilder->getQuery()->getSingleScalarResult();
+
+            try {
+                $count = (int)$queryBuilder->getQuery()->getSingleScalarResult();
+            } catch (NonUniqueResultException $e) {
+                $count = 0;
+            }
 
             $totalTShirts += $count;
-            $shirtType = $shirt->getShirttype() . ' ' . $shirt->getShirtsize();
+            $shirtType = $shirt->getType() . ' ' . $shirt->getSize();
 
             $tmpArray = [];
             $tmpArray[] = $shirtType;
@@ -61,7 +79,10 @@ class TShirtOrdersController extends Controller
      * @Security("has_role('ROLE_USER')")
      */
     public function shirtCSV() {
-        $registrations = $this->get('repository_registration')->findRegistrationsWithShirts();
+        $registrations = $this
+            ->getDoctrine()
+            ->getRepository(Registration::class)
+            ->findRegistrationsWithShirts();
 
         header("Content-type: application/csv");
         header("Content-Disposition: attachment; filename=\"ad_shirts.csv\"");
@@ -86,30 +107,34 @@ class TShirtOrdersController extends Controller
         fputcsv($handle, $fields);
 
         foreach ($registrations as $registration) {
-            $badges = $this->get('repository_badge')->getBadgesFromRegistration($registration);
+            $badges = $registration->getBadges();
             $badgeType = '';
             foreach ($badges as $badge) {
                 $badgeType = $badge->getBadgetype()->getDescription();
             }
 
-            $group = $this->get('repository_reggroup')->getRegGroupFromRegistration($registration);
+            $groups = $registration->getGroups();
             $groupName = '';
-            if ($group) {
-                $groupName = $group->getName();
+            foreach ($groups as $group) {
+                if ($groupName != '') {
+                    $groupName .= ', ';
+                }
+                $groupName .= $group->getName();
             }
 
-            $shirts = $this->get('repository_shirt')->getShirtsFromRegistration($registration);
-            foreach ($shirts as $shirt) {
+            $registrationShirts = $registration->getRegistrationShirts();
+            foreach ($registrationShirts as $registrationShirt) {
+                $shirt = $registrationShirt->getShirt();
                 $data = [
                     $registration->getNumber(),
-                    $registration->getLastname(),
-                    $registration->getFirstname(),
-                    $registration->getBadgename(),
+                    $registration->getLastName(),
+                    $registration->getFirstName(),
+                    $registration->getBadgeName(),
                     $badgeType,
-                    $shirt->getShirttype(),
-                    $shirt->getShirtsize(),
+                    $shirt->getType(),
+                    $shirt->getSize(),
                     $groupName,
-                    count($shirts),
+                    count($registrationShirts),
                     'X_______________________',
                 ];
 

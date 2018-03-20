@@ -1,4 +1,11 @@
 <?php
+/**
+ * Copyright (c) 2018. Anime Twin Cities, Inc.
+ *
+ * This project, including all of the files and their contents, is licensed under the terms of MIT License
+ *
+ * See the LICENSE file in the root of this project for details.
+ */
 
 namespace AppBundle\Entity;
 
@@ -7,8 +14,8 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Badge
  *
- * @ORM\Table(name="Badge", indexes={@ORM\Index(name="FK1_Badge_CreatedBy", columns={"CreatedBy"}), @ORM\Index(name="FK2_Badge_ModifiedBy", columns={"ModifiedBy"}), @ORM\Index(name="FK2_Badge_Registration_ID", columns={"Registration_ID"}), @ORM\Index(name="FK2_Registration_BadgeType_ID", columns={"BadgeType_ID"}), @ORM\Index(name="FK2_Registration_BadgeStatus_ID", columns={"BadgeStatus_ID"})})
- * @ORM\Entity
+ * @ORM\Table(name="badge", indexes={@ORM\Index(name="FK1_Badge_CreatedBy", columns={"created_by"}), @ORM\Index(name="FK2_Badge_ModifiedBy", columns={"modified_by"}), @ORM\Index(name="FK2_Badge_Registration_ID", columns={"registration_id"}), @ORM\Index(name="FK2_Registration_BadgeType_ID", columns={"badge_type_id"}), @ORM\Index(name="FK2_Registration_BadgeStatus_ID", columns={"badge_status_id"})})
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\BadgeRepository")
  */
 class Badge
 {
@@ -22,72 +29,72 @@ class Badge
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="CreatedDate", type="datetime", nullable=true)
+     * @ORM\Column(name="created_date", type="datetime", nullable=true)
      */
-    private $createddate;
+    private $createdDate;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="ModifiedDate", type="datetime", nullable=true)
+     * @ORM\Column(name="modified_date", type="datetime", nullable=true)
      */
-    private $modifieddate;
+    private $modifiedDate;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="Badge_ID", type="integer")
+     * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $badgeId;
+    private $id;
 
     /**
-     * @var \AppBundle\Entity\Badgestatus
+     * @var \AppBundle\Entity\BadgeStatus
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Badgestatus")
+     * @ORM\ManyToOne(targetEntity="BadgeStatus")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="BadgeStatus_ID", referencedColumnName="BadgeStatus_ID")
+     *   @ORM\JoinColumn(name="badge_status_id", referencedColumnName="id")
      * })
      */
-    private $badgestatus;
+    private $badgeStatus;
 
     /**
-     * @var \AppBundle\Entity\Badgetype
+     * @var \AppBundle\Entity\BadgeType
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Badgetype")
+     * @ORM\ManyToOne(targetEntity="BadgeType")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="BadgeType_ID", referencedColumnName="BadgeType_ID")
+     *   @ORM\JoinColumn(name="badge_type_id", referencedColumnName="id")
      * })
      */
-    private $badgetype;
-
-    /**
-     * @var \AppBundle\Entity\User
-     *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="CreatedBy", referencedColumnName="id")
-     * })
-     */
-    private $createdby;
+    private $badgeType;
 
     /**
      * @var \AppBundle\Entity\User
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="ModifiedBy", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id")
      * })
      */
-    private $modifiedby;
+    private $createdBy;
+
+    /**
+     * @var \AppBundle\Entity\User
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="modified_by", referencedColumnName="id")
+     * })
+     */
+    private $modifiedBy;
 
     /**
      * @var \AppBundle\Entity\Registration
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Registration")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Registration", inversedBy="badges")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="Registration_ID", referencedColumnName="Registration_ID")
+     *   @ORM\JoinColumn(name="registration_id", referencedColumnName="id")
      * })
      */
     private $registration;
@@ -119,51 +126,51 @@ class Badge
     }
 
     /**
-     * Set createddate
+     * Set createdDate
      *
-     * @param \DateTime $createddate
+     * @param \DateTime $createdDate
      *
      * @return Badge
      */
-    public function setCreateddate($createddate)
+    public function setCreatedDate($createdDate)
     {
-        $this->createddate = $createddate;
+        $this->createdDate = $createdDate;
 
         return $this;
     }
 
     /**
-     * Get createddate
+     * Get createdDate
      *
      * @return \DateTime
      */
-    public function getCreateddate()
+    public function getCreatedDate()
     {
-        return $this->createddate;
+        return $this->createdDate;
     }
 
     /**
-     * Set modifieddate
+     * Set modifiedDate
      *
-     * @param \DateTime $modifieddate
+     * @param \DateTime $modifiedDate
      *
      * @return Badge
      */
-    public function setModifieddate($modifieddate)
+    public function setModifiedDate($modifiedDate)
     {
-        $this->modifieddate = $modifieddate;
+        $this->modifiedDate = $modifiedDate;
 
         return $this;
     }
 
     /**
-     * Get modifieddate
+     * Get modifiedDate
      *
      * @return \DateTime
      */
-    public function getModifieddate()
+    public function getModifiedDate()
     {
-        return $this->modifieddate;
+        return $this->modifiedDate;
     }
 
     /**
@@ -173,103 +180,103 @@ class Badge
      */
     public function getBadgeId()
     {
-        return $this->badgeId;
+        return $this->id;
     }
 
     /**
-     * Set badgestatus
+     * Set badgeStatus
      *
-     * @param \AppBundle\Entity\Badgestatus $badgestatus
+     * @param \AppBundle\Entity\BadgeStatus $badgeStatus
      *
      * @return Badge
      */
-    public function setBadgestatus(\AppBundle\Entity\Badgestatus $badgestatus = null)
+    public function setBadgestatus(BadgeStatus $badgeStatus = null)
     {
-        $this->badgestatus = $badgestatus;
+        $this->badgeStatus = $badgeStatus;
 
         return $this;
     }
 
     /**
-     * Get badgestatus
+     * Get badgeStatus
      *
-     * @return \AppBundle\Entity\Badgestatus
+     * @return \AppBundle\Entity\BadgeStatus
      */
-    public function getBadgestatus()
+    public function getBadgeStatus()
     {
-        return $this->badgestatus;
+        return $this->badgeStatus;
     }
 
     /**
-     * Set badgetype
+     * Set badgeType
      *
-     * @param \AppBundle\Entity\Badgetype $badgetype
+     * @param \AppBundle\Entity\BadgeType $badgeType
      *
      * @return Badge
      */
-    public function setBadgetype(\AppBundle\Entity\Badgetype $badgetype = null)
+    public function setBadgeType(BadgeType $badgeType = null)
     {
-        $this->badgetype = $badgetype;
+        $this->badgeType = $badgeType;
 
         return $this;
     }
 
     /**
-     * Get badgetype
+     * Get badgeType
      *
-     * @return \AppBundle\Entity\Badgetype
+     * @return \AppBundle\Entity\BadgeType
      */
-    public function getBadgetype()
+    public function getBadgeType()
     {
-        return $this->badgetype;
+        return $this->badgeType;
     }
 
     /**
-     * Set createdby
+     * Set createdBy
      *
-     * @param \AppBundle\Entity\User $createdby
+     * @param \AppBundle\Entity\User $createdBy
      *
      * @return Badge
      */
-    public function setCreatedby(\AppBundle\Entity\User $createdby = null)
+    public function setCreatedBy(User $createdBy = null)
     {
-        $this->createdby = $createdby;
+        $this->createdBy = $createdBy;
 
         return $this;
     }
 
     /**
-     * Get createdby
+     * Get createdBy
      *
      * @return \AppBundle\Entity\User
      */
-    public function getCreatedby()
+    public function getCreatedBy()
     {
-        return $this->createdby;
+        return $this->createdBy;
     }
 
     /**
-     * Set modifiedby
+     * Set modifiedBy
      *
-     * @param \AppBundle\Entity\User $modifiedby
+     * @param \AppBundle\Entity\User $modifiedBy
      *
      * @return Badge
      */
-    public function setModifiedby(\AppBundle\Entity\User $modifiedby = null)
+    public function setModifiedBy(User $modifiedBy = null)
     {
-        $this->modifiedby = $modifiedby;
+        $this->modifiedBy = $modifiedBy;
 
         return $this;
     }
 
     /**
-     * Get modifiedby
+     * Get modifiedBy
      *
      * @return \AppBundle\Entity\User
      */
-    public function getModifiedby()
+    public function getModifiedBy()
     {
-        return $this->modifiedby;
+        return $this->modifiedBy;
     }
 
     /**
@@ -279,7 +286,7 @@ class Badge
      *
      * @return Badge
      */
-    public function setRegistration(\AppBundle\Entity\Registration $registration = null)
+    public function setRegistration(Registration $registration = null)
     {
         $this->registration = $registration;
 

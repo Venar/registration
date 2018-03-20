@@ -1,117 +1,168 @@
 <?php
+/**
+ * Copyright (c) 2018. Anime Twin Cities, Inc.
+ *
+ * This project, including all of the files and their contents, is licensed under the terms of MIT License
+ *
+ * See the LICENSE file in the root of this project for details.
+ */
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Event
  *
- * @ORM\Table(name="Event", indexes={@ORM\Index(name="Year", columns={"Year"}), @ORM\Index(name="Active", columns={"Active", "Public"}), @ORM\Index(name="FK1_Event_CreatedBy", columns={"CreatedBy"}), @ORM\Index(name="FK2_Event_ModifiedBy", columns={"ModifiedBy"})})
- * @ORM\Entity
+ * @ORM\Table(name="event", indexes={@ORM\Index(name="year", columns={"year"}), @ORM\Index(name="active", columns={"active", "public"}), @ORM\Index(name="FK1_Event_CreatedBy", columns={"created_by"}), @ORM\Index(name="FK2_Event_ModifiedBy", columns={"modified_by"})})
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\EventRepository")
  */
 class Event
 {
+    public function __construct()
+    {
+        $this->eventBadgeTypes = new ArrayCollection();
+    }
+
     /**
      * @var string
      *
-     * @ORM\Column(name="Year", type="string", length=255, nullable=false)
+     * @ORM\Column(name="year", type="string", length=255, nullable=false)
      */
     private $year;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="StartDate", type="datetime", nullable=true)
+     * @ORM\Column(name="pre_registration_start", type="datetime", nullable=true)
      */
-    private $startdate;
+    private $preRegistrationStart;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="EndDate", type="datetime", nullable=true)
+     * @ORM\Column(name="pre_registration_end", type="datetime", nullable=true)
      */
-    private $enddate;
+    private $preRegistrationEnd;
 
     /**
-     * @var string
+     * @var \DateTime
      *
-     * @ORM\Column(name="Theme", type="string", length=255, nullable=true)
+     * @ORM\Column(name="start_date", type="datetime", nullable=false)
      */
-    private $theme;
+    private $startDate;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="end_date", type="datetime", nullable=false)
+     */
+    private $endDate;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="AttendanceCap", type="integer", nullable=false)
+     * @ORM\Column(name="attendance_cap", type="integer", nullable=false)
      */
-    private $attendancecap;
+    private $attendanceCap;
 
     /**
      * @var boolean
      *
-     * @ORM\Column(name="Active", type="boolean", nullable=false)
+     * @ORM\Column(name="active", type="boolean", nullable=false)
      */
     private $active = '0';
 
     /**
      * @var boolean
      *
-     * @ORM\Column(name="Public", type="boolean", nullable=false)
+     * @ORM\Column(name="public", type="boolean", nullable=false)
      */
     private $public = '0';
 
     /**
-     * @var integer
+     * @var \DateTime
      *
-     * @ORM\Column(name="FinalAttendance", type="integer", nullable=false)
+     * @ORM\Column(name="created_date", type="datetime", nullable=true)
      */
-    private $finalattendance;
+    private $createdDate;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="CreatedDate", type="datetime", nullable=true)
+     * @ORM\Column(name="modified_date", type="datetime", nullable=true)
      */
-    private $createddate;
+    private $modifiedDate;
 
     /**
-     * @var \DateTime
+     * @var EventBadgeType[]
      *
-     * @ORM\Column(name="ModifiedDate", type="datetime", nullable=true)
+     * One Product has Many Features.
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\EventBadgeType", mappedBy="event")
      */
-    private $modifieddate;
+    private $eventBadgeTypes;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="Event_ID", type="integer")
+     * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $eventId;
+    private $id;
 
     /**
      * @var \AppBundle\Entity\User
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="CreatedBy", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id")
      * })
      */
-    private $createdby;
+    private $createdBy;
 
     /**
      * @var \AppBundle\Entity\User
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="ModifiedBy", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="modified_by", referencedColumnName="id")
      * })
      */
-    private $modifiedby;
+    private $modifiedBy;
 
 
+    public function __toString()
+    {
+        return $this->getYear();
+    }
+
+    /**
+     * Get events
+     *
+     * @return EventBadgeType[]|\Doctrine\Common\Collections\Collection
+     */
+    public function getEventBadgeTypes()
+    {
+        return $this->eventBadgeTypes;
+    }
+
+    /**
+     * @param EventBadgeType $eventBadgeType
+     */
+    public function addRegistrationShirt(EventBadgeType $eventBadgeType)
+    {
+        $this->eventBadgeTypes->add($eventBadgeType);
+    }
+
+    /**
+     * @param EventBadgeType $eventBadgeType
+     */
+    public function removeRegistrationShirt(EventBadgeType $eventBadgeType)
+    {
+        $this->eventBadgeTypes->removeElement($eventBadgeType);
+    }
 
     /**
      * Set year
@@ -138,99 +189,123 @@ class Event
     }
 
     /**
-     * Set startdate
+     * Set preRegistrationStart
      *
-     * @param \DateTime $startdate
+     * @param \DateTime $preRegistrationStart
      *
      * @return Event
      */
-    public function setStartdate($startdate)
+    public function setPreRegistrationStart($preRegistrationStart)
     {
-        $this->startdate = $startdate;
+        $this->preRegistrationStart = $preRegistrationStart;
 
         return $this;
     }
 
     /**
-     * Get startdate
+     * Get preRegistrationStart
      *
      * @return \DateTime
      */
-    public function getStartdate()
+    public function getPreRegistrationStart()
     {
-        return $this->startdate;
+        return $this->preRegistrationStart;
     }
 
     /**
-     * Set enddate
+     * Set preRegistrationEnd
      *
-     * @param \DateTime $enddate
+     * @param \DateTime $preRegistrationEnd
      *
      * @return Event
      */
-    public function setEnddate($enddate)
+    public function setPreRegistrationEnd($preRegistrationEnd)
     {
-        $this->enddate = $enddate;
+        $this->preRegistrationEnd = $preRegistrationEnd;
 
         return $this;
     }
 
     /**
-     * Get enddate
+     * Get preRegistrationEnd
      *
      * @return \DateTime
      */
-    public function getEnddate()
+    public function getPreRegistrationEnd()
     {
-        return $this->enddate;
+        return $this->preRegistrationEnd;
     }
 
     /**
-     * Set theme
+     * Set startDate
      *
-     * @param string $theme
+     * @param \DateTime $startDate
      *
      * @return Event
      */
-    public function setTheme($theme)
+    public function setStartDate($startDate)
     {
-        $this->theme = $theme;
+        $this->startDate = $startDate;
 
         return $this;
     }
 
     /**
-     * Get theme
+     * Get startDate
      *
-     * @return string
+     * @return \DateTime
      */
-    public function getTheme()
+    public function getStartDate()
     {
-        return $this->theme;
+        return $this->startDate;
     }
 
     /**
-     * Set attendancecap
+     * Set endDate
      *
-     * @param integer $attendancecap
+     * @param \DateTime $endDate
      *
      * @return Event
      */
-    public function setAttendancecap($attendancecap)
+    public function setEndDate($endDate)
     {
-        $this->attendancecap = $attendancecap;
+        $this->endDate = $endDate;
 
         return $this;
     }
 
     /**
-     * Get attendancecap
+     * Get endDate
+     *
+     * @return \DateTime
+     */
+    public function getEndDate()
+    {
+        return $this->endDate;
+    }
+
+    /**
+     * Set attendanceCap
+     *
+     * @param integer $attendanceCap
+     *
+     * @return Event
+     */
+    public function setAttendanceCap($attendanceCap)
+    {
+        $this->attendanceCap = $attendanceCap;
+
+        return $this;
+    }
+
+    /**
+     * Get attendanceCap
      *
      * @return integer
      */
-    public function getAttendancecap()
+    public function getAttendanceCap()
     {
-        return $this->attendancecap;
+        return $this->attendanceCap;
     }
 
     /**
@@ -282,75 +357,51 @@ class Event
     }
 
     /**
-     * Set finalattendance
+     * Set createdDate
      *
-     * @param integer $finalattendance
+     * @param \DateTime $createdDate
      *
      * @return Event
      */
-    public function setFinalattendance($finalattendance)
+    public function setCreatedDate($createdDate)
     {
-        $this->finalattendance = $finalattendance;
+        $this->createdDate = $createdDate;
 
         return $this;
     }
 
     /**
-     * Get finalattendance
-     *
-     * @return integer
-     */
-    public function getFinalattendance()
-    {
-        return $this->finalattendance;
-    }
-
-    /**
-     * Set createddate
-     *
-     * @param \DateTime $createddate
-     *
-     * @return Event
-     */
-    public function setCreateddate($createddate)
-    {
-        $this->createddate = $createddate;
-
-        return $this;
-    }
-
-    /**
-     * Get createddate
+     * Get createdDate
      *
      * @return \DateTime
      */
-    public function getCreateddate()
+    public function getCreatedDate()
     {
-        return $this->createddate;
+        return $this->createdDate;
     }
 
     /**
-     * Set modifieddate
+     * Set modifiedDate
      *
-     * @param \DateTime $modifieddate
+     * @param \DateTime $modifiedDate
      *
      * @return Event
      */
-    public function setModifieddate($modifieddate)
+    public function setModifieddate($modifiedDate)
     {
-        $this->modifieddate = $modifieddate;
+        $this->modifiedDate = $modifiedDate;
 
         return $this;
     }
 
     /**
-     * Get modifieddate
+     * Get modifiedDate
      *
      * @return \DateTime
      */
-    public function getModifieddate()
+    public function getModifiedDate()
     {
-        return $this->modifieddate;
+        return $this->modifiedDate;
     }
 
     /**
@@ -358,56 +409,56 @@ class Event
      *
      * @return integer
      */
-    public function getEventId()
+    public function getId()
     {
-        return $this->eventId;
+        return $this->id;
     }
 
     /**
-     * Set createdby
+     * Set created_by
      *
-     * @param \AppBundle\Entity\User $createdby
+     * @param \AppBundle\Entity\User $createdBy
      *
      * @return Event
      */
-    public function setCreatedby(\AppBundle\Entity\User $createdby = null)
+    public function setCreatedBy(User $createdBy = null)
     {
-        $this->createdby = $createdby;
+        $this->createdBy = $createdBy;
 
         return $this;
     }
 
     /**
-     * Get createdby
+     * Get createdBy
      *
      * @return \AppBundle\Entity\User
      */
-    public function getCreatedby()
+    public function getCreatedBy()
     {
-        return $this->createdby;
+        return $this->createdBy;
     }
 
     /**
-     * Set modifiedby
+     * Set modifiedBy
      *
-     * @param \AppBundle\Entity\User $modifiedby
+     * @param \AppBundle\Entity\User $modifiedBy
      *
      * @return Event
      */
-    public function setModifiedby(\AppBundle\Entity\User $modifiedby = null)
+    public function setModifiedby(User $modifiedBy = null)
     {
-        $this->modifiedby = $modifiedby;
+        $this->modifiedBy = $modifiedBy;
 
         return $this;
     }
 
     /**
-     * Get modifiedby
+     * Get modifiedBy
      *
      * @return \AppBundle\Entity\User
      */
-    public function getModifiedby()
+    public function getModifiedBy()
     {
-        return $this->modifiedby;
+        return $this->modifiedBy;
     }
 }

@@ -1,7 +1,16 @@
 <?php
+/**
+ * Copyright (c) 2018. Anime Twin Cities, Inc.
+ *
+ * This project, including all of the files and their contents, is licensed under the terms of MIT License
+ *
+ * See the LICENSE file in the root of this project for details.
+ */
 
 namespace AppBundle\Controller\Printing;
 
+use AppBundle\Entity\BadgeType;
+use AppBundle\Entity\Event;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -11,43 +20,45 @@ class BadgeCSVListController extends Controller
 {
     /**
      * @Route("/print/csv/{type}", name="print_csv")
-     * @Security("has_role('ROLE_USER')")
+     * @Security("has_role('ROLE_SUBHEAD')")
      *
      * @param string $type
      */
-    public function printingList($type) {
-
-        $event = $this->get('repository_event')->getSelectedEvent();
+    public function printingList($type)
+    {
+        $event = $this->getDoctrine()->getRepository(Event::class)->getSelectedEvent();
         $queryBuilder = $this->get('doctrine.orm.default_entity_manager')->createQueryBuilder();
 
         $order = [];
+
+        $badgeTypeRepository = $this->getDoctrine()->getRepository(BadgeType::class);
 
         $badgeTypes = [];
         $show_group = false;
         switch ($type) {
             case 'staff':
-                $badgeTypes[] = $this->get('repository_badgetype')->getBadgeTypeFromType('STAFF');
+                $badgeTypes[] = $badgeTypeRepository->getBadgeTypeFromType('STAFF');
                 break;
             case 'sponsor':
-                $badgeTypes[] = $this->get('repository_badgetype')->getBadgeTypeFromType('ADREGSPONSOR');
-                $badgeTypes[] = $this->get('repository_badgetype')->getBadgeTypeFromType('ADREGCOMMSPONSOR');
+                $badgeTypes[] = $badgeTypeRepository->getBadgeTypeFromType('ADREGSPONSOR');
+                $badgeTypes[] = $badgeTypeRepository->getBadgeTypeFromType('ADREGCOMMSPONSOR');
                 break;
             case 'standard':
-                $badgeTypes[] = $this->get('repository_badgetype')->getBadgeTypeFromType('ADREGSTANDARD');
-                $badgeTypes[] = $this->get('repository_badgetype')->getBadgeTypeFromType('MINOR');
+                $badgeTypes[] = $badgeTypeRepository->getBadgeTypeFromType('ADREGSTANDARD');
+                $badgeTypes[] = $badgeTypeRepository->getBadgeTypeFromType('MINOR');
                 break;
             case 'group':
                 $show_group = true;
                 $order[] = ['regGroupName', 'ASC'];
                 break;
             case 'guest':
-                $badgeTypes[] = $this->get('repository_badgetype')->getBadgeTypeFromType('GUEST');
+                $badgeTypes[] = $badgeTypeRepository->getBadgeTypeFromType('GUEST');
                 break;
             case 'exhibitor':
-                $badgeTypes[] = $this->get('repository_badgetype')->getBadgeTypeFromType('EXHIBITOR');
+                $badgeTypes[] = $badgeTypeRepository->getBadgeTypeFromType('EXHIBITOR');
                 break;
             case 'vendor':
-                $badgeTypes[] = $this->get('repository_badgetype')->getBadgeTypeFromType('VENDOR');
+                $badgeTypes[] = $badgeTypeRepository->getBadgeTypeFromType('VENDOR');
                 break;
         }
 
@@ -69,7 +80,7 @@ class BadgeCSVListController extends Controller
 
         $registrationStatusSubQueryDQL = $this->get('doctrine.orm.default_entity_manager')->createQueryBuilder()
             ->select('rs.registrationstatusId')
-            ->from('AppBundle\Entity\Registrationstatus', 'rs')
+            ->from('AppBundle\Entity\RegistrationStatus', 'rs')
             ->where('rs.active = :active')
             ->getDQL();
 
@@ -87,11 +98,11 @@ class BadgeCSVListController extends Controller
             ])
             ->from('AppBundle\Entity\Registration', 'r')
             ->innerJoin('AppBundle\Entity\Badge', 'b', Join::WITH, 'b.registration = r.registrationId')
-            ->innerJoin('AppBundle\Entity\Badgestatus', 'bs', Join::WITH, 'bs.badgestatusId = b.badgestatus')
-            ->innerJoin('AppBundle\Entity\Badgetype', 'bt', Join::WITH, 'bt.badgetypeId = b.badgetype')
+            ->innerJoin('AppBundle\Entity\BadgeStatus', 'bs', Join::WITH, 'bs.badgestatusId = b.badgestatus')
+            ->innerJoin('AppBundle\Entity\BadgeType', 'bt', Join::WITH, 'bt.badgetypeId = b.badgetype')
             ->leftJoin('AppBundle\Entity\Registrationreggroup', 'rrg', Join::WITH,
                 'rrg.registration = r.registrationId')
-            ->leftJoin('AppBundle\Entity\Reggroup', 'rg', Join::WITH, 'rg.reggroupId = rrg.reggroup')
+            ->leftJoin('AppBundle\Entity\Group', 'rg', Join::WITH, 'rg.reggroupId = rrg.reggroup')
             ->leftJoin('AppBundle\Entity\Registrationextra', 'rx', Join::WITH, 'rx.registration = r.registrationId')
             ->leftJoin('AppBundle\Entity\Extra', 'ex', Join::WITH, 'rx.extra = ex.extraId')
             ->where($queryBuilder->expr()->in('r.registrationstatus', $registrationStatusSubQueryDQL))
@@ -104,7 +115,7 @@ class BadgeCSVListController extends Controller
 
 
         if ($type != 'staff') {
-            $staffBadge = $this->get('repository_badgetype')->getBadgeTypeFromType('STAFF');
+            $staffBadge = $badgeTypeRepository->getBadgeTypeFromType('STAFF');
 
             $allStaffBadges = $this->get('doctrine.orm.default_entity_manager')->createQueryBuilder()
                 ->select('IDENTITY(b3.registration)')

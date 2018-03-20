@@ -2,6 +2,7 @@
 /build/
 /phpunit.xml
 /var/*
+.web-server-pid
 .idea/
 .idea/workspace.xml
 !/var/cache
@@ -17,3 +18,6 @@
 /vendor/
 /web/bundles/
 /web/config.php
+/web/node_modules/
+/web/uploads/
+/app/images/

@@ -1,116 +1,185 @@
+{##
+ # Copyright (c) 2018. Anime Twin Cities, Inc.
+ #
+ # This project, including all of the files and their contents, is licensed under the terms of MIT License
+ #
+ # See the LICENSE file in the root of this project for details.
+#}
 {% extends 'detour.html.twig' %}
 
+{% set pageTitle = 'List Registrations' %}
+
 {% block body %}
-    <h1>Registrations</h1>
-    <a href="/registration/edit/" class="btn btn-primary">New Registration</a><br><br>
-    <script>
-        function changeYear(year) {
-            $('#year').val(year);
-        }
-
-        function reset_page() {
-            $('#page').val('1');
-        }
-    </script>
-
-    <form class="form-horizontal" onsubmit="return false;">
-        <div class="col-lg-1 registration-info">
-            <label for="input_regtype" class="col-sm-2 control-label">Reg&nbsp;Type</label>
+<div class="container bg-white">
+    <div class="row">
+        <div class="col-sm-12">
+            <h2>Registrations</h2>
         </div>
-        <div class="col-lg-1 registration-info">
-            <div class="btn-group" id="input_regtype">
-                <input type="hidden" value="{{ current_RegistrationType_ID }}" id="RegistrationType_ID">
-                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="button_RegistrationType">
-                    {{ current_RegistrationType }} <span class="caret"></span>
-                </button>
-                {{ render(controller('AppBundle:Manage/Manage:registrationTypeList')) }}
-            </div>
-        </div>
-
-        <div class="col-lg-1 registration-info">
-            <label for="input_regstatus" class="col-sm-2 control-label">Reg&nbsp;Status</label>
-        </div>
-        <div class="col-lg-1 registration-info">
-            <div class="btn-group" id="input_regstatus">
-                <input type="hidden" value="{{ current_RegistrationStatus_ID }}" id="RegistrationStatus_ID">
-                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="button_RegistrationStatus">
-                    {{  current_RegistrationStatus }} <span class="caret"></span>
-                </button>
-                {{ render(controller('AppBundle:Manage/Manage:registrationStatusList')) }}
-            </div>
-        </div>
-
-        <div class="col-lg-1 registration-info">
-            <label for="input_badgetype" class="col-sm-2 control-label">Badge</label>
-        </div>
-        <div class="col-lg-2 registration-info" id="input_badgetype">
-            <div class="btn-group">
-                <input type="hidden" value="{{ current_BadgeType_ID }}" id="BadgeType_ID">
-                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="button_BadgeType">
-                    {{ current_BadgeType }} <span class="caret"></span>
-                </button>
-                {{ render(controller('AppBundle:Manage/Manage:badgeTypeList')) }}
-            </div>
-        </div>
-
-        <div class="col-lg-3 registration-info" id="input_search">
-            <div class="input-append">
-                <input type="text" id="search" name="search" value="{{ searchText }}" onKeyPress="return searchenter(this,event)" placeholder="Search">
-                <button type="submit" class="btn btn-primary" onclick="search_fn()">Search</button>
-            </div>
-        </div>
-    </form>
-    <div style="clear: both"></div>
-    <div class="scrollable-table">
-        <table class="table table-striped table-header-rotated" id="table_registrations">
-            <thead>
-            <tr height="15px">
-                <th class="rotate"><div><span>Year</span></div></th>
-                <th class="rotate"><div><span>Reg Number</span></div></th>
-                <th class="rotate"><div><span>Last Name</span></div></th>
-                <th class="rotate"><div><span>First Name</span></div></th>
-                <th class="rotate"><div><span>Badge Name</span></div></th>
-                <th class="rotate"><div><span>Email</span></div></th>
-                <th class="rotate"><div><span>Reg Status</span></div></th>
-                <th class="rotate"><div><span>Confirmation Number</span></div></th>
-                <th class="rotate"><div><span>Group?</span></div></th>
-                <!-- Begin Badge Types -->
-                <th class="rotate"><div><span>Badges</span></div></th>
-                <!-- End Badge Types -->
-            </tr>
-            </thead>
-            <tbody id="tbody_registrations">
-            </tbody>
-        </table>
     </div>
-    <input type="hidden" id="page" value="{{ page }}">
-    <b id="results_footer"></b>
-    <ul class="pager" id="list_pager">
-    </ul>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <a href="{{ path('newRegistration') }}" class="btn btn-warning btn-sm">New Registration</a><br><br>
+            <script>
+                function changeYear(year) {
+                    $('#year').val(year);
+                }
+
+                function reset_page() {
+                    $('#page').val('1');
+                }
+            </script>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="form-group">
+                <label for="registrationTypeId" class="control-label">
+                    <b>Reg&nbsp;Type:</b>
+                </label>
+                <select name="registrationTypeId" id="registrationTypeId" onclick="search_fn()">
+                    <option value="all" {{ current_RegistrationTypeId == 'all' ? 'selected' : '' }}>All</option>
+                    <option disabled>──────────────</option>
+                    {% for registrationType in registrationTypes %}
+                        <option value="{{ registrationType.registrationTypeId }}"
+                                {{ (current_RegistrationTypeId == registrationType.registrationTypeId) ? 'selected' : '' }}
+                            >{{ registrationType.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="col-sm-3">
+            <div class="form-group">
+                <label for="registrationStatusId" class="control-label">
+                    <b>Reg&nbsp;Status:</b>
+                </label>
+                <select name="registrationStatusId" id="registrationStatusId" onclick="search_fn()">
+                    <option value="all" {{ current_RegistrationStatusId == 'all' ? 'selected' : '' }}>All</option>
+                    <option value="active" {{ current_RegistrationStatusId == 'active' ? 'selected' : '' }}>Active</option>
+                    <option value="inactive" {{ current_RegistrationStatusId == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                    <option disabled>──────────────</option>
+                    {% for registrationStatus in registrationStatuses %}
+                        <option value="{{ registrationStatus.registrationStatusId }}"
+                                {{ (current_RegistrationStatusId == registrationStatus.registrationStatusId) ? 'selected' : '' }}
+                        >{{ registrationStatus.status }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="col-sm-3">
+            <div class="form-group">
+                <label for="badgeTypeId" class="control-label">
+                    <b>Badge Type:</b>
+                </label>
+                <select name="badgeTypeId" id="badgeTypeId" onclick="search_fn()">
+                    <option value="all" {{ current_BadgeTypeId == 'all' ? 'selected' : '' }}>All</option>
+                    <option disabled>──────────────</option>
+                    {% for badgeType in badgeTypes %}
+                        <option value="{{ badgeType.badgeTypeId }}"
+                                {{ (current_BadgeTypeId == badgeType.badgeTypeId) ? 'selected' : '' }}
+                        >{{ badgeType.description }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="col-sm-3">
+            <div class="form-group d-flex justify-content-center" style="margin-top: 1.2rem;">
+                <input type="search"
+                       id="search"
+                       name="search"
+                       value="{{ searchText }}"
+                       onKeyPress="return searchenter(this,event)"
+                       placeholder="Search"
+                       aria-label="Search"
+                       class="form-control">
+                <button class="btn btn-primary btn-sm my-0 p waves-effect waves-light" type="submit" onclick="search_fn()">
+                    <i class="fa fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <table class="table table-striped table-sm" id="table_registrations">
+                <thead class="unique-color">
+                    <tr class="text-white">
+                        <th class="hideWhenSmall"><div><span>Year</span></div></th>
+                        <th class=""><div><span>Reg&nbsp;#</span></div></th>
+                        <th class=""><div><span>Last Name</span></div></th>
+                        <th class=""><div><span>First Name</span></div></th>
+                        <th class="hideWhenSmall"><div><span>Badge Name</span></div></th>
+                        <th class=""><div><span>Email</span></div></th>
+                        <th class="hideWhenSmall"><div><span>Status</span></div></th>
+                        <th class="hideWhenSmall"><div><span>Confirmation&nbsp;#</span></div></th>
+                        <th class="hideWhenSmall"><div><span>Group?</span></div></th>
+                        <th class=""><div><span>Badges</span></div></th>
+                    </tr>
+                </thead>
+                <tbody id="tbody_registrations">
+                </tbody>
+                <thead>
+                    <tr class="unique-color">
+                        <th class="text-white" colspan="10" id="resultsFooter"></th>
+                    </tr>
+                    <tr class="">
+                        <th class="text-center" colspan="10" id="listPager">
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+            <input type="hidden" id="page" value="{{ page }}">
+        </div>
+    </div>
 
     <script>
 
         $( document ).ready(function(){
+            $('#registrationTypeId').change(function() {
+                search_fn();
+            });
+            $('#registrationStatusId').change(function() {
+                search_fn();
+            });
+            $('#badgeTypeId').change(function() {
+                search_fn();
+            });
+
             get_registration_list();
         });
 
+        function changePage(page) {
+            $('#page').val(page);
+            get_registration_list();
+        }
+
         function get_registration_list() {
             var search_text           = $('#search').val();
-            var RegistrationType_ID   = $('#RegistrationType_ID').val();
-            var RegistrationStatus_ID = $('#RegistrationStatus_ID').val();
-            var BadgeType_ID          = $('#BadgeType_ID').val();
+            var registrationTypeId   = $('#registrationTypeId').find(":selected").val();
+            var registrationStatusId = $('#registrationStatusId').find(":selected").val();
+            var badgeTypeId          = $('#badgeTypeId').find(":selected").val();
             var page        = $('#page').val();
-            $.getJSON('/registrationlist',
+            console.log(page);
+            $.getJSON('{{ path('ajaxRegistrationList') }}',
                 {
                     'search':search_text,
                     'page':page,
-                    'RegistrationType_ID':RegistrationType_ID,
-                    'RegistrationStatus_ID':RegistrationStatus_ID,
-                    'BadgeType_ID':BadgeType_ID
+                    'registrationTypeId':registrationTypeId,
+                    'registrationStatusId':registrationStatusId,
+                    'badgeTypeId':badgeTypeId
                 },
                 function(json) {
                     $('#tbody_registrations').empty();
-                    $('#list_pager').empty();
+
+                    var resultsFooter = json.count_total+' Results. Showing Page '+json.page+' of '+Math.ceil(json.count_total/100)+', 100 per page';
+                    $('#resultsFooter').html(resultsFooter);
+
+                    var listPager = $('#listPager');
+                    listPager.empty();
 
                     // Populate Registration Results
                     for (i = 0; i < json.results.length; i++) {
@@ -121,60 +190,107 @@
 
                     // Populate Page Data
                     $('#page').val(json.page);
-                    if (json.page <= 1) {
-                        $('#list_pager').append($('<li>')
-                            .attr('class', 'previous disabled')
-                            .append($('<a>')
-                                .attr('href', 'javascript:void(0);')
-                                .attr('id',   'li_prev')
-                                .html('&larr; Previous')
+                    var totalPages = Math.ceil(json.count_total/100);
+
+                    var prevLi = $('<li>')
+                        .append($('<a>')
+                            .attr('class', 'page-link')
+                            .attr('id', 'pagePrev')
+                            .attr('href', 'javascript:void(0);')
+                            .attr('aria-label', 'Previous')
+                            .append($('<span>')
+                                .attr('aria-hidden', 'true')
+                                .html('&laquo;')
+                            )
+                            .append($('<span>')
+                                .attr('class', 'sr-only')
+                                .html('Previous')
                             )
                         );
-                    } else {
-                        $('#list_pager').append($('<li>')
-                            .attr('class', 'previous')
-                            .append($('<a>')
-                                .attr('href', 'javascript:void(0);')
-                                .attr('id',   'li_prev')
-                                .html('&larr; Previous')
+                    var nextLi = $('<li>')
+                        .append($('<a>')
+                            .attr('class', 'page-link')
+                            .attr('id', 'pageNext')
+                            .attr('href', 'javascript:void(0);')
+                            .attr('aria-label', 'Next')
+                            .append($('<span>')
+                                .attr('aria-hidden', 'true')
+                                .html('&raquo;')
+                            )
+                            .append($('<span>')
+                                .attr('class', 'sr-only')
+                                .html('Next')
                             )
                         );
-                        $('#li_prev').click(function() {
-                            $('#page').val(parseInt($('#page').val())-1);
-                            get_registration_list();
-                        })
+
+                    var pageination = $('<ul>')
+                        .attr('id', 'pageUl')
+                        .attr('class', 'pagination pg-blue')
+                        .append(prevLi)
+                    ;
+
+                    listPager.html(pageination);
+
+                    var pageUl = $('#pageUl');
+
+                    var paginatorMin = Math.max(json.page - 6, 1);
+                    var paginatorMax = Math.min(json.page + 6, totalPages);
+
+                    var renderPagination;
+                    for (renderPagination = paginatorMin; renderPagination <= paginatorMax; renderPagination++) {
+                        if (renderPagination === json.page) {
+                            pageUl.append($('<li>')
+                                .attr('class', 'page-item active')
+                                .append($('<a>')
+                                    .attr('class', 'page-link')
+                                    .attr('href', 'javascript:void(0);')
+                                    .html(renderPagination + '<span class="sr-only">(current)</span>')
+                                )
+                            );
+                        } else {
+                            pageUl.append($('<li>')
+                                .attr('class', 'page-item')
+                                .append($('<a>')
+                                    .attr('class', 'page-link')
+                                    .attr('href', 'javascript:void(0);')
+                                    .attr('data-page', renderPagination)
+                                    .html(renderPagination)
+                                    .click(function() {
+                                        console.log($( this ).attr('data-page'));
+                                        changePage($( this ).attr('data-page'));
+                                    })
+                                )
+                            );
+                        }
                     }
 
-                    var count = json.count_total+' Results. Showing Page '+json.page+' of '+Math.ceil(json.count_total/100)+', 100 per page';
-                    $('#results_footer').html(count);
-                    if (json.page * 100 >= json.count_total) {
-                        $('#list_pager').append($('<li>')
-                            .attr('class', 'next disabled')
-                            .append($('<a>')
-                                .attr('href', 'javascript:void(0);')
-                                .attr('id',   'li_prev')
-                                .html('Next &rarr;')
-                            )
-                        );
+                    pageination.append(nextLi);
+
+                    var pagePrev = $('#pagePrev');
+                    var pageNext = $('#pageNext');
+
+                    if ((json.page - 1) >= 1) {
+                        pagePrev.click(function() {
+                            changePage(json.page - 1);
+                        });
                     } else {
-                        $('#list_pager').append($('<li>')
-                            .attr('class', 'next')
-                            .append($('<a>')
-                                .attr('href', 'javascript:void(0);')
-                                .attr('id',   'li_next')
-                                .html('Next &rarr;')
-                            )
-                        );
-                        $('#li_next').click(function() {
-                            $('#page').val(parseInt($('#page').val())+1);
-                            get_registration_list();
-                        })
+                        pagePrev.prop( "disabled", true );
+                        pagePrev.addClass('disabled');
+                    }
+
+                    if ((json.page + 1) <= totalPages) {
+                        pageNext.click(function() {
+                            changePage(json.page + 1);
+                        });
+                    } else {
+                        pageNext.prop( "disabled", true );
+                        pageNext.addClass('disabled');
                     }
                 }
             );
             window.history.pushState("object or string", "Anime Detour Registration", "/manage?search="+search_text
-                + "&RegistrationStatus_ID="+RegistrationStatus_ID+"&RegistrationType_ID="+RegistrationType_ID
-                + "&BadgeType_ID="+BadgeType_ID+"&page="+page);
+                + "&registrationStatusId="+registrationStatusId+"&registrationTypeId="+registrationTypeId
+                + "&badgeTypeId="+badgeTypeId+"&page="+page);
         }
 
         function add_registration(registration_id, year, number, last_name, first_name, badge_name, reg_status, Email, ConfirmationNumber, group, is_adult, is_minor, is_sponsor,
@@ -182,34 +298,37 @@
             var td_badges     = $('<td>');
 
             if (is_adult) {
-                td_badges.html(td_badges.html()+'<div class="circle" style="background: orange; color: white">A</div>');
+                td_badges.html(td_badges.html()+'<span class="badge badge-pill orange">A</span>');
             }
             if (is_minor) {
-                td_badges.html(td_badges.html()+'<div class="circle" style="background: yellow;">M</div>');
+                td_badges.html(td_badges.html()+'<span class="badge badge-pill yellow" style="color: #000000!important">M</span>');
             }
             if (is_sponsor) {
-                td_badges.html(td_badges.html()+'<div class="circle" style="background: blue; color: white">S</div>');
+                td_badges.html(td_badges.html()+'<span class="badge badge-pill blue">S</span>');
             }
             if (is_comsponsor) {
-                td_badges.html(td_badges.html()+'<div class="circle" style="background: purple;">C</div>');
+                td_badges.html(td_badges.html()+'<span class="badge badge-pill purple">C</span>');
             }
             if (is_staff) {
-                td_badges.html(td_badges.html()+'<div class="circle" style="background: red; color: white">D</div>');
+                td_badges.html(td_badges.html()+'<span class="badge badge-pill red">D</span>');
             }
             if (is_guest) {
-                td_badges.html(td_badges.html()+'<div class="circle" style="background: black;">G</div>');
+                td_badges.html(td_badges.html()+'<span class="badge badge-pill black">G</span>');
             }
             if (is_vendor) {
-                td_badges.html(td_badges.html()+'<div class="circle" style="background: green;">V</div>');
+                td_badges.html(td_badges.html()+'<span class="badge badge-pill green">V</span>');
             }
             if (is_exhibitor) {
-                td_badges.html(td_badges.html()+'<div class="circle" style="background: silver;">E</div>');
+                td_badges.html(td_badges.html()+'<span class="badge badge-pill silver" style="color: #000000!important">E</span>');
+            }
+            if (group !== null) {
+                group = '<a href="{{ path('group_list_slash') }}'+group+'"><i class="fas fa-users"></i></a>';
             }
 
             $('#table_registrations')
                 .append($('<tr>')
                     .attr('id', 'tr_'+registration_id)
-                    .append($('<td>')
+                    .append($('<td class="hideWhenSmall">')
                         .html(year)
                     )
                     .append($('<td>')
@@ -224,19 +343,19 @@
                     .append($('<td>')
                         .html(first_name)
                     )
-                    .append($('<td>')
+                    .append($('<td class="hideWhenSmall">')
                         .html(badge_name)
                     )
                     .append($('<td>')
                         .html(Email)
                     )
-                    .append($('<td>')
+                    .append($('<td class="hideWhenSmall">')
                         .html(reg_status)
                     )
-                    .append($('<td>')
+                    .append($('<td class="hideWhenSmall">')
                         .html(ConfirmationNumber)
                     )
-                    .append($('<td>')
+                    .append($('<td class="hideWhenSmall">')
                         .html(group)
                     )
                     .append(td_badges)
@@ -255,24 +374,6 @@
             }
             else
                 return true;
-        }
-
-        function changeType(id, description) {
-            $('#RegistrationType_ID').val(id);
-            $('#button_RegistrationType').html(description + ' <span class="caret">');
-            search_fn();
-        }
-
-        function changeStatus(id, description) {
-            $('#RegistrationStatus_ID').val(id);
-            $('#button_RegistrationStatus').html(description + ' <span class="caret">');
-            search_fn();
-        }
-
-        function changeBadge(id, description) {
-            $('#BadgeType_ID').val(id);
-            $('#button_BadgeType').html(description + ' <span class="caret">');
-            search_fn();
         }
 
         function search_fn() {
@@ -354,71 +455,13 @@
                 }, 1000);
         }
     </script>
+</div>
 
 
-    <style>
-        .circle {
-            text-align: center;
-            display: inline-block;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            /* width and height can be anything, as long as they're equal */
-        }
-
-        .table-header-rotated th.row-header{
-            width: auto;
-        }
-
-        .table-header-rotated td{
-            width: 60px;
-            border-top: 1px solid #dddddd;
-            border-left: 1px solid #dddddd;
-            border-right: 1px solid #dddddd;
-            vertical-align: middle;
-            text-align: left;
-        }
-
-        .table-header-rotated th.rotate{
-            height: 80px;
-            width: 40px;
-            min-width: 40px;
-            max-width: 40px;
-            position: relative;
-            vertical-align: bottom;
-            padding: 0;
-            font-size: 12px;
-            line-height: 0.8;
-        }
-
-        .table-header-rotated th.rotate > div{
-            position: relative;
-            top: 0px;
-            left: 40px; /* 80 * tan(45) / 2 = 40 where 80 is the height on the cell and 45 is the transform angle*/
-            height: 100%;
-            -ms-transform:skew(-45deg,0deg);
-            -moz-transform:skew(-45deg,0deg);
-            -webkit-transform:skew(-45deg,0deg);
-            -o-transform:skew(-45deg,0deg);
-            transform:skew(-45deg,0deg);
-            overflow: hidden;
-            border-left: 1px solid #dddddd;
-        }
-
-        .table-header-rotated th.rotate span {
-            -ms-transform:skew(45deg,0deg) rotate(315deg);
-            -moz-transform:skew(45deg,0deg) rotate(315deg);
-            -webkit-transform:skew(45deg,0deg) rotate(315deg);
-            -o-transform:skew(45deg,0deg) rotate(315deg);
-            transform:skew(45deg,0deg) rotate(315deg);
-            position: absolute;
-            bottom: 30px; /* 40 cos(45) = 28 with an additional 2px margin*/
-            left: -25px; /*Because it looked good, but there is probably a mathematical link here as well*/
-            display: inline-block;
-        // width: 100%;
-            width: 85px; /* 80 / cos(45) - 40 cos (45) = 85 where 80 is the height of the cell, 40 the width of the cell and 45 the transform angle*/
-            text-align: left;
-        // white-space: nowrap; /*whether to display in one line or not*/
-        }
-    </style>
+<style>
+    .badge-pill {
+        display: inline;
+        font-size: 110%;
+    }
+</style>
 {% endblock %}

@@ -1,9 +1,21 @@
+{##
+ # Copyright (c) 2018. Anime Twin Cities, Inc.
+ #
+ # This project, including all of the files and their contents, is licensed under the terms of MIT License
+ #
+ # See the LICENSE file in the root of this project for details.
+#}
 {% extends 'detour.html.twig' %}
 
 {% block body %}
 {% if registration is not null and badge is not null %}
-    <form>
-        <h1>{{ badge.badgetype.description }} Badge - {{ badge.badgestatus.description }} - {{ registration.number }} - {{ badge.number }}</h1>
+<form>
+    <div class="container bg-white">
+        <div class="row">
+            <div class="col-sm-12">
+                <h1>{{ badge.badgetype.description }} Badge - {{ badge.badgestatus.description }} - {{ registration.number }} - {{ badge.number }}</h1>
+            </div>
+        </div>
         <div class="row">
             <div class="col-sm-3 registration-info">
                 <h2>Information</h2>
@@ -54,7 +66,8 @@
                 <a href="{{ path('viewRegistration', {'registrationId':registration.registrationId}) }}" class="btn btn-warning">Cancel</a>
             </div>
         </div>
-    </form>
+    </div>
+</form>
 
     <script>
         var registrationID = {{ registration.registrationId }};

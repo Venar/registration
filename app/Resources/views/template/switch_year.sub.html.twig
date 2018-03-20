@@ -1,8 +1,19 @@
-<li>
-    <a href="#Years">Event Year: {{ selectedYear }}</a>
-    <ul>
+{##
+ # Copyright (c) 2018. Anime Twin Cities, Inc.
+ #
+ # This project, including all of the files and their contents, is licensed under the terms of MIT License
+ #
+ # See the LICENSE file in the root of this project for details.
+#}
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="javascript:void(0);" id="navbarDropdownMenuLink_SwitchYear"
+       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fas fa-calendar-alt"></i>
+        Selected Event Year: {{ selectedYear }}
+    </a>
+    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
         {% for year in years %}
-        <li><a href="/changeyear/{{ year }}">{{ year }}</a></li>
+            <a class="dropdown-item" href="{{ url('changeYear', {'eventYear':year}) }}">{{ year }}</a>
         {% endfor %}
-    </ul>
+    </div>
 </li>

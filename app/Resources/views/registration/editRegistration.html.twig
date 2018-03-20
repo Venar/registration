@@ -1,416 +1,522 @@
+{##
+ # Copyright (c) 2018. Anime Twin Cities, Inc.
+ #
+ # This project, including all of the files and their contents, is licensed under the terms of MIT License
+ #
+ # See the LICENSE file in the root of this project for details.
+#}
 {% extends 'detour.html.twig' %}
 
 {% block body %}
-    <form action="/registration/edit" method="post" id="form_editregistration">
+<form action="{{ url('actionEditRegistration') }}" method="post" id="form_editRegistration">
 
-        <input type="hidden" value="{{ registration.registrationId|default('') }}" id="Registration_ID" name="Registration_ID">
-        <input type="hidden" value="{{ transferredRegistration.registrationId|default('') }}" id="TransferredFrom" name="TransferredFrom">
+    <input type="hidden" value="{{ registration.registrationId|default('') }}"
+           id="registrationId" name="registrationId">
+    <input type="hidden" value="{{ transferredRegistration.registrationId|default('') }}" id="TransferredFrom"
+           name="TransferredFrom">
 
-        <h2 id="reg_header">
+    <div class="container bg-white">
+    <div class="row">
+        <div class="col-sm-12">
+            <h2 id="reg_header">
+                {% if registration is not null and registration.registrationId %}
+                Edit {{ (group.groupId is defined) ? 'Group ' : '' }}Membership - {{ registration.event.year }} - {{ registration.number }}
+                {% elseif transferredRegistration is not null and transferredRegistration.registrationId %}
+                Transfer Membership from {{ transferredRegistration.firstname }} {{ transferredRegistration.lastname }}
+                    &lt;{{ transferredRegistration.number }}&gt; - {{ transferredRegistration.event.year }}
+                {% else %}
+                New {{ group is not null and group.groupId ? 'Group ' : '' }}Membership - {{ event.year }} - New
+                {% endif %}
+            </h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-3">
             {% if registration is not null %}
-                <a href="/registration/view/{{ registration.registrationId|default('') }}" class="btn btn-primary btn-sm">Back</a>&nbsp;-&nbsp;
+                <a href="/registration/view/{{ registration.registrationId|default('') }}"
+                   class="btn btn-primary btn-sm">Back - View Registration</a>
             {% else %}
-                <a href="/manage/" class="btn btn-primary btn-sm">Back</a>&nbsp;-&nbsp;
+                <a href="{{ url('listRegistrations') }}"
+                   class="btn btn-primary btn-sm">Back - List Registrations</a>
             {% endif %}
-            {% if registration is not null and registration.registrationId %}
-            Edit {{ (group.reggroupId is defined) ? 'Group ' : '' }}Membership - {{ registration.event.year }} - {{ registration.number }}
-            {% elseif transferredRegistration is not null and transferredRegistration.registrationId %}
-            Transfer Membership from {{ transferredRegistration.firstname }} {{ transferredRegistration.lastname }}
-                &lt;{{ transferredRegistration.number }}&gt; - {{ transferredRegistration.event.year }}
-            {% else %}
-            New {{ group is not null and group.reggroupId ? 'Group ' : '' }}Membership - {{ event.year }} - New
-            {% endif %}
-        </h2>
-
-        <div class="row">
-            <div class="col-sm-3">
-                <h3>Registration Type:</h3>
-            </div>
-            <div class="col-sm-3">
-                <h3>Registration Status:</h3>
-            </div>
-            <div class="col-sm-3">
-            </div>
-            <div class="col-sm-3">
-            </div>
         </div>
-        <div class="row">
-            <div class="col-sm-3">
-                <select name="RegistrationType" id="RegistrationType">
-                    {% for type in registrationTypes %}
-                    <option value="{{ type.name }}" {{ selectedType is not null and selectedType.registrationtypeId == type.registrationtypeId ? 'selected' : '' }}>
-                        {{ type.name }}
+    </div>
+    <br>
+
+    <div class="row">
+        <div class="col-sm-3">
+            <h3>Registration Type:</h3>
+        </div>
+        <div class="col-sm-3">
+            <h3>Registration Status:</h3>
+        </div>
+        <div class="col-sm-3">
+        </div>
+        <div class="col-sm-3">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+            <select name="RegistrationType" id="RegistrationType">
+                {% for type in registrationTypes %}
+                {# @var type AppBundle\Entity\RegistrationType #}
+                <option value="{{ type.name }}" {{ selectedType is not null and selectedType.registrationTypeId == type.registrationTypeId ? 'selected' : '' }}>
+                    {{ type.name }}
+                </option>
+                {% endfor %}
+            </select>
+            <select name="groupId" id="groupId"
+                    style="width: 150px; {{ selectedType is null or selectedType.name != 'Group' ? 'display:none;' : '' }}">
+                <option value=""></option>
+                {% for regGroup in groups %}
+                    <option value="{{ regGroup.groupId }}" {{ (group is not null and group.groupId == regGroup.groupId) ? 'selected' : '' }}>
+                        {{ regGroup.name }}
                     </option>
-                    {% endfor %}
-                </select>
-                <select name="RegGroup_ID" id="RegGroup_ID"
-                        style="width: 150px; {{ selectedType is null or selectedType.name != 'Group' ? 'display:none;' : '' }}">
-                    <option value=""></option>
-                    {% for regGroup in regGroups %}
-                        <option value="{{ regGroup.reggroupId }}" {{ (group is not null and group.reggroupId == regGroup.reggroupId) ? 'selected' : '' }}>
-                            {{ regGroup.name }}
-                        </option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="col-sm-3">
-                <select name="RegistrationStatus">
-                    {% for status in registrationStatuses %}
-                        <option value="{{ status.status }}" {{ registration is not null and registration.registrationstatus.registrationstatusId == status.registrationstatusId ? 'selected' : '' }}>
-                            {{ status.status }}
-                        </option>
-                    {% endfor %}
-                </select>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-sm-3">
+            <select name="RegistrationStatus">
+                {% for status in registrationStatuses %}
+                    <option value="{{ status.status }}" {{ registration is not null and registration.registrationStatus.registrationStatusId == status.registrationStatusId ? 'selected' : '' }}>
+                        {{ status.status }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>Membership Type</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="btn-group" data-toggle="buttons">
+                <label class="btn btn-primary btn-sm {{ ('ADREGSTANDARD' in currentBadgeTypes or 'MINOR' in currentBadgeTypes) ? 'active' : ''}}">
+                    <input type="radio" name="badgeTypeName" value="ADREGSTANDARD"
+                        {{ ('ADREGSTANDARD' in currentBadgeTypes or 'MINOR' in currentBadgeTypes) ? 'checked' : ''}}>
+                    Standard (Minors detected by Birthdate)<br>
+                </label>
+                <label class="btn btn-primary btn-sm {{ 'ADREGSPONSOR' in currentBadgeTypes ? 'active' : '' }}">
+                    <input type="radio" name="badgeTypeName" value="ADREGSPONSOR"
+                        {{ 'ADREGSPONSOR' in currentBadgeTypes ? 'checked' : '' }}>
+                    Sponsor<br>
+                </label>
+                <label class="btn btn-primary btn-sm {{ 'ADREGCOMMSPONSOR' in currentBadgeTypes ? 'active' : '' }}">
+                    <input type="radio" name="badgeTypeName" value="ADREGCOMMSPONSOR"
+                        {{ 'ADREGCOMMSPONSOR' in currentBadgeTypes ? 'checked' : '' }}>
+                    Community Sponsor<br>
+                </label>
+                <label class="btn btn-primary btn-sm {{ 'GUEST' in currentBadgeTypes ? 'active' : '' }}">
+                    <input type="radio" name="badgeTypeName" value="GUEST"
+                        {{ 'GUEST' in currentBadgeTypes ? 'checked' : '' }}>
+                    Guest<br>
+                </label>
+                <label class="btn btn-primary btn-sm {{ 'VENDOR' in currentBadgeTypes ? 'active' : '' }}">
+                    <input type="radio" name="badgeTypeName" value="VENDOR"
+                        {{ 'VENDOR' in currentBadgeTypes ? 'checked' : '' }}>
+                    Vendor<br>
+                </label>
+                <label class="btn btn-primary btn-sm {{ 'EXHIBITOR' in currentBadgeTypes ? 'active' : '' }}">
+                    <input type="radio" name="badgeTypeName" value="EXHIBITOR"
+                        {{ 'EXHIBITOR' in currentBadgeTypes ? 'checked' : '' }}>
+                    Exhibitor<br>
+                </label>
             </div>
         </div>
+    </div>
 
-        <div class="row">
-            <div class="col-sm-12">
-                <h3>Membership Type</h3>
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>Membership Details</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="md-form">
+                <input type="text"
+                       id="lastName"
+                       name="lastName"
+                       class="form-control validate"
+                       value="{{ registration.lastName|default('') }}"
+                       required>
+                <label class="required" for="lastName">
+                    Last Name
+                    <i class="fa fa-asterisk red-text small" aria-hidden="true"></i>
+                </label>
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="btn-group" data-toggle="buttons">
-                    <label class="btn btn-primary {{ ('ADREGSTANDARD' in currentBadgeTypes or 'MINOR' in currentBadgeTypes) ? 'active' : ''}}">
-                        <input type="radio" name="regtype" value="ADREGSTANDARD"
-                            {{ ('ADREGSTANDARD' in currentBadgeTypes or 'MINOR' in currentBadgeTypes) ? 'checked' : ''}}>
-                        Standard (Minors detected by Birthdate)<br>
-                    </label>
-                    <label class="btn btn-primary {{ 'ADREGSPONSOR' in currentBadgeTypes ? 'active' : '' }}">
-                        <input type="radio" name="regtype" value="ADREGSPONSOR"
-                            {{ 'ADREGSPONSOR' in currentBadgeTypes ? 'checked' : '' }}>
-                        Sponsor<br>
-                    </label>
-                    <label class="btn btn-primary {{ 'ADREGCOMMSPONSOR' in currentBadgeTypes ? 'active' : '' }}">
-                        <input type="radio" name="regtype" value="ADREGCOMMSPONSOR"
-                            {{ 'ADREGCOMMSPONSOR' in currentBadgeTypes ? 'checked' : '' }}>
-                        Community Sponsor<br>
-                    </label>
-                    <label class="btn btn-primary {{ 'GUEST' in currentBadgeTypes ? 'active' : '' }}">
-                        <input type="radio" name="regtype" value="GUEST"
-                            {{ 'GUEST' in currentBadgeTypes ? 'checked' : '' }}>
-                        Guest<br>
-                    </label>
-                    <label class="btn btn-primary {{ 'VENDOR' in currentBadgeTypes ? 'active' : '' }}">
-                        <input type="radio" name="regtype" value="VENDOR"
-                            {{ 'VENDOR' in currentBadgeTypes ? 'checked' : '' }}>
-                        Vendor<br>
-                    </label>
-                    <label class="btn btn-primary {{ 'EXHIBITOR' in currentBadgeTypes ? 'active' : '' }}">
-                        <input type="radio" name="regtype" value="EXHIBITOR"
-                            {{ 'EXHIBITOR' in currentBadgeTypes ? 'checked' : '' }}>
-                        Exhibitor<br>
-                    </label>
-                </div>
+        <div class="col-sm-4">
+            <div class="md-form">
+                <input type="text"
+                       id="firstName"
+                       name="firstName"
+                       class="form-control validate"
+                       value="{{ registration.firstName|default('') }}"
+                       required>
+                <label class="required" for="firstName">
+                    Last Name
+                    <i class="fa fa-asterisk red-text small" aria-hidden="true"></i>
+                </label>
             </div>
         </div>
-
-        <div class="row">
-            <div class="col-sm-12">
-                <h3>Membership Details</h3>
+        <div class="col-sm-4">
+            <div class="md-form">
+                <input type="text"
+                       id="middleName"
+                       name="middleName"
+                       class="form-control validate"
+                       value="{{ registration.middleName|default('') }}"
+                       required>
+                <label for="middleName">
+                    Middle Name
+                </label>
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm-4">
-                <div class="input-group">
-                    <span class="input-group-addon">Last Name</span>
-                    <input class="form-control" id="lastname" name="LastName" type="text" value="{{ registration.lastname|default('') }}"
-                           placeholder="Last Name">
-                </div>
-            </div>
-            <div class="col-sm-4">
-                <div class="input-group">
-                    <span class="input-group-addon">First Name</span>
-                    <input class="form-control" id="firstname" name="FirstName" type="text" value="{{ registration.firstname|default('') }}"
-                           placeholder="First Name">
-                </div>
-            </div>
-            <div class="col-sm-4">
-                <div class="input-group">
-                    <span class="input-group-addon">Middle Name</span>
-                    <input class="form-control" id="middlename" name="MiddleName" type="text" value="{{ registration.middlename|default('') }}"
-                           placeholder="Middle Name">
-                </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-7">
+            <div class="md-form">
+                <input type="text"
+                       id="address"
+                       name="address"
+                       class="form-control validate"
+                       value="{{ registration.address|default('') }}"
+                       required>
+                <label for="address">
+                    Postal Mailing Address
+                </label>
             </div>
         </div>
-
-        <br>
-
-        <div class="row">
-            <div class="col-sm-7">
-                <div class="input-group">
-                    <span class="input-group-addon">Postal Mailing Address</span>
-                    <input class="form-control" id="address1" name="Address" type="text" value="{{ registration.address|default('') }}"
-                           placeholder="123 Main St.">
-                </div>
-            </div>
-            <div class="col-sm-5">
-                <div class="input-group">
-                    <span class="input-group-addon">Address 2</span>
-                    <input class="form-control" id="address2" name="Address2" type="text" value="{{ registration.address2|default('') }}"
-                           placeholder="APT 12345">
-                </div>
+        <div class="col-sm-5">
+            <div class="md-form">
+                <input type="text"
+                       id="address2"
+                       name="address2"
+                       class="form-control validate"
+                       value="{{ registration.address2|default('') }}"
+                       required>
+                <label for="address2">
+                    Address Line 2
+                </label>
             </div>
         </div>
+    </div>
 
-        <br>
-
-        <div class="row">
-            <div class="col-sm-7">
-                <div class="input-group">
-                    <span class="input-group-addon">City</span>
-                    <input class="form-control" id="city" name="City" type="text" value="{{ registration.city|default('') }}"
-                           placeholder="Bloomington">
-                </div>
-            </div>
-            <div class="col-sm-3">
-                <div class="input-group">
-                    <span class="input-group-addon">State</span>
-                    <input class="form-control" id="state" name="State" type="text" value="{{ registration.state|default('') }}" placeholder="MN">
-                </div>
-            </div>
-            <div class="col-sm-2">
-                <div class="input-group">
-                    <span class="input-group-addon">Zip</span>
-                    <input class="form-control" id="zip" name="Zip" type="text" value="{{ registration.zip|default('') }}" placeholder="12345">
-                </div>
+    <div class="row">
+        <div class="col-sm-7">
+            <div class="md-form">
+                <input type="text"
+                       id="city"
+                       name="city"
+                       class="form-control validate"
+                       value="{{ registration.city|default('') }}"
+                       required>
+                <label for="city">
+                    City
+                </label>
             </div>
         </div>
-
-        <br>
-
-        <div class="row">
-            <div class="col-sm-6">
-                <div class="input-group">
-                    <span class="input-group-addon">Phone</span>
-                    <input class="form-control" id="phone" name="Phone" type="text" value="{{ registration.phone|default('') }}"
-                           placeholder="(651) 555-1234">
-                </div>
-            </div>
-            <div class="col-sm-6">
-                <div class="input-group">
-                    <span class="input-group-addon">E-Mail</span>
-                    <input class="form-control" id="email" name="Email" type="text" value="{{ registration.email|default('') }}"
-                           placeholder="john.doe@gmail.com">
-                </div>
+        <div class="col-sm-3">
+            <div class="md-form">
+                <input type="text"
+                       id="state"
+                       name="state"
+                       class="form-control validate"
+                       value="{{ registration.state|default('') }}"
+                       required>
+                <label for="state">
+                    State
+                </label>
             </div>
         </div>
-
-        <br>
-
-        <div class="row">
-            <div class="col-sm-6">
-                <div class="input-group">
-                    <span class="input-group-addon">Badge Name</span>
-                    <input class="form-control" id="badgename" name="BadgeName" type="text" value="{{ registration.badgename|default('') }}"
-                           placeholder="Captain Tightpants">
-                </div>
+        <div class="col-sm-2">
+            <div class="md-form">
+                <input type="text"
+                       id="zip"
+                       name="zip"
+                       class="form-control validate"
+                       value="{{ registration.zip|default('') }}"
+                       required>
+                <label for="zip">
+                    Zip
+                </label>
             </div>
         </div>
+    </div>
 
-        <div class="row">
-            <div class="col-sm-6">
-
-                <br>
-
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="input-group">
-                            <span class="input-group-addon">Birthdate</span>
-                            <input class="form-control datepicker" id="birthdate" name="Birthday" type="text"
-                                   value="{{ registration is not null ? registration.birthday|date('m/d') : '' }}" placeholder="03/26">
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="input-group">
-                            <span class="input-group-addon">Birthyear</span>
-                            <input class="form-control" id="birthyear" name="Birthyear" type="text"
-                                   value="{{ registration is not null ? registration.birthday|date('Y') : '' }}"
-                                   placeholder="">
-                        </div>
-                    </div>
-                </div>
-                <br>
-
-                <div class="row">
-                    <div class="col-sm-4">
-                        <div class="btn-group" data-toggle="buttons">
-                            <label class="btn btn-primary {{ registration is not null and registration.contactVolunteer ? 'active' : '' }}">
-                                <input type="checkbox" name="volunteer" id="volunteer" {{ registration is not null and registration.contactVolunteer ? 'Checked' : '' }}>
-                                    Volunteer?
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="btn-group" data-toggle="buttons">
-                            <label class="btn btn-primary {{ registration is not null and registration.contactNewsletter ? 'active' : '' }}">
-                                <input type="checkbox" name="newsletter" id="newsletter" {{ registration is not null and registration.contactNewsletter ? 'Checked' : '' }}>
-                                    Newsletter?
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6">
-                <div class="input-group">
-                    <span class="input-group-addon">Comments</span>
-                    <textarea class="form-control custom-control" name="comments" rows="6"
-                              placeholder="Information to be added to the log"></textarea>
-                </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="md-form">
+                <input type="text"
+                       id="phone"
+                       name="phone"
+                       class="form-control validate"
+                       value="{{ registration.phone|default('') }}"
+                       placeholder="(651) 555-1234">
+                <label for="phone">
+                    Phone
+                </label>
             </div>
         </div>
-
-        <div class="row" id="alert_div" style="display: none">
-            <div class="col-sm-12">
-                <div class="bs-callout bs-callout-info" id="alert_subdiv">
-                    <h4 id="alert_heading">Info</h4>
-
-                    <p id="alert_msg">Unknown Error.</p>
-                </div>
+        <div class="col-sm-6">
+            <div class="md-form">
+                <input type="email"
+                       id="email"
+                       name="email"
+                       class="form-control validate"
+                       placeholder="john.doe@gmail.com"
+                       value="{{ registration.email|default('') }}">
+                <label class="w-100" for="email" data-error="Please enter a valid email"
+                       data-success="">
+                    Email
+                </label>
             </div>
         </div>
+    </div>
 
-        <div class="row">
-            <div class="col-sm-10">
-            </div>
-
-            <div class="col-sm-2">
-                <br><br>
-                <button id="save_form" type="button" class="btn btn-primary btn-lg">Save</button>
-                <br><br>
-            </div>
-        </div>
-
-
-        <div class="row">
-            <div class="col-sm-5">
-                <h3>T-Shirts</h3>
-            </div>
-            <div class="col-sm-4">
-                <h3>Extras:</h3>
-            </div>
-            <div class="col-sm-3">
-                <h3>Advanced Options:</h3>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-5">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-sm-5">
-                            <table class="table table-striped" id="table_registrations">
-                                <thead>
-                                <tr height="15px">
-                                    <th>Type</th>
-                                    <th>Size</th>
-                                    <th class="text-right">Remove</th>
-                                </tr>
-                                </thead>
-                                <tbody id="tshirt">
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-2">
-                            <div class="form-group">
-                                <select class="form-control" name="shirt_type" id="shirt_type">
-                                    <option value="" default="">Select T-Shirt...</option>
-                                    <option value="MensTee">Men's T-Shirt</option>
-                                    <option value="WomensTee">Women's T-Shirt</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-sm-2">
-                            <div class="form-group">
-                                <select class="form-control" name="shirt_size" id="shirt_size">
-                                    <option value="" default="">Select Size...</option>
-                                    <option value="S">S</option>
-                                    <option value="M">M</option>
-                                    <option value="L">L</option>
-                                    <option value="XL">XL</option>
-                                    <option value="XLT">XLT (Mens Only)</option>
-                                    <option value="2XL">2XL</option>
-                                    <option value="2XLT">2XLT (Mens Only)</option>
-                                    <option value="3XL">3XL (Mens Only)</option>
-                                    <option value="3XLT">3XLT (Mens Only)</option>
-                                    <option value="4XL">4XL (Mens Only)</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-sm-1">
-                            <div class="form-group">
-                                <button id="add_shirt" type="button" class="btn btn-primary">Add</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-4">
-                <table class="table table-striped" id="table_extras">
-                    <thead>
-                    <tr height="15px">
-                        <th>Type</th>
-                        <th class="text-right">Remove</th>
-                    </tr>
-                    </thead>
-                    <tbody id="extras">
-                    </tbody>
-                </table>
-            </div>
-            <div class="col-sm-3">
-            {% if registration is not null and registration.registrationId %}
-                <a href="/registration/transfer/{{ registration.registrationId }}" class="btn btn-primary">Transfer Registration</a>
-                <br><br>
-                <a href="/registration/rollover/{{ registration.registrationId }}" class="btn btn-primary">Rollover Registration</a>
-            {% endif %}
-            {% if group is not null %}
-                <br><br>
-                <a href="/registration/group/add/{{ group.reggroupId }}" class="btn btn-primary">Add another registration to
-                    {{ group.name }}</a>
-            {% endif %}
-            {% if registration is not null and registration.registrationId %}
-                <br><br>
-                <a href="/registration/edit/" class="btn btn-primary">Add another registration</a>
-            {% endif %}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-5">
-            </div>
-            <div class="col-sm-4">
+    <div class="row">
+        <div class="col-6">
+            <div class="row">
                 <div class="col-sm-6">
-                    <div class="form-group">
-                        <select class="form-control" name="extra" id="extra">
-                            <option value="" default="">Select Extra...</option>
-                            {% for extra in extras %}
-                            <option value="{{ extra.name }}">{{ extra.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-                <div class="col-sm-2">
-                    <div class="form-group">
-                        <button id="add_extra" type="button" class="btn btn-primary">Add Extra</button>
+                    <div class="md-form">
+                        <input type="text"
+                               id="badgeName"
+                               name="badgeName"
+                               class="form-control validate"
+                               value="{{ registration.badgeName|default('') }}"
+                               placeholder="Captain Tightpants"
+                               required>
+                        <label for="badgeName">
+                            Badge Name
+                        </label>
                     </div>
                 </div>
             </div>
-            <div class="col-sm-3">
-                <h3>Staff:</h3>
-                <div class="alert alert-danger" role="alert" id="staffdiv">
-                    <div id="staffmsg">This member is also listed on staff for this year.</div>
-                    <a href="javascript:void(0);" class="btn btn-primary" id="staffmodify">Remove</a>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="md-form">
+                        <input type="text"
+                               id="birthDate"
+                               name="birthDate"
+                               class="form-control validate datepicker"
+                               value="{{ registration is not null ? registration.birthday|date('m/d') : '' }}"
+                               placeholder="03/26"
+                               required>
+                        <label for="birthDate">
+                            Birthdate (mm/dd)
+                        </label>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="md-form">
+                        <input type="text"
+                               id="birthYear"
+                               name="birthYear"
+                               class="form-control validate"
+                               value="{{ registration is not null ? registration.birthday|date('Y') : '' }}"
+                               placeholder="2004"
+                               required>
+                        <label for="birthYear">
+                            Birth Year (YYYY)
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <br>
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <p class="font-small text-muted" style="margin-bottom:0px;">Volunteer?</p>
+
+                    <input type="checkbox"
+                           id="volunteer"
+                           name="volunteer"
+                           class="switch-input"
+                            {{ registration is not null and registration.contactVolunteer ? 'Checked' : '' }}
+                    >
+                    <label for="volunteer" class="switch-label">
+                        <span class="toggle--on">Yes</span>
+                        <span class="toggle--off">No</span>
+                    </label>
+                </div>
+                <div class="col-sm-6">
+                    <p class="font-small text-muted" style="margin-bottom:0px;">Newsletter?</p>
+
+                    <input type="checkbox"
+                           id="newsletter"
+                           name="newsletter"
+                           class="switch-input"
+                            {{ registration is not null and registration.contactNewsletter ? 'Checked' : '' }}
+                    >
+                    <label for="newsletter" class="switch-label">
+                        <span class="toggle--on">Yes</span>
+                        <span class="toggle--off">No</span>
+                    </label>
                 </div>
             </div>
         </div>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label for="comments">Comments</label>
+                        <textarea class="form-control rounded-0" name="comments" id="comments" rows="6"></textarea>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-sm-8">
+                </div>
+
+                <div class="col-sm-4">
+                    <button id="save_form" type="button" class="btn btn-warning btn-lg">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <br>
+
+    <div class="row" id="alert_div" style="display: none">
+        <div class="col-sm-12">
+            <div class="bs-callout bs-callout-info" id="alert_subdiv">
+                <h4 id="alert_heading">Info</h4>
+
+                <p id="alert_msg">Unknown Error.</p>
+            </div>
+        </div>
+    </div>
 
 
-    </form>
+
+    <div class="row">
+        <div class="col-sm-5">
+            <h3>T-Shirts</h3>
+        </div>
+        <div class="col-sm-4">
+            <h3>Extras:</h3>
+        </div>
+        <div class="col-sm-3">
+            <h3>Advanced Options:</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-5">
+            <div class="row">
+                <div class="col-sm-12">
+                    <table class="table table-sm table-striped" id="table_registrations">
+                        <thead>
+                        <tr height="15px">
+                            <th>Type</th>
+                            <th>Size</th>
+                            <th class="text-right">Remove</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tshirt">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-5">
+                    <select name="shirtType" id="shirtType">
+                        <option value="" default="">Select T-Shirt...</option>
+                        <option value="MensTee">Men's T-Shirt</option>
+                        <option value="WomensTee">Women's T-Shirt</option>
+                    </select>
+                </div>
+                <div class="col-sm-4">
+                    <select name="shirtSize" id="shirtSize">
+                        <option value="" default="">Select Size...</option>
+                        <option value="S">S</option>
+                        <option value="M">M</option>
+                        <option value="L">L</option>
+                        <option value="XL">XL</option>
+                        <option value="XLT">XLT (Mens Only)</option>
+                        <option value="2XL">2XL</option>
+                        <option value="2XLT">2XLT (Mens Only)</option>
+                        <option value="3XL">3XL (Mens Only)</option>
+                        <option value="3XLT">3XLT (Mens Only)</option>
+                        <option value="4XL">4XL (Mens Only)</option>
+                    </select>
+                </div>
+                <div class="col-sm-3">
+                    <button id="add_shirt" type="button" class="btn btn-primary btn-sm">Add</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="row">
+                <div class="col-sm-12">
+                    <table class="table table-sm table-striped" id="table_extras">
+                        <thead>
+                        <tr height="15px">
+                            <th>Type</th>
+                            <th class="text-right">Remove</th>
+                        </tr>
+                        </thead>
+                        <tbody id="extras">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-8">
+                    <select name="extra" id="extra">
+                        <option value="" default="">Select Extra...</option>
+                        {% for extra in extras %}
+                            <option value="{{ extra.name }}">{{ extra.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <button id="add_extra" type="button" class="btn btn-primary btn-sm">Add Extra</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-3">
+        {% if registration is not null and registration.registrationId %}
+            <a href="/registration/transfer/{{ registration.registrationId }}" class="btn btn-primary btn-sm">Transfer Registration</a>
+            <br>
+            <a href="/registration/rollover/{{ registration.registrationId }}" class="btn btn-primary btn-sm">Rollover Registration</a>
+        {% endif %}
+        {% if group is not null %}
+            <br>
+            <a href="/registration/group/add/{{ group.groupId }}" class="btn btn-primary btn-sm">Add another registration to
+                {{ group.name }}</a>
+        {% endif %}
+        {% if registration is not null and registration.registrationId %}
+            <br>
+            <a href="/registration/edit/" class="btn btn-primary btn-sm">Add another registration</a>
+        {% endif %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-9">
+        </div>
+        <div class="col-sm-3">
+            <h3>Staff:</h3>
+            <div class="alert alert-danger" role="alert" id="staffdiv">
+                <div id="staffmsg">This member is also listed on staff for this year.</div>
+                <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="staffmodify">Remove</a>
+            </div>
+        </div>
+    </div>
+</div>
+</form>
 
 
     <script>
-        var registration_id = {{ registration.registrationId|default('null') }};
+        var registrationId = {{ registration.registrationId|default('null') }};
 
         $(function ()
         {
@@ -424,60 +530,65 @@
         {
             get_regshirtlist();
             get_regextralist();
+            setDefaults();
         });
 
-        function render_shirt(RegistrationShirt_ID, shirt_type, shirt_size)
+        function setDefaults() {
+            $("#RegistrationStatus option:first").attr('selected','selected');
+        }
+
+        function render_shirt(registrationShirtId, shirtType, shirtSize)
         {
             $('#tshirt')
                 .append($('<tr>')
-                    .attr('id', 'tr_' + RegistrationShirt_ID)
+                    .attr('id', 'tr_' + registrationShirtId)
                     .append($('<td>')
-                        .text(shirt_type)
+                        .text(shirtType)
                         .append($('<input>')
                             .attr('type', 'hidden')
-                            .attr('name', 'RegistrationShirt_ID[]')
-                            .attr('value', RegistrationShirt_ID)
+                            .attr('name', 'RegistrationShirtId[]')
+                            .attr('value', registrationShirtId)
                         )
                     )
                     .append($('<td>')
-                        .html(shirt_size)
+                        .html(shirtSize)
                     )
                     .append($('<td>')
+                        .attr('class', 'text-right')
                         .append($('<span>')
-                            .attr('class', 'close-btn')
                             .append($('<a>')
-                                .attr('id', 'delete_' + RegistrationShirt_ID)
+                                .attr('id', 'delete_' + registrationShirtId)
                                 .attr('href', 'javascript:void(0);')
-                                .html('X')
+                                .html('<i class="far fa-times-circle fa-2x"></i>')
                             )
                         )
                     )
                 );
 
-            $('#delete_' + RegistrationShirt_ID).click(function ()
+            $('#delete_' + registrationShirtId).click(function ()
             {
-                delete_shirt(RegistrationShirt_ID);
+                delete_shirt(registrationShirtId);
             });
         }
 
         $('#add_shirt').click(function ()
         {
-            var shirt_type = $('#shirt_type').val();
-            var shirt_size = $('#shirt_size').val();
-            var reg_id = $('#Registration_ID').val();
+            var shirtType = $('#shirtType').val();
+            var shirtSize = $('#shirtSize').val();
+            var reg_id = $('#registrationId').val();
 
-            var RegistrationShirt_ID = 0;
+            var RegistrationShirtId = 0;
             $.getJSON('/editregshirtlist/'+reg_id+'/add',
                 {
-                    'Registration_ID': reg_id,
-                    'shirt_type': shirt_type,
-                    'shirt_size': shirt_size
+                    'registrationId': reg_id,
+                    'shirtType': shirtType,
+                    'shirtSize': shirtSize
                 },
                 function (json)
                 {
-                    if (json['success'] && json['RegistrationShirt_ID']) {
-                        RegistrationShirt_ID = json['RegistrationShirt_ID'];
-                        render_shirt(RegistrationShirt_ID, shirt_type, shirt_size);
+                    if (json['success'] && json['registrationShirtId']) {
+                        var registrationShirtId = json['registrationShirtId'];
+                        render_shirt(registrationShirtId, shirtType, shirtSize);
                     } else {
                         alert('Error adding shirt. '+ json['message'])
                     }
@@ -485,17 +596,17 @@
             );
         });
 
-        function delete_shirt(RegistrationShirt_ID)
+        function delete_shirt(registrationShirtId)
         {
-            var reg_id = $('#Registration_ID').val();
+            var reg_id = $('#registrationId').val();
             $.getJSON('/editregshirtlist/'+reg_id+'/delete',
                 {
-                    'Registration_ID': reg_id,
-                    'RegistrationShirt_ID': RegistrationShirt_ID
+                    'registrationId': reg_id,
+                    'registrationShirtId': registrationShirtId
                 },
                 function (json)
                 {
-                    $('#tr_' + RegistrationShirt_ID).remove();
+                    $('#tr_' + registrationShirtId).remove();
                 }
             );
             get_regshirtlist();
@@ -503,7 +614,7 @@
 
         function get_regshirtlist()
         {
-            var reg_id = $('#Registration_ID').val();
+            var reg_id = $('#registrationId').val();
             if (reg_id == '') {
                 //alert('You must save the user before you can add t-shirts');
                 return;
@@ -517,62 +628,62 @@
 
                     var shirtcount = json.length;
                     for (var i = 0; i < shirtcount; i++) {
-                        var RegistrationShirt_ID = json[i]['RegistrationShirt_ID'];
-                        var shirt_type = json[i]['shirt_type'];
-                        var shirt_size = json[i]['shirt_size'];
-                        render_shirt(RegistrationShirt_ID, shirt_type, shirt_size);
+                        var registrationShirtId = json[i]['registrationShirtId'];
+                        var shirtType = json[i]['shirtType'];
+                        var shirtSize = json[i]['shirtSize'];
+                        render_shirt(registrationShirtId, shirtType, shirtSize);
                     }
                 }
             );
         }
 
-        function render_extras(RegistrationExtraId, extra_type)
+        function render_extras(extraId, extra_type)
         {
             $('#extras')
                 .append($('<tr>')
-                    .attr('id', 'tr_extra_' + RegistrationExtraId)
+                    .attr('id', 'tr_extra_' + extraId)
                     .append($('<td>')
                         .text(extra_type)
                         .append($('<input>')
                             .attr('type', 'hidden')
-                            .attr('name', 'RegistrationExtraId[]')
-                            .attr('value', RegistrationExtraId)
+                            .attr('name', 'extraId[]')
+                            .attr('value', extraId)
                         )
                     )
                     .append($('<td>')
+                        .attr('class', 'text-right')
                         .append($('<span>')
-                            .attr('class', 'close-btn')
                             .append($('<a>')
-                                .attr('id', 'delete_extra_' + RegistrationExtraId)
+                                .attr('id', 'delete_extra_' + extraId)
                                 .attr('href', 'javascript:void(0);')
-                                .html('X')
+                                .html('<i class="far fa-times-circle fa-2x"></i>')
                             )
                         )
                     )
                 );
 
-            $('#delete_extra_' + RegistrationExtraId).click(function ()
+            $('#delete_extra_' + extraId).click(function ()
             {
-                delete_extra(RegistrationExtraId);
+                delete_extra(extraId);
             });
         }
 
         $('#add_extra').click(function ()
         {
             var extra = $('#extra').val();
-            var reg_id = $('#Registration_ID').val();
+            var reg_id = $('#registrationId').val();
 
-            var RegistrationExtraId = 0;
+            var extraId = 0;
             $.getJSON('/registration/ajax/extra/'+reg_id+'/add',
                 {
-                    'Registration_ID': reg_id,
+                    'registrationId': reg_id,
                     'extra': extra
                 },
                 function (json)
                 {
-                    if (json['success'] && json['RegistrationExtraId']) {
-                        RegistrationExtraId = json['RegistrationExtraId'];
-                        render_extras(RegistrationExtraId, extra);
+                    if (json['success'] && json['extraId']) {
+                        extraId = json['extraId'];
+                        render_extras(extraId, extra);
                     } else {
                         alert('Error adding extra. '+ json['message'])
                     }
@@ -580,17 +691,17 @@
             );
         });
 
-        function delete_extra(RegistrationExtraId)
+        function delete_extra(extraId)
         {
-            var reg_id = $('#Registration_ID').val();
+            var reg_id = $('#registrationId').val();
             $.getJSON('/registration/ajax/extra/'+reg_id+'/delete',
                 {
-                    'Registration_ID': reg_id,
-                    'RegistrationExtraId': RegistrationExtraId
+                    'registrationId': reg_id,
+                    'extraId': extraId
                 },
                 function (json)
                 {
-                    $('#tr_extra_' + RegistrationExtraId).remove();
+                    $('#tr_extra_' + extraId).remove();
                 }
             );
             get_regextralist();
@@ -598,7 +709,7 @@
 
         function get_regextralist()
         {
-            var reg_id = $('#Registration_ID').val();
+            var reg_id = $('#registrationId').val();
             if (reg_id == '') {
                 //alert('You must save the user before you can add extras');
                 return;
@@ -612,9 +723,9 @@
 
                     var extraCount = json.length;
                     for (var i = 0; i < extraCount; i++) {
-                        var RegistrationExtraId = json[i]['RegistrationExtraId'];
+                        var extraId = json[i]['extraId'];
                         var extra = json[i]['extra'];
-                        render_extras(RegistrationExtraId, extra);
+                        render_extras(extraId, extra);
                     }
                 }
             );
@@ -623,17 +734,19 @@
         $('#staffmodify').click(function ()
         {
             action = 'remove';
-            if ($('#staffmodify').html() == 'Add') {
+            if ($('#staffmodify').text() == 'Add') {
                 var action = 'add';
             }
 
-            var reg_id = $('#Registration_ID').val();
+            console.log(action);
+
+            var reg_id = $('#registrationId').val();
             // Submit the AJAX
             $.ajax({
                 type: 'POST',
                 url: '/ajaxstaffmodify/' + reg_id + '/' + action,
                 dataType: 'json',
-                data: $('#form_editregistration').serialize(),
+                data: $('#form_editRegistration').serialize(),
                 error: function (x, textStatus)
                 {
                     if (textStatus == 'parsererror') {
@@ -674,7 +787,7 @@
                 });
         });
 
-        jQuery.data(document.body, "is_staff", {{ isStaff }});
+        jQuery.data(document.body, "is_staff", {{ isStaff ? 'true' : 'false' }});
         staffdivstyle();
         function staffdivstyle()
         {
@@ -698,7 +811,7 @@
                 type: 'POST',
                 url: '/registration/ajax/edit',
                 dataType: 'json',
-                data: $('#form_editregistration').serialize(),
+                data: $('#form_editRegistration').serialize(),
                 error: function (x, textStatus)
                 {
                     if (textStatus == 'parsererror') {
@@ -725,20 +838,20 @@
                         $('#alert_heading').text('Info');
                         $('#alert_subdiv').removeClass('bs-callout-danger');
                         $('#alert_subdiv').addClass('bs-callout-info');
-                        $('#Registration_ID').val(data['Registration_ID']);
+                        $('#registrationId').val(data['registrationId']);
 
                         var group = '';
-                        if ($('#RegGroup_ID').val() != '') {
+                        if ($('#groupId').val() != '') {
                             group = 'Group ';
                         }
                         $('#reg_header').html(
                             'Edit ' + group + 'Membership - ' + data['Year'] + ' - ' + data['Number']);
-                        var reggroup_id = '{{ group.reggroupId|default('') }}';
-                        if (reggroup_id != '') {
-                            reggroup_id = '/' + reggroup_id;
+                        var groupId = '{{ group.groupId|default('') }}';
+                        if (groupId != '') {
+                            groupId = '/' + groupId;
                         }
                         window.history.pushState("object or string", "Registration " + data['Number'],
-                            "/registration/edit/" + data['Registration_ID'] + reggroup_id);
+                            "/registration/edit/" + data['registrationId'] + groupId);
                     } else {
                         $('#alert_heading').text('Error');
                         $('#alert_subdiv').addClass('bs-callout-danger');
@@ -750,27 +863,18 @@
         $('#RegistrationType').on('change', function ()
         {
             if (this.value == 'Group') {
-                $('#RegGroup_ID').show();
+                $('#groupId').show();
             } else {
-                $('#RegGroup_ID').hide();
+                $('#groupId').hide();
             }
         });
 
     </script>
     <style>
-        .close-btn {
-            border: 2px solid #c2c2c2;
-            float: right;
-            padding: 1px 5px;
-            background-color: #605F61;
-            border-radius: 20px;
-        }
-
-        .close-btn a {
-            font-size: 15px;
-            font-weight: bold;
-            color: white;
-            text-decoration: none;
+        input {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
         }
     </style>
 {% endblock %}

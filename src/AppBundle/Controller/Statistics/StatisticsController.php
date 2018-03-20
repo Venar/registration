@@ -1,32 +1,40 @@
 <?php
+/**
+ * Copyright (c) 2018. Anime Twin Cities, Inc.
+ *
+ * This project, including all of the files and their contents, is licensed under the terms of MIT License
+ *
+ * See the LICENSE file in the root of this project for details.
+ */
 
 namespace AppBundle\Controller\Statistics;
 
 ini_set('max_execution_time', 300);
 
+use AppBundle\Entity\Badge;
+use AppBundle\Entity\BadgeType;
 use AppBundle\Entity\Event;
-use Doctrine\DBAL\Driver\AbstractDriverException;
+use AppBundle\Entity\Registration;
 use Doctrine\ORM\NonUniqueResultException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Cache\Simple\FilesystemCache;
-use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class StatisticsController extends Controller
 {
     /**
      * @Route("/stats", name="statistics")
-     * @Security("has_role('ROLE_USER')")
+     * @Security("has_role('ROLE_STATISTICS')")
      */
     public function showStatisticsForCurrentYear()
     {
         $vars = [];
-        $event = $this->get('repository_event')->getSelectedEvent();
-        $vars['year'] = $event->getStartdate()->format('Y');
+        $event = $this->getDoctrine()->getRepository(Event::class)->getSelectedEvent();
+        $vars['year'] = $event->getStartDate()->format('Y');
 
-        $eventYearEnd = $event->getStartdate()->format('Y');
-        $eventYearOpen = $event->getStartdate()->format('Y') - 1;
+        $eventYearEnd = $event->getStartDate()->format('Y');
+        $eventYearOpen = $event->getStartDate()->format('Y') - 1;
 
         $remaining  = $event->getAttendancecap();
 
@@ -45,15 +53,18 @@ class StatisticsController extends Controller
 
         $counts = array();
         $dataByType = [];
-        $staffBadge = $this->get('repository_badgetype')->getBadgeTypeFromType('STAFF');
+        $staffBadge = $this
+            ->getDoctrine()
+            ->getRepository(BadgeType::class)
+            ->getBadgeTypeFromType('STAFF');
 
         $allStaffBadges = $this->get('doctrine.orm.default_entity_manager')->createQueryBuilder()
             ->select('IDENTITY(b.registration)')
-            ->from('AppBundle:Badge', 'b')
-            ->where("b.badgetype = :stafftype")
+            ->from(Badge::class, 'b')
+            ->where("b.badgeType = :staffType")
             ->getDQL();
 
-        $badgeTypes = $this->get('repository_badgetype')->findAll();
+        $badgeTypes = $this->getDoctrine()->getRepository(BadgeType::class)->findAll();
         foreach ($badgeTypes as $badgeType) {
             $tmp = [];
             $tmpData = [];
@@ -67,18 +78,18 @@ class StatisticsController extends Controller
 
                 $allBadgesSubQuery = $this->get('doctrine.orm.default_entity_manager')->createQueryBuilder()
                     ->select('IDENTITY(b2.registration)')
-                    ->from('AppBundle:Badge', 'b2')
-                    ->where("b2.badgetype = :type")
+                    ->from(Badge::class, 'b2')
+                    ->where("b2.badgeType = :type")
                     ->getDQL();
 
                 $queryBuilder = $this->get('doctrine.orm.default_entity_manager')->createQueryBuilder();
                 $queryBuilder
-                    ->select('count(r.registrationId)')
-                    ->from('AppBundle:Registration', 'r')
-                    ->where($queryBuilder->expr()->in('r.registrationId', $allBadgesSubQuery))
+                    ->select('count(r.id)')
+                    ->from(Registration::class, 'r')
+                    ->where($queryBuilder->expr()->in('r.id', $allBadgesSubQuery))
                     ->andWhere('r.event = :event')
-                    ->andWhere('r.createddate > :start')
-                    ->andWhere('r.createddate <= :end')
+                    ->andWhere('r.createdDate > :start')
+                    ->andWhere('r.createdDate <= :end')
                     ->setParameter('type', $badgeType->getBadgetypeId())
                     ->setParameter('start', $start)
                     ->setParameter('end', $end)
@@ -86,11 +97,15 @@ class StatisticsController extends Controller
                 ;
                 if ($badgeType->getName() != 'STAFF') {
                     $queryBuilder
-                        ->andWhere($queryBuilder->expr()->notIn('r.registrationId', $allStaffBadges))
-                        ->setParameter('stafftype', $staffBadge->getBadgetypeId());
+                        ->andWhere($queryBuilder->expr()->notIn('r.id', $allStaffBadges))
+                        ->setParameter('staffType', $staffBadge->getBadgetypeId());
                 }
 
-                $count = (int) $queryBuilder->getQuery()->getSingleScalarResult();
+                try {
+                    $count = (int) $queryBuilder->getQuery()->getSingleScalarResult();
+                } catch (NonUniqueResultException $e) {
+                    $count = 0;
+                }
                 $total_count += $count;
                 $tmpData[] = $count;
             }
@@ -107,7 +122,7 @@ class StatisticsController extends Controller
         }
         $dataByTypeMonths = $months;
 
-        $events = $this->get('repository_event')->findAll();
+        $events = $this->getDoctrine()->getRepository(Event::class)->findAll();
         $eventNames = [];
         foreach ($events as $loopEvent) {
             $eventNames[] = $loopEvent->getYear();
@@ -131,25 +146,26 @@ class StatisticsController extends Controller
         $dataByYear = $this->getDataByEventByDay($events);
 
         $staffCount   = (int)$counts[$staffBadge->getName()];
-        //$remaining    = $remaining + $staffCount;
         $vars['staff_percent'] = $staffCount;
 
-        $tmpBadge   = $this->get('repository_badgetype')->getBadgeTypeFromType('ADREGSTANDARD');
+        $badgeTypeRepository = $this->getDoctrine()->getRepository(BadgeType::class);
+
+        $tmpBadge   = $badgeTypeRepository->getBadgeTypeFromType('ADREGSTANDARD');
         $tmpCount   = (int)$counts[$tmpBadge->getName()];
         $remaining  = $remaining - $tmpCount;
         $vars['standard_percent'] = $tmpCount;
 
-        $tmpBadge   = $this->get('repository_badgetype')->getBadgeTypeFromType('MINOR');
+        $tmpBadge   = $badgeTypeRepository->getBadgeTypeFromType('MINOR');
         $tmpCount   = (int)$counts[$tmpBadge->getName()];
         $remaining  = $remaining - $tmpCount;
         $vars['minor_percent'] = $tmpCount;
 
-        $tmpBadge   = $this->get('repository_badgetype')->getBadgeTypeFromType('ADREGSPONSOR');
+        $tmpBadge   = $badgeTypeRepository->getBadgeTypeFromType('ADREGSPONSOR');
         $tmpCount   = (int)$counts[$tmpBadge->getName()];
         $remaining  = $remaining - $tmpCount;
         $vars['sponsor_percent'] = $tmpCount;
 
-        $tmpBadge   = $this->get('repository_badgetype')->getBadgeTypeFromType('ADREGCOMMSPONSOR');
+        $tmpBadge   = $badgeTypeRepository->getBadgeTypeFromType('ADREGCOMMSPONSOR');
         $tmpCount = 0;
         if (array_key_exists($tmpBadge->getName(), $counts)) {
             $tmpCount = (int)$counts[$tmpBadge->getName()];
@@ -180,11 +196,11 @@ class StatisticsController extends Controller
      */
     public function getDataByEventByDay($events) {
         $data = [];
-        $currentEvent = $this->get('repository_event')->getCurrentEvent();
+        $currentEvent = $this->getDoctrine()->getRepository(Event::class)->getCurrentEvent();
 
         foreach ($events as $event) {
             $cache = new FilesystemCache();
-            $statsField = "stats.cache.eventsByDay.{$event->getEventId()}";
+            $statsField = "stats.cache.eventsByDay.{$event->getId()}";
 
             if ($cache->has($statsField))
             {
@@ -213,8 +229,8 @@ class StatisticsController extends Controller
                 if ((int)date('n', $day) < 5) {
                     $statsYear++;
                 }
-                $count = $this->getStatsByRange($event, $statsStart, $day);
-                if ($lastCount != $count && $count != $totalForYear) {
+                $count = (int) $this->getStatsByRange($event, $statsStart, $day);
+                if ($lastCount != $count && $count < $totalForYear) {
                     $dayFormat = date("$statsYear-m-d H:i:s", $day);
                     $tmpData[] = [strtotime($dayFormat) * 1000, $count];
                 }
@@ -225,7 +241,7 @@ class StatisticsController extends Controller
                 continue;
             }
 
-            if ($currentEvent->getEventId() != $event->getEventId()) {
+            if ($currentEvent->getId() != $event->getId()) {
                 $cache->set($statsField, serialize($tmpData));
             }
 
@@ -242,7 +258,6 @@ class StatisticsController extends Controller
      * @param int $startSecs
      * @param int $endSecs
      * @return int
-     * @throws NonUniqueResultException
      */
     public function getStatsByRange($event, $startSecs, $endSecs) {
         $start = date('Y-m-d H:i:s', $startSecs);
@@ -250,17 +265,21 @@ class StatisticsController extends Controller
 
         $queryBuilder = $this->get('doctrine.orm.default_entity_manager')->createQueryBuilder();
         $queryBuilder
-            ->select('count(r.registrationId)')
-            ->from('AppBundle:Registration', 'r')
+            ->select('count(r.id)')
+            ->from(Registration::class, 'r')
             ->where('r.event = :event')
-            ->andWhere('r.createddate > :start')
-            ->andWhere('r.createddate <= :end')
+            ->andWhere('r.createdDate > :start')
+            ->andWhere('r.createdDate <= :end')
             ->setParameter('event', $event)
             ->setParameter('start', $start)
             ->setParameter('end', $end)
         ;
 
-        return (int) $queryBuilder->getQuery()->getSingleScalarResult();
+        try {
+            return (int) $queryBuilder->getQuery()->getSingleScalarResult();
+        } catch (NonUniqueResultException $e) {
+            return 0;
+        }
     }
 
     /**
@@ -270,8 +289,8 @@ class StatisticsController extends Controller
     public function graphByAge($event) {
         $queryBuilder = $this->get('doctrine.orm.default_entity_manager')->createQueryBuilder();
         $queryBuilder
-            ->select('(year(CURRENT_TIMESTAMP()) - YEAR(r.birthday)) as age, count(r.registrationId) as ageCount')
-            ->from('AppBundle:Registration', 'r')
+            ->select('(year(CURRENT_TIMESTAMP()) - YEAR(r.birthday)) as age, count(r.id) as ageCount')
+            ->from(Registration::class, 'r')
             ->where('r.event = :event')
             ->setParameter('event', $event)
             ->groupBy('age')
@@ -344,7 +363,7 @@ class StatisticsController extends Controller
         $queryBuilder = $this->get('doctrine.orm.default_entity_manager')->createQueryBuilder();
         $queryBuilder
             ->select('r.zip, count(r.zip) as zipCount')
-            ->from('AppBundle:Registration', 'r')
+            ->from(Registration::class, 'r')
             ->where('r.event = :event')
             ->andWhere("r.zip != ''")
             ->setParameter('event', $event)
@@ -371,11 +390,11 @@ class StatisticsController extends Controller
         $rawData = [];
 
         foreach ($zipData as $zip) {
-            $zipcode = substr(trim($zip['zip']),0, 5);
-            if (!array_key_exists($zipcode, $fipsZipArray)) {
+            $zipCode = substr(trim($zip['zip']),0, 5);
+            if (!array_key_exists($zipCode, $fipsZipArray)) {
                 continue;
             }
-            $fipsId = $fipsZipArray[$zipcode];
+            $fipsId = $fipsZipArray[$zipCode];
 
             $stateCode = substr($fipsId, 0, 2);
             $stateLetters = strtolower($fipsStateArray[$stateCode]);
@@ -385,7 +404,7 @@ class StatisticsController extends Controller
             if (!array_key_exists($index, $rawData)) {
                 $rawData[$index] = [
                     'code' => $index,
-                    'name' => $zipcode,
+                    'name' => $zipCode,
                     'value' => 0,
                 ];
             }
@@ -406,7 +425,7 @@ class StatisticsController extends Controller
         $countByCurrentDate = [];
         $selectedCount = 0;
         foreach ($events as $event) {
-            $currentEvent = $this->get('repository_event')->getCurrentEvent();
+            $currentEvent = $this->getDoctrine()->getRepository(Event::class)->getCurrentEvent();
             $yearDifference = (int)$currentEvent->getYear() - $event->getYear();
             $end = date('Y-m-d H:i:s', strtotime('now'));
             if ($yearDifference < 0) {
@@ -417,20 +436,20 @@ class StatisticsController extends Controller
 
             $queryBuilder = $this->get('doctrine.orm.default_entity_manager')->createQueryBuilder();
             $queryBuilder
-                ->select('count(r.registrationId)')
-                ->from('AppBundle:Registration', 'r')
+                ->select('count(r.id)')
+                ->from(Registration::class, 'r')
                 ->where('r.event = :event')
-                ->andWhere('r.createddate <= :end')
+                ->andWhere('r.createdDate <= :end')
                 ->setParameter('event', $event)
                 ->setParameter('end', $end)
             ;
             try {
-                $count = (int)$queryBuilder->getQuery()->getSingleScalarResult();
+                $count = (int) $queryBuilder->getQuery()->getSingleScalarResult();
             } catch (NonUniqueResultException $e) {
                 $count = 0;
             }
 
-            if ($event->getEventId() == $selectedEvent->getEventId()) {
+            if ($event->getId() == $selectedEvent->getId()) {
                 $selectedCount = $count;
             }
             $tmp = [

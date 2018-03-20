@@ -1,0 +1,48 @@
+{##
+ # Copyright (c) 2018. Anime Twin Cities, Inc.
+ #
+ # This project, including all of the files and their contents, is licensed under the terms of MIT License
+ #
+ # See the LICENSE file in the root of this project for details.
+#}
+{% for section in sections %}
+    <li>
+    {% if section.items|length == 1 %}
+        {% if section.items[0] is defined %}
+            {% set firstItem = section.items[0] %}
+            {% if is_granted(firstItem.access) %}
+                {% if false %}
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{{ path(firstItem.url) }}">{{ section.name|raw }} <span class="sr-only">(current)</span></a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path(firstItem.url) }}">{{ section.name|raw }}</a>
+                    </li>
+                {% endif %}
+            {% endif %}
+        {% endif %}
+    {% endif %}
+    {% if section.items|length > 1 %}
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="javascript:void(0);" id="navbarDropdownMenuLink_{{ section.name }}"
+               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{ section.name }}
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                {% for item in section.items if is_granted(item.access) %}
+                    <a class="dropdown-item" href="{{ path(item.url) }}">{{ item.title }}</a>
+                {% endfor %}
+            </div>
+        </li>
+    {% endif %}
+    </li>
+{% endfor %}
+{% if is_granted('ROLE_ADMIN') %}
+    <li class="nav-item">
+        <a class="nav-link waves-effect waves-dark" href="{{ url('admin') }}">
+            <i class="fas fa-cogs"></i>
+            Admin
+        </a>
+    </li>
+{% endif %}

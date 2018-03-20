@@ -1,39 +1,46 @@
+{##
+ # Copyright (c) 2018. Anime Twin Cities, Inc.
+ #
+ # This project, including all of the files and their contents, is licensed under the terms of MIT License
+ #
+ # See the LICENSE file in the root of this project for details.
+#}
 {% extends 'detour.html.twig' %}
 
 {% block body %}
-<div class="row">
-    <div class="col-sm-12">
-        <h1 class="page-header">
-            <span style="float: left">
-                <a href="/registration/view/{{ registration.registrationId|default('') }}" class="btn btn-primary btn-sm">Back</a>&nbsp;-&nbsp;
-                {{ registration.firstname }} {{ registration.lastname }} ({{ registration.number }})</span>
-            &nbsp;&nbsp;&nbsp;&nbsp;
-            <span>
-                {% for badge in badges %}
-                    {% if badge.badgetype.name == 'ADREGSTANDARD' %}
-                        <div class="rounded" style="background: orange; color: white">Adult</div>
-                    {% elseif badge.badgetype.name == 'MINOR' %}
-                        <div class="rounded" style="background: yellow;">Minor</div>
-                    {% elseif badge.badgetype.name == 'ADREGSPONSOR' %}
-                        <div class="rounded" style="background: blue; color: white">Sponsor</div>
-                    {% elseif badge.badgetype.name == 'ADREGCOMMSPONSOR' %}
-                        <div class="rounded" style="background: purple; color: white;">Community Sponsor</div>
-                    {% elseif badge.badgetype.name == 'STAFF' %}
-                        <div class="rounded" style="background: red; color: white">Staff</div>
-                    {% elseif badge.badgetype.name == 'GUEST' %}
-                        <div class="rounded" style="background: black;">Guest</div>
-                    {% elseif badge.badgetype.name == 'VENDOR' %}
-                        <div class="rounded" style="background: green;">Vendor</div>
-                    {% elseif badge.badgetype.name == 'EXHIBITOR' %}
-                        <div class="rounded" style="background: silver;">Exhibitor</div>
-                    {% endif %}
-                {% endfor %}
-            </span>
-        </h1>
+<div class="container bg-white">
+    <div class="row">
+        <div class="col-sm-12">
+            <h2>
+                <span style="float: left">
+                    <a href="/registration/view/{{ registration.registrationId|default('') }}" class="btn btn-primary btn-sm">Back</a>&nbsp;-&nbsp;
+                    {{ registration.firstname }} {{ registration.lastname }} ({{ registration.number }})</span>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <span>
+                    {% for badge in badges if badge.badgeStatus.active %}
+                        {% if badge.badgetype.name == 'ADREGSTANDARD' %}
+                            <div class="rounded" style="background: orange; color: white">Adult</div>
+                        {% elseif badge.badgetype.name == 'MINOR' %}
+                            <div class="rounded" style="background: yellow;">Minor</div>
+                        {% elseif badge.badgetype.name == 'ADREGSPONSOR' %}
+                            <div class="rounded" style="background: blue; color: white">Sponsor</div>
+                        {% elseif badge.badgetype.name == 'ADREGCOMMSPONSOR' %}
+                            <div class="rounded" style="background: purple; color: white;">Community Sponsor</div>
+                        {% elseif badge.badgetype.name == 'STAFF' %}
+                            <div class="rounded" style="background: red; color: white">Staff</div>
+                        {% elseif badge.badgetype.name == 'GUEST' %}
+                            <div class="rounded" style="background: black;">Guest</div>
+                        {% elseif badge.badgetype.name == 'VENDOR' %}
+                            <div class="rounded" style="background: green;">Vendor</div>
+                        {% elseif badge.badgetype.name == 'EXHIBITOR' %}
+                            <div class="rounded" style="background: silver;">Exhibitor</div>
+                        {% endif %}
+                    {% endfor %}
+                </span>
+            </h2>
+        </div>
     </div>
-</div>
 
-<div class="registration">
     <div class="row">
         <div class="col-sm-4 registration-info">
             <h2>User Information</h2>

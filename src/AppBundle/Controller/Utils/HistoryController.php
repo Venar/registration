@@ -1,9 +1,16 @@
 <?php
+/**
+ * Copyright (c) 2018. Anime Twin Cities, Inc.
+ *
+ * This project, including all of the files and their contents, is licensed under the terms of MIT License
+ *
+ * See the LICENSE file in the root of this project for details.
+ */
 
 namespace AppBundle\Controller\Utils;
 
 use AppBundle\Entity\Registration;
-use AppBundle\Entity\Registrationhistory;
+use AppBundle\Entity\History;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,7 +23,7 @@ class HistoryController extends Controller
      * @Route("/history/", name="edit_history")
      * @Route("/history/{curPageNum}", name="edit_history_WithPageNum")
      * @Route("/history/{curPageNum}/", name="edit_history_WithPageNum_slash")
-     * @Security("has_role('ROLE_USER')")
+     * @Security("has_role('ROLE_SUBHEAD')")
      *
      * @param Request $request
      * @param int $curPageNum
@@ -24,6 +31,7 @@ class HistoryController extends Controller
      */
     public function history(Request $request, $curPageNum = 1) {
         $vars = [];
+        $historyRepository = $this->getDoctrine()->getRepository(History::class);
 
         $limit = 90;
         if ($request->query->has('limit')
@@ -41,7 +49,7 @@ class HistoryController extends Controller
         };
         $vars['searchText'] = $searchText;
 
-        $count = count($this->get('repository_registrationhistory')->getHistoryFromSearch($searchText));
+        $count = count($historyRepository->getHistoryFromSearch($searchText));
         $vars['total'] = $count;
 
         $totalPages = ceil($count / $limit);
@@ -52,7 +60,7 @@ class HistoryController extends Controller
         $offset = $limit * ($curPageNum - 1);
         $vars['offset'] = (int) $offset;
 
-        $registrationHistories = $this->get('repository_registrationhistory')->getHistoryFromSearch($searchText, $limit, $offset);
+        $registrationHistories = $historyRepository->getHistoryFromSearch($searchText, $limit, $offset);
         $vars['registrationHistories'] = $registrationHistories;
 
         return $this->render('utils/history.html.twig', $vars);

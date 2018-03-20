@@ -1,9 +1,10 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: John J. Koniges
- * Date: 4/27/2017
- * Time: 2:46 PM
+ * Copyright (c) 2018. Anime Twin Cities, Inc.
+ *
+ * This project, including all of the files and their contents, is licensed under the terms of MIT License
+ *
+ * See the LICENSE file in the root of this project for details.
  */
 
 namespace AppBundle\Service\Util;
@@ -11,7 +12,7 @@ namespace AppBundle\Service\Util;
 
 use AppBundle\Entity\Badge;
 use AppBundle\Entity\Registration;
-use AppBundle\Service\Repository\BadgeRepository;
+use Doctrine\ORM\EntityManager;
 use Symfony\Bridge\Twig\TwigEngine;
 
 class Email
@@ -20,22 +21,51 @@ class Email
     protected $templating;
     /** @var $mailer \Swift_Mailer */
     protected $mailer;
-    /** @var $badgeRepository BadgeRepository */
-    protected $badgeRepository;
+    /** @var EntityManager $entityManager */
+    protected $entityManager;
 
-    public function __construct(TwigEngine $templating, \Swift_Mailer $mailer, BadgeRepository $badge)
+    public function __construct(TwigEngine $templating, \Swift_Mailer $mailer, EntityManager $entityManager)
     {
         $this->templating = $templating;
         $this->mailer = $mailer;
-        $this->badgeRepository = $badge;
+        $this->entityManager = $entityManager;
     }
 
-    public function sendConfirmationEmail(Registration $registration)
+    /**
+     * @param Registration $registration
+     * @param bool $forceResend Resend even if already set
+     */
+    public function generateAndSendConfirmationEmail(Registration $registration, bool $forceResend = false)
+    {
+        if ($registration->getEmail() == ''
+            || ($registration->getConfirmationnumber() != ''
+                && !$forceResend
+            )
+        ) {
+
+            return;
+        }
+
+        if ($registration->getConfirmationnumber() == '') {
+            $this
+                ->entityManager
+                ->getRepository(Registration::class)
+                ->generateConfirmationNumber($registration);
+        }
+
+        try {
+            $this->sendConfirmationEmail($registration);
+        } catch (\Exception $e) {
+            $this->sendErrorMessageToRegistration($e->getMessage(), $registration);
+        }
+    }
+
+    private function sendConfirmationEmail(Registration $registration)
     {
         $atcLogoIMG = 'http://registration.animedetour.com/images/atc_logo_small.png';
         $url = 'http://registration.animedetour.com/api/barcode/$AD-C-' . urlencode($registration->getConfirmationnumber());
 
-        $badges = $this->badgeRepository->getBadgesFromRegistration($registration);
+        $badges = $registration->getBadges();
         $isMinor = false;
         $isSponsor = false;
         foreach ($badges as $badge) {
@@ -66,22 +96,24 @@ class Email
             'isSponsor' => $isSponsor,
         ];
 
-        $message = \Swift_Message::newInstance()
-            ->setSubject("Anime Detour {$registration->getEvent()->getYear()} Registration Confirmation")
-            ->setFrom('noreply@animedetour.com', 'Anime Detour IT')
-            ->setReplyTo('ad_register@animedetour.com', 'Anime Detour Registration')
-            ->setTo($registration->getEmail())
-            ->setSender('noreply@animedetour.com')
-            ->setBody(
-                $this->templating->render(
-                    'email/confirmationemail.html.twig',
-                    $options
-                ),
-                'text/html'
-            )
-        ;
-        $didSend = $this->mailer->send($message);
-        //var_dump($didSend);
+        try {
+            $message = \Swift_Message::newInstance()
+                ->setSubject("Anime Detour {$registration->getEvent()->getYear()} Registration Confirmation")
+                ->setFrom('noreply@animedetour.com', 'Anime Detour IT')
+                ->setReplyTo('ad_register@animedetour.com', 'Anime Detour Registration')
+                ->setTo($registration->getEmail())
+                ->setSender('noreply@animedetour.com')
+                ->setBody(
+                    $this->templating->render(
+                        'email/confirmationemail.html.twig',
+                        $options
+                    ),
+                    'text/html'
+                );
+            $this->mailer->send($message);
+        } catch (\Exception $e) {
+
+        }
     }
 
     /**
@@ -94,20 +126,24 @@ class Email
             'error' => $error,
         ];
 
-        $message = \Swift_Message::newInstance()
-            ->setSubject("Registration Ingest Error")
-            ->setFrom('noreply@animedetour.com', 'Anime Detour IT')
-            ->setReplyTo('ad_register@animedetour.com', 'Anime Detour Registration')
-            ->setTo(['ad_register@animedetour.com', 'it@animedetour.com'])
-            ->setSender('noreply@animedetour.com')
-            ->setBody(
-                $this->templating->render(
-                    'email/emailError.html.twig',
-                    $options
-                ),
-                'text/html'
-            )
-        ;
-        $didSend = $this->mailer->send($message);
+        try {
+            $message = \Swift_Message::newInstance()
+                ->setSubject("Registration Ingest Error")
+                ->setFrom('noreply@animedetour.com', 'Anime Detour IT')
+                ->setReplyTo('ad_register@animedetour.com', 'Anime Detour Registration')
+                ->setTo(['ad_register@animedetour.com', 'it@animedetour.com'])
+                ->setSender('noreply@animedetour.com')
+                ->setBody(
+                    $this->templating->render(
+                        'email/emailError.html.twig',
+                        $options
+                    ),
+                    'text/html'
+                )
+            ;
+            $this->mailer->send($message);
+        } catch (\Exception $e) {
+
+        }
     }
 }
