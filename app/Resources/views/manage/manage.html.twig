@@ -393,7 +393,7 @@
         /*
          * Start Barcode checks
          */
-        JsonIsValidBarcodeURL = "/processbarcode";
+        JsonIsValidBarcodeURL = "{{ path('apiValidateBarcode') }}";
         function checkForBarcode(barcode) {
             if ( !isBarcodeStyle(barcode) ) {
                 return;

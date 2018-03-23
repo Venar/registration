@@ -71,6 +71,8 @@ doctrine:
             string_functions:
                 group_concat: DoctrineExtensions\Query\Mysql\GroupConcat
             datetime_functions:
+                day: DoctrineExtensions\Query\Mysql\Day
+                month: DoctrineExtensions\Query\Mysql\Month
                 year: DoctrineExtensions\Query\Mysql\Year
 
 # Swiftmailer Configuration

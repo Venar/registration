@@ -393,7 +393,7 @@ class RegistrationRepository extends EntityRepository
      * @param Event $event
      * @return Registration|null
      */
-    public function getFromConfirmation($confirmation, Event $event)
+    public function findFromConfirmation($confirmation, Event $event)
     {
         if (!$event) {
             $event = $this->getEntityManager()->getRepository(Event::class)->getCurrentEvent();
@@ -402,10 +402,87 @@ class RegistrationRepository extends EntityRepository
         $queryBuilder = $this->getEntityManager()->createQueryBuilder();
 
         $queryBuilder->select('r')
-            ->from('AppBundle:Registration', 'r')
-            ->where("r.confirmationnumber = :confirmationnumber")
+            ->from(Registration::class, 'r')
+            ->where("r.confirmationNumber = :confirmationNumber")
             ->andWhere('r.event = :event')
-            ->setParameter('confirmationnumber', $confirmation)
+            ->setParameter('confirmationNumber', $confirmation)
+            ->setParameter('event', $event->getId());
+
+        try {
+            return $queryBuilder->getQuery()->getOneOrNullResult();
+        } catch (NonUniqueResultException $e) {
+            return null;
+        }
+    }
+
+    /**
+     * @param String $registrationNumber
+     * @param String $badgeNumber
+     * @param String $confirmation
+     * @param Event $event
+     * @return Registration|null
+     */
+    public function findFromNumberAndConfirmation($registrationNumber, $badgeNumber, $confirmation, Event $event)
+    {
+        if (!$event) {
+            $event = $this->getEntityManager()->getRepository(Event::class)->getCurrentEvent();
+        }
+
+        $queryBuilder = $this->getEntityManager()->createQueryBuilder();
+
+        $queryBuilder->select('r')
+            ->from(Registration::class, 'r')
+            ->where("r.confirmationNumber LIKE :confirmationNumber")
+            ->innerJoin('r.badges', 'b')
+            ->innerJoin('b.badgeStatus', 'bs')
+            ->andWhere('r.number = :registrationNumber')
+            ->andWhere('b.number = :badgeNumber')
+            ->andWhere('bs.active = :active')
+            ->andWhere('r.event = :event')
+            ->setParameter('registrationNumber', $registrationNumber)
+            ->setParameter('badgeNumber', $badgeNumber)
+            ->setParameter('active', true)
+            ->setParameter('confirmationNumber', "$confirmation%")
+            ->setParameter('event', $event->getId());
+
+        try {
+            return $queryBuilder->getQuery()->getOneOrNullResult();
+        } catch (NonUniqueResultException $e) {
+            return null;
+        }
+    }
+
+    /**
+     * @param String $firstName
+     * @param String $lastName
+     * @param String $birthdayYear
+     * @param String $birthdayMonth
+     * @param String $birthdayDay
+     * @param Event $event
+     * @return Registration|null
+     */
+    public function findDriversLicenseInfo($firstName, $lastName,
+        $birthdayYear, $birthdayMonth, $birthdayDay, Event $event)
+    {
+        if (!$event) {
+            $event = $this->getEntityManager()->getRepository(Event::class)->getCurrentEvent();
+        }
+
+        $queryBuilder = $this->getEntityManager()->createQueryBuilder();
+
+        $queryBuilder->select('r')
+            ->from(Registration::class, 'r')
+            ->where("r.firstName = :firstName")
+            ->andWhere('r.lastName = :lastName')
+            ->andWhere('MONTH(r.birthday) = :birthdayMonth')
+            ->andWhere('DAY(r.birthday) = :birthdayDay')
+            ->andWhere('YEAR(r.birthday) = :birthdayYear')
+            ->andWhere('r.event = :event')
+            ->setParameter('firstName', $firstName)
+            ->setParameter('lastName', $lastName)
+            ->setParameter('birthdayMonth', $birthdayMonth)
+            ->setParameter('birthdayDay', $birthdayDay)
+            ->setParameter('birthdayYear', $birthdayYear)
             ->setParameter('event', $event->getId());
 
         try {
