@@ -24,7 +24,7 @@ easy_admin:
                     - email
                     - enabled
                     - lastLogin
-                    - { property: 'roles', type: 'choice', type_options: { multiple: true, choices: { 'Basic User': 'ROLE_USER', 'Merchandise': 'ROLE_MERCH', 'Volunteers': 'ROLE_VOLUNTEERS', 'Statistics':'ROLE_STATISTICS', 'Registration Subhead': 'ROLE_SUBHEAD', 'Admin': 'ROLE_ADMIN' } } }
+                    - { property: 'roles', type: 'choice', type_options: { multiple: true, choices: { 'Basic User': 'ROLE_USER', 'Merchandise': 'ROLE_MERCH', 'Volunteers': 'ROLE_VOLUNTEERS', 'Statistics':'ROLE_STATISTICS', 'Anime Detour Exec':'ROLE_EXEC', 'Registration Staff':'ROLE_REGSTAFF', 'Registration Subhead': 'ROLE_SUBHEAD', 'Admin': 'ROLE_ADMIN' } } }
                     - createdBy
                     - createdDate
                     - modifiedBy
@@ -45,7 +45,7 @@ easy_admin:
                     - { property: 'plainPassword', label: 'Password', type: 'password', type_options: { required: false } }
                     - { type: 'group', css_class: 'col-sm-12', label: 'Permissions' }
                     - { property: 'enabled' }
-                    - { property: 'roles', type: 'choice', type_options: { multiple: true, choices: { 'Basic User': 'ROLE_USER', 'Merchandise': 'ROLE_MERCH', 'Volunteers': 'ROLE_VOLUNTEERS', 'Statistics':'ROLE_STATISTICS', 'Registration Subhead': 'ROLE_SUBHEAD', 'Admin': 'ROLE_ADMIN' } } }
+                    - { property: 'roles', type: 'choice', type_options: { multiple: true, choices: { 'Basic User': 'ROLE_USER', 'Merchandise': 'ROLE_MERCH', 'Volunteers': 'ROLE_VOLUNTEERS', 'Statistics':'ROLE_STATISTICS', 'Anime Detour Exec':'ROLE_EXEC', 'Registration Staff':'ROLE_REGSTAFF', 'Registration Subhead': 'ROLE_SUBHEAD', 'Admin': 'ROLE_ADMIN' } } }
                 form_options: { validation_groups: ['Profile'] }
             new:
                 title: 'Add new User'
@@ -60,5 +60,5 @@ easy_admin:
                     - { property: 'plainPassword', label: 'Password', type: 'password', type_options: { required: false } }
                     - { type: 'group', css_class: 'col-sm-12', label: 'Permissions' }
                     - { property: 'enabled', type_options: { required: true } }
-                    - { property: 'roles', type: 'choice', type_options: { multiple: true, choices: { 'Basic User': 'ROLE_USER', 'Merchandise': 'ROLE_MERCH', 'Volunteers': 'ROLE_VOLUNTEERS', 'Registration Subhead': 'ROLE_SUBHEAD', 'Admin': 'ROLE_ADMIN' } } }
+                    - { property: 'roles', type: 'choice', type_options: { multiple: true, choices: { 'Basic User': 'ROLE_USER', 'Merchandise': 'ROLE_MERCH', 'Volunteers': 'ROLE_VOLUNTEERS', 'Registration Staff':'ROLE_REGSTAFF', 'Anime Detour Exec':'ROLE_EXEC', 'Registration Subhead': 'ROLE_SUBHEAD', 'Admin': 'ROLE_ADMIN' } } }
                 form_options: { validation_groups: ['Registration'] }
