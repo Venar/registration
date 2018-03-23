@@ -40,7 +40,7 @@ class ValidateController extends Controller
 
         $registration = $this->getDoctrine()
             ->getRepository(Registration::class)
-            ->getFromConfirmation($confirmation, $currentEvent);
+            ->findFromConfirmation($confirmation, $currentEvent);
         if ($registration instanceof Registration
             && strtolower(trim($registration->getLastName())) == strtolower(trim($lastName))
         ) {
