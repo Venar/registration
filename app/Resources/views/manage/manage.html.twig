@@ -382,13 +382,13 @@
         }
 
         var timeout;
-        $('input[type=text]').keypress(function() {
+        $('input[type=search]').keypress(function() {
             if(timeout) {
                 clearTimeout(timeout);
                 timeout = null;
             }
 
-            timeout = setTimeout(search_fn, 500)
+            timeout = setTimeout(search_fn, 100)
         });
         /*
          * Start Barcode checks
