@@ -14,7 +14,7 @@
             <h2>
                 <span style="float: left">
                     <a href="/registration/view/{{ registration.registrationId|default('') }}" class="btn btn-primary btn-sm">Back</a>&nbsp;-&nbsp;
-                    {{ registration.firstname }} {{ registration.lastname }} ({{ registration.number }})</span>
+                    {{ registration.firstName }} {{ registration.lastName }} ({{ registration.number }})</span>
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <span>
                     {% for badge in badges if badge.badgeStatus.active %}
@@ -46,7 +46,7 @@
             <h2>User Information</h2>
             <div class="info-row">
                 <span class="info-label">Full Name</span>
-                <span class="info-value">{{ registration.lastname }}, {{ registration.firstname }} {{ registration.middlename }}</span>
+                <span class="info-value">{{ registration.lastName }}, {{ registration.firstName }} {{ registration.middleName }}</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Birthday</span>
@@ -54,22 +54,22 @@
             </div>
             <div class="info-row">
                 <span class="info-label">Badge Name</span>
-                <span class="info-value">{{ registration.badgename }}</span>
+                <span class="info-value">{{ registration.badgeName }}</span>
             </div>
         </div>
         <div class="col-sm-4 registration-status">
             <h2>Registration Info</h2>
             <div class="info-row">
                 <span class="info-label">Type</span>
-                <span class="info-value">{{ registration.registrationtype.name }}</span>
+                <span class="info-value">{{ registration.registrationType.name }}</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Status</span>
-                <span class="info-value"><b>{{ registration.registrationstatus.status }}</b>: {{ registration.registrationstatus.description }}</span>
+                <span class="info-value"><b>{{ registration.registrationStatus.status }}</b>: {{ registration.registrationStatus.description }}</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Confirmation #:</span>
-                <span class="info-value">{{ registration.confirmationnumber }}</span>
+                <span class="info-value">{{ registration.confirmationNumber }}</span>
             </div>
         </div>
         <div class="col-sm-4 contact-info">

@@ -14,7 +14,7 @@
     <div class="row">
         <div class="col-sm-12">
             <h2 class="page-header">
-                {{ registration.event.year }} - {{ registration.firstname }} {{ registration.lastname }} ({{ registration.number }})
+                {{ registration.event.year }} - {{ registration.firstName }} {{ registration.lastName }} ({{ registration.number }})
             </h2>
         </div>
     </div>
@@ -161,10 +161,10 @@
                             <tbody>
                                 <tr>
                                     <th class="unique-color text-white">Full Name</th>
-                                    <td>{{ registration.lastname }}, {{ registration.firstname }} {{ registration.middlename }}</td>
+                                    <td>{{ registration.lastName }}, {{ registration.firstName }} {{ registration.middleName }}</td>
                                 </tr><tr>
                                     <th class="unique-color text-white">Badge Name</th>
-                                    <td>{{ registration.badgename }}</td>
+                                    <td>{{ registration.badgeName }}</td>
                                 </tr><tr>
                                     <th class="unique-color text-white">Birthday</th>
                                     <td>{{ registration.birthday|date("F j Y") }}</td>
@@ -287,11 +287,11 @@
                     </tr>
                     </thead>
                     <tbody>
-                        {% for event in history %}
+                        {% for historyInstance in history %}
                         <tr class="info">
-                            <td>{{ event.createdby.firstname }} {{ event.createdby.lastname }}</td>
-                            <td>{{ event.createddate|date('M d, Y g:i a') }}</td>
-                            <td>{{ event.changetext|raw }}</td>
+                            <td>{{ historyInstance.createdBy.firstName }} {{ historyInstance.createdBy.lastName }}</td>
+                            <td>{{ historyInstance.createdDate|date('M d, Y g:i a') }}</td>
+                            <td>{{ historyInstance.changeText|raw }}</td>
                         </tr>
                         {% endfor %}
                         {% if history is empty %}

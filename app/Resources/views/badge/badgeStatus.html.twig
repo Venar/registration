@@ -21,7 +21,7 @@
                 <h2>Information</h2>
                 <div class="info-row">
                     <span class="info-label">Full Name</span>
-                    <span class="info-value">{{ registration.lastname }}, {{ registration.firstname }} {{ registration.middlename }}</span>
+                    <span class="info-value">{{ registration.lastName }}, {{ registration.firstName }} {{ registration.middleName }}</span>
                 </div>
                 <div class="info-row">
                     <span class="info-label">Birthday</span>
@@ -29,26 +29,26 @@
                 </div>
                 <div class="info-row">
                     <span class="info-label">Badge Name</span>
-                    <span class="info-value">{{ registration.badgename }}</span>
+                    <span class="info-value">{{ registration.badgeName }}</span>
                 </div>
             </div>
             <div class="col-sm-4 registration-info">
                 <h2>Action</h2>
                 <div class="radio {inactiveDisable}">
                     <label>
-                        <input type="radio" name="badgeAction" id="badgeAction1" value="lost" {{ badge.badgestatus.active ? '' : 'disabled' }}>
+                        <input type="radio" name="badgeAction" id="badgeAction1" value="lost" {{ badge.badgeStatus.active ? '' : 'disabled' }}>
                         <b>Lost</b> Badge (Will generate a new badge)
                     </label>
                 </div>
                 <div class="radio {inactiveDisable}">
                     <label>
-                        <input type="radio" name="badgeAction" id="badgeAction2" value="revoked" {{ badge.badgestatus.active ? '' : 'disabled' }}>
+                        <input type="radio" name="badgeAction" id="badgeAction2" value="revoked" {{ badge.badgeStatus.active ? '' : 'disabled' }}>
                         <b>Revoke</b> Badge (No new badges will be made)
                     </label>
                 </div>
                 <div class="radio {activeDisable}">
                     <label>
-                        <input type="radio" name="badgeAction" id="badgeAction3" value="pickedup" {{ badge.badgestatus.active ? 'disabled' : '' }}>
+                        <input type="radio" name="badgeAction" id="badgeAction3" value="pickedup" {{ badge.badgeStatus.active ? 'disabled' : '' }}>
                         Re-instate Badge (Only use on revoked badges)
                     </label>
                 </div>

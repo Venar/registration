@@ -252,7 +252,7 @@ class EventBadgeType
      *
      * @return EventBadgeType
      */
-    public function setModifiedby(User $modifiedBy = null)
+    public function setModifiedBy(User $modifiedBy = null)
     {
         $this->modifiedBy = $modifiedBy;
 
