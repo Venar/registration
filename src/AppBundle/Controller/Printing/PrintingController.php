@@ -149,12 +149,17 @@ class PrintingController extends Controller
             return new Response($e->getMessage(), 500);
         }
 
+        $selectedEvent = $this->getDoctrine()->getRepository(Event::class)->getSelectedEvent();
         $group = $this->getDoctrine()->getRepository(Group::class)->find($groupId);
 
         /** @var Registration[] $registrations */
         $registrations = $group->getRegistrations();
 
         foreach ($registrations as $registration) {
+            $registrationEvent = $registration->getEvent();
+            if ($registrationEvent->getId() !== $selectedEvent->getId()) {
+                continue;
+            }
             $badges = $registration->getBadges();
             foreach ($badges as $badge) {
                 $this->addBadge($registration, $badge, $group->getName());
