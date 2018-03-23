@@ -9,8 +9,12 @@
 
 namespace AppBundle\Controller\Printing;
 
+use AppBundle\Entity\Badge;
 use AppBundle\Entity\BadgeType;
 use AppBundle\Entity\Event;
+use AppBundle\Entity\Registration;
+use AppBundle\Entity\RegistrationStatus;
+use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -27,7 +31,9 @@ class BadgeCSVListController extends Controller
     public function printingList($type)
     {
         $event = $this->getDoctrine()->getRepository(Event::class)->getSelectedEvent();
-        $queryBuilder = $this->get('doctrine.orm.default_entity_manager')->createQueryBuilder();
+        /** @var EntityManager $entityManager */
+        $entityManager = $this->get('doctrine.orm.default_entity_manager');
+        $queryBuilder = $entityManager->createQueryBuilder();
 
         $order = [];
 
@@ -69,49 +75,46 @@ class BadgeCSVListController extends Controller
         for ($i = 0; $i < count($badgeTypes); $i++) {
             if ($i == 0) {
                 $badgesSubQuery
-                    ->where("b2.badgetype = :type$i");
+                    ->where("b2.badgeType = :type$i");
             } else {
                 $badgesSubQuery
-                    ->orWhere("b2.badgetype = :type$i");
+                    ->orWhere("b2.badgeType = :type$i");
             }
             $queryBuilder->setParameter("type$i", $badgeTypes[$i]);
         }
         $badgesSubQueryDQL = $badgesSubQuery->getDQL();
 
         $registrationStatusSubQueryDQL = $this->get('doctrine.orm.default_entity_manager')->createQueryBuilder()
-            ->select('rs.registrationstatusId')
-            ->from('AppBundle\Entity\RegistrationStatus', 'rs')
+            ->select('rs.id')
+            ->from(RegistrationStatus::class, 'rs')
             ->where('rs.active = :active')
             ->getDQL();
 
         $queryBuilder
             ->select([
                 'r.number',
-                'r.badgename',
-                'r.firstname',
-                'r.lastname',
+                'r.badgeName',
+                'r.firstName',
+                'r.lastName',
                 'b.number as badgeNumber',
-                'bt.name as type',
-                'rg.name as regGroupName',
-                'r.confirmationnumber',
-                'ex.name as extra'
+                'bt.name as badgeType',
+                'g.name as groupName',
+                'r.confirmationNumber',
+                'e.name as extra'
             ])
-            ->from('AppBundle\Entity\Registration', 'r')
-            ->innerJoin('AppBundle\Entity\Badge', 'b', Join::WITH, 'b.registration = r.registrationId')
-            ->innerJoin('AppBundle\Entity\BadgeStatus', 'bs', Join::WITH, 'bs.badgestatusId = b.badgestatus')
-            ->innerJoin('AppBundle\Entity\BadgeType', 'bt', Join::WITH, 'bt.badgetypeId = b.badgetype')
-            ->leftJoin('AppBundle\Entity\Registrationreggroup', 'rrg', Join::WITH,
-                'rrg.registration = r.registrationId')
-            ->leftJoin('AppBundle\Entity\Group', 'rg', Join::WITH, 'rg.reggroupId = rrg.reggroup')
-            ->leftJoin('AppBundle\Entity\Registrationextra', 'rx', Join::WITH, 'rx.registration = r.registrationId')
-            ->leftJoin('AppBundle\Entity\Extra', 'ex', Join::WITH, 'rx.extra = ex.extraId')
-            ->where($queryBuilder->expr()->in('r.registrationstatus', $registrationStatusSubQueryDQL))
-            ->andWhere($queryBuilder->expr()->in('r.registrationId', $badgesSubQueryDQL))
+            ->from(Registration::class, 'r')
+            ->innerJoin('r.badges', 'b')
+            ->innerJoin('b.badgeStatus', 'bs')
+            ->innerJoin('b.badgeType', 'bt')
+            ->leftJoin('r.groups', 'g')
+            ->leftJoin('r.extras', 'e')
+            ->where($queryBuilder->expr()->in('r.registrationStatus', $registrationStatusSubQueryDQL))
+            ->andWhere($queryBuilder->expr()->in('r.id', $badgesSubQueryDQL))
             ->andWhere('r.event = :event')
-            ->andWhere('bs.active = :bsactive')
+            ->andWhere('bs.active = :bsActive')
             ->setParameter('event', $event)
             ->setParameter('active', true)
-            ->setParameter('bsactive', true);
+            ->setParameter('bsActive', true);
 
 
         if ($type != 'staff') {
@@ -119,25 +122,25 @@ class BadgeCSVListController extends Controller
 
             $allStaffBadges = $this->get('doctrine.orm.default_entity_manager')->createQueryBuilder()
                 ->select('IDENTITY(b3.registration)')
-                ->from('AppBundle:Badge', 'b3')
-                ->where("b3.badgetype = :stafftype")
+                ->from(Badge::class, 'b3')
+                ->where("b3.badgeType = :staffType")
                 ->innerJoin('b3.registration', 'b3r')
-                ->andWhere('b3r.event = :b3revent')
+                ->andWhere('b3r.event = :b3rEvent')
                 ->getDQL();
 
-            $queryBuilder->andWhere($queryBuilder->expr()->notIn('r.registrationId', $allStaffBadges));
-            $queryBuilder->setParameter('stafftype', $staffBadge)
-                ->setParameter('b3revent', $event);
+            $queryBuilder->andWhere($queryBuilder->expr()->notIn('r.id', $allStaffBadges));
+            $queryBuilder->setParameter('staffType', $staffBadge)
+                ->setParameter('b3rEvent', $event);
         }
 
         if ($show_group) {
-            $queryBuilder->andWhere($queryBuilder->expr()->isNotNull('rg.reggroupId'));
+            $queryBuilder->andWhere($queryBuilder->expr()->isNotNull('g.id'));
         } else {
-            $queryBuilder->andWhere($queryBuilder->expr()->isNull('rg.reggroupId'));
+            $queryBuilder->andWhere($queryBuilder->expr()->isNull('g.id'));
         }
 
         $order[] = ['r.number', 'ASC'];
-        $order[] = ['bt.badgetypeId', 'DESC'];
+        $order[] = ['bt.id', 'DESC'];
         for ($i = 0; $i < count($order); $i++) {
             if ($i == 0) {
                 $queryBuilder->orderBy($order[$i][0], $order[$i][1]);
@@ -147,7 +150,7 @@ class BadgeCSVListController extends Controller
         }
 
         $registrations = $queryBuilder
-            ->groupBy('r.registrationId')
+            ->groupBy('r.id')
             ->getQuery()
             ->getArrayResult();
 
@@ -161,10 +164,10 @@ class BadgeCSVListController extends Controller
         $fields = [
             'Badge',
             'Confirmation Number',
-            'LastName',
-            'FirstName',
-            'BadgeName',
-            'badgetype',
+            'Last Name',
+            'First Name',
+            'Badge Name',
+            'Badge Type',
             'Group',
             'Extra',
             'Signature',
@@ -174,13 +177,13 @@ class BadgeCSVListController extends Controller
 
         foreach ($registrations as $registration) {
             $regNumber = $registration['number'];
-            $regName = $registration['badgename'];
-            $firstName = $registration['firstname'];
-            $lastName = $registration['lastname'];
-            $badgeType = $registration['type'];
-            $groupName = $registration['regGroupName'];
+            $regName = $registration['badgeName'];
+            $firstName = $registration['firstName'];
+            $lastName = $registration['lastName'];
+            $badgeType = $registration['badgeType'];
+            $groupName = $registration['groupName'];
             $extra = $registration['extra'];
-            $confirmationNumber = $registration['confirmationnumber'];
+            $confirmationNumber = $registration['confirmationNumber'];
 
             $data = [
                 $regNumber,

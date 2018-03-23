@@ -5,14 +5,14 @@
  #
  # See the LICENSE file in the root of this project for details.
 #}
-<p>Hello <b>{{ registration.firstname }}</b>!</p>
+<p>Hello <b>{{ registration.firstName }}</b>!</p>
 <p>Thank you for registering for Anime Detour {{ registration.event.year }}!</p>
 <p>
-    Your confirmation number is {{ registration.confirmationnumber }}.&nbsp;&nbsp;
-    <img alt="{{ registration.confirmationnumber }}" src="{{ url }}">
+    Your confirmation number is {{ registration.confirmationNumber }}.&nbsp;&nbsp;
+    <img alt="{{ registration.confirmationNumber }}" src="{{ url }}">
 </p>
 
-<p>Anime Detour will take place from {{ registration.event.startdate|date("F j Y") }} to {{ registration.event.enddate|date("F j Y") }}.</p>
+<p>Anime Detour will take place from {{ registration.event.startDate|date("F j Y") }} to {{ registration.event.endDate|date("F j Y") }}.</p>
 
 <p>Badges will be issued at the convention. Please note that your confirmation number is for informational, trouble shooting,
     and transfer purposes only and cannot be used to pick up your badge. You will need to bring a government issued photo ID with your birth date

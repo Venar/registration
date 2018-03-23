@@ -750,7 +750,7 @@ class Registration
     }
 
     /**
-     * Get createdby
+     * Get createdBy
      *
      * @return \AppBundle\Entity\User
      */

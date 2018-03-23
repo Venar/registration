@@ -479,7 +479,7 @@ class Group
      *
      * @return Group
      */
-    public function setModifieddate($modifiedDate)
+    public function setModifiedDate($modifiedDate)
     {
         $this->modifiedDate = $modifiedDate;
 

@@ -387,7 +387,7 @@ class Event
      *
      * @return Event
      */
-    public function setModifieddate($modifiedDate)
+    public function setModifiedDate($modifiedDate)
     {
         $this->modifiedDate = $modifiedDate;
 
@@ -445,7 +445,7 @@ class Event
      *
      * @return Event
      */
-    public function setModifiedby(User $modifiedBy = null)
+    public function setModifiedBy(User $modifiedBy = null)
     {
         $this->modifiedBy = $modifiedBy;
 

@@ -242,7 +242,7 @@ class User extends BaseUser
      *
      * @return User
      */
-    public function setCreateddate($createdDate)
+    public function setCreatedDate($createdDate)
     {
         $this->createdDate = $createdDate;
 
@@ -254,7 +254,7 @@ class User extends BaseUser
      *
      * @return \DateTime
      */
-    public function getCreateddate()
+    public function getCreatedDate()
     {
         return $this->createdDate;
     }
