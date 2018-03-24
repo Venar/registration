@@ -304,7 +304,7 @@
                                id="birthDate"
                                name="birthDate"
                                class="form-control validate datepicker"
-                               value="{{ registration is not null ? registration.birthday|date('m/d') : '' }}"
+                               value="{{ registration is not null and registration.birthday ? registration.birthday|date('m/d') : '' }}"
                                placeholder="03/26"
                                required>
                         <label for="birthDate">
@@ -318,7 +318,7 @@
                                id="birthYear"
                                name="birthYear"
                                class="form-control validate"
-                               value="{{ registration is not null ? registration.birthday|date('Y') : '' }}"
+                               value="{{ registration is not null and registration.birthday ? registration.birthday|date('Y') : '' }}"
                                placeholder="2004"
                                required>
                         <label for="birthYear">

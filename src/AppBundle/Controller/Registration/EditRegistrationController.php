@@ -474,6 +474,11 @@ class EditRegistrationController extends Controller
             $returnJson['message'] = 'RegistrationStatus was not set.';
         }
 
+        if (!$request->request->has('lastName') || !$request->request->get('lastName')) {
+            $all_fields_sent = false;
+            $returnJson['message'] = 'Last name was not set.';
+        }
+
         $registrationType = $this->getDoctrine()->getRepository(RegistrationType::class)
             ->getRegistrationTypeFromType($request->request->get('RegistrationType'));
         if (!$registrationType) {
@@ -579,9 +584,14 @@ class EditRegistrationController extends Controller
                     try {
                         $newDate = new \DateTime($tmpfield);
                         if ($registration->getRegistrationId()) {
-                            $oldDate = $registration->getBirthday()->format('m/d/y');
-                            if ($oldDate != $newDate->format('m/d/y')) {
-                                $history .= "$field: $oldDate => {$newDate->format('m/d/y')}<br>";
+                            $setBirthDate = $registration->getBirthday();
+                            if ($setBirthDate) {
+                                $oldDate = $setBirthDate->format('m/d/y');
+                                if ($oldDate != $newDate->format('m/d/y')) {
+                                    $history .= "$field: $oldDate => {$newDate->format('m/d/y')}<br>";
+                                }
+                            } else {
+                                $newDate = $setBirthDate;
                             }
                         }
                         $registration->setBirthday($newDate);
@@ -650,6 +660,15 @@ class EditRegistrationController extends Controller
                     ->getRepository(Registration::class)
                     ->generateNumber($registration);
                 $registration->setNumber($regNumber);
+            } else {
+                $regNumber = $registration->getNumber();
+                // If the first letter of the last name changes, change the badge number
+                if (substr($regNumber, 0, 1) !== substr($registration->getLastName(), 0, 1)) {
+                    $regNumber = substr($registration->getLastName(), 0, 1)
+                        . substr($regNumber, -4, 4);
+                    $registration->setNumber($regNumber);
+                }
+
             }
 
             if ($transferredFrom) {
