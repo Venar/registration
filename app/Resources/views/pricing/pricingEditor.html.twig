@@ -1,0 +1,190 @@
+{##
+ # Copyright (c) 2018. Anime Twin Cities, Inc.
+ #
+ # This project, including all of the files and their contents, is licensed under the terms of MIT License
+ #
+ # See the LICENSE file in the root of this project for details.
+#}
+{% extends 'detour.html.twig' %}
+
+{% block body %}
+<div class="container bg-white">
+    <div class="row">
+        <div class="col-sm-12">
+            <h2>Pricing Editor for {{ event.year }}</h2>
+        </div>
+    </div>
+    {% if event.preRegistrationStart is null or event.preRegistrationEnd is null %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card text-center w-100">
+                <div class="card-header danger-color-dark white-text">
+                    Selected Event Year missing settings
+                </div>
+                <div class="card-body">
+                    <a href="{{ path('admin') }}">
+                        <h4 class="card-title danger-text">
+                            Edit current selected({{ event.year }}) event
+                        </h4>
+                    </a>
+                    <p class="card-text">
+                        Event does not have Pre-Registration Start/End configured. These must be set to set pricing data.
+                    </p>
+                </div>
+                <div class="card-footer text-muted danger-color-dark white-text">
+                    <p class="mb-0">
+
+                    </p>
+                </div>
+            </div>
+            <br>
+        </div>
+    </div>
+    {% else %}
+    {#
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>Pre-registration: {{ event.preRegistrationStart|date('M jS Y') }}
+                - {{ event.preRegistrationEnd|date('M jS Y')}}</h3>
+        </div>
+    </div>
+    <br>
+    #}
+
+    <div class="row">
+        <div class="col-sm-9">
+            <table class="table table-striped table-sm">
+                <thead class="unique-color">
+                    <tr class="text-white">
+                        <th style="width:20%">Badge Type</th>
+                        <th style="width:20%" class="text-left">|<-- {{ event.preRegistrationStart|date('M jS Y') }}</th>
+                        <th style="width:40%" class="text-center">Schedule</th>
+                        <th style="width:20%" class="text-right">{{ event.endDate|date('M jS Y') }} -->|</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for badgeType in badgeTypes %}
+                    <tr id="badgeType_row_{{ badgeType.name }}">
+                        <td>{{ badgeType.description }}</td>
+                        <td colspan="3" id="badgeType_td_{{ badgeType.name }}">
+                            {#
+                            <a href="javascript:void(0);">
+                                <div style="width: 100%" class="rgba-stylish-strong text-white text-center">
+                                    <i class="fas fa-plus-circle"></i>
+                                </div>
+                            </a>
+                            #}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-sm-3" id="editorPanel" style="display: none">
+            <div id="editorHeader" class="unique-color text-white" style="padding: .45rem; font-weight: bolder"></div>
+            <form>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="md-form">
+                            <input type="date" id="name" name="name" class="form-control">
+                            <label for="name" class="active">Start Date</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="md-form">
+                            <input type="date" id="name" name="name" class="form-control">
+                            <label for="name" class="active">End Date</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="md-form">
+                            <input type="number" id="name" name="name" class="form-control">
+                            <label for="name" class="">Price (in USD)</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="md-form">
+                            <input type="text" id="name" name="name" class="form-control">
+                            <label for="name" class="">Description</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="text-center py-4 mt-3">
+                            <button class="btn btn-warning" type="button">Add</button>
+                            <button id="editorCancel" class="btn btn-grey" type="button">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    var pricingStart = {{ event.preRegistrationStart|date('U') }};
+    var pricingEnd = {{ event.endDate|date('U') }};
+    var maxTime = pricingEnd - pricingStart;
+    var badgeTypes = {{ badgeTypeNames|json_encode|raw }};
+    var badgeDescription = {{ badgeTypeDescriptions|json_encode|raw }};
+    var pricing = {{ pricing|json_encode|raw }};
+
+    $( document ).ready(function() {
+        for (var i = 0, length = badgeTypes.length; i < length; i++) {
+            var badgeName = badgeTypes[i];
+            var badgePricing = pricing[badgeName];
+
+            if (badgePricing.pricing.length === 0) {
+                var aTagId = 'a_empty_'+badgeName;
+                var aTagInfo = {
+                    href: 'javascript:void(0);',
+                    id: aTagId,
+                    badgeName: badgeName,
+                    priceStart: pricingStart,
+                    priceEnd: pricingEnd,
+                    description: '',
+                    price: 0
+                };
+                var aTag = $('<a>', aTagInfo).append(
+                    $('<div>', {style: 'width: 100%;border: 1px solid black;', class: 'rgba-stylish-strong text-white text-center pricingBlock'}).append(
+                        $('<i>', {class: 'fas fa-plus-circle'})
+                    )
+                );
+                var badgeTypeTd = $('#badgeType_td_'+badgeName);
+
+                badgeTypeTd.html('');
+                badgeTypeTd.append(aTag);
+                //$('#badgeType_td_'+badgeName).append(aTag.clone());
+                $('#a_empty_'+badgeName).bind( "click", {
+                    aTagId: aTagId,
+                    badgeName: badgeName
+                }, function( event ) {
+                    $('#editorHeader').html('New ' + badgeDescription[event.data.badgeName] + ' price');
+                    $('#editorPanel').show();
+                });
+            } else {
+                // loop
+            }
+        }
+
+        $('#editorCancel').click(function () {
+            $('#editorPanel').hide();
+        })
+    });
+</script>
+<style>
+    .pricingBlock {
+        float: left;
+        border: 1px solid;
+    }
+</style>
+{% endblock %}
