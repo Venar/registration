@@ -40,6 +40,27 @@ class BadgeType
     private $description;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="color", type="string", length=255, nullable=false)
+     */
+    private $color;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="staff", type="string", length=255, nullable=false)
+     */
+    private $staff;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="sponsor", type="string", length=255, nullable=false)
+     */
+    private $sponsor;
+
+    /**
      * One Product has Many Features.
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\EventBadgeType", mappedBy="badgeType")
      */
@@ -140,6 +161,54 @@ class BadgeType
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * @return string
+     */
+    public function getColor(): string
+    {
+        return $this->color;
+    }
+
+    /**
+     * @param string $color
+     */
+    public function setColor(string $color): void
+    {
+        $this->color = $color;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isStaff(): bool
+    {
+        return $this->staff;
+    }
+
+    /**
+     * @param bool $staff
+     */
+    public function setStaff(bool $staff): void
+    {
+        $this->staff = $staff;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSponsor(): bool
+    {
+        return $this->sponsor;
+    }
+
+    /**
+     * @param bool $sponsor
+     */
+    public function setSponsor(bool $sponsor): void
+    {
+        $this->sponsor = $sponsor;
     }
 
     /**
