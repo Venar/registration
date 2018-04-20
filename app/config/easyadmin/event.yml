@@ -12,9 +12,10 @@ easy_admin:
                     - { property: 'preRegistrationStart', format: 'M jS Y', type_options: { required: false } }
                     - { property: 'preRegistrationEnd', format: 'M jS Y', type_options: { required: false } }
                     - { property: 'attendanceCap' }
+                    - { property: 'active', type: 'boolean' }
             form:
                 actions:
-                    - { name: 'makeActive', icon: 'plus-square' }
+                    - { name: 'makeActive', label: 'Make Active Year', css_class: 'btn btn-info', icon: 'calendar' }
                 fields:
                     - { property: 'year' }
                     - {

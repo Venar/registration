@@ -42,23 +42,23 @@ class BadgeType
     /**
      * @var string
      *
-     * @ORM\Column(name="color", type="string", length=255, nullable=false)
+     * @ORM\Column(name="color", type="string", length=255, nullable=true)
      */
     private $color;
 
     /**
      * @var boolean
      *
-     * @ORM\Column(name="staff", type="string", length=255, nullable=false)
+     * @ORM\Column(name="staff", type="boolean", length=255, nullable=false)
      */
-    private $staff;
+    private $staff = '0';
 
     /**
      * @var boolean
      *
-     * @ORM\Column(name="sponsor", type="string", length=255, nullable=false)
+     * @ORM\Column(name="sponsor", type="boolean", length=255, nullable=false)
      */
-    private $sponsor;
+    private $sponsor = '0';
 
     /**
      * One Product has Many Features.
@@ -116,6 +116,42 @@ class BadgeType
     }
 
     /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId(int $id): void
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * Get modifiedDate
+     *
+     * @return \DateTime
+     */
+    public function getModifiedDate()
+    {
+        return $this->modifiedDate;
+    }
+
+    /**
+     * Get badgeTypeId
+     *
+     * @return integer
+     */
+    public function getBadgeTypeId()
+    {
+        return $this->id;
+    }
+
+    /**
      * Set name
      *
      * @param string $name
@@ -166,7 +202,7 @@ class BadgeType
     /**
      * @return string
      */
-    public function getColor(): string
+    public function getColor(): ?string
     {
         return $this->color;
     }
@@ -174,7 +210,7 @@ class BadgeType
     /**
      * @param string $color
      */
-    public function setColor(string $color): void
+    public function setColor(?string $color): void
     {
         $this->color = $color;
     }
@@ -273,26 +309,6 @@ class BadgeType
         $this->modifiedDate = $modifiedDate;
 
         return $this;
-    }
-
-    /**
-     * Get modifiedDate
-     *
-     * @return \DateTime
-     */
-    public function getModifiedDate()
-    {
-        return $this->modifiedDate;
-    }
-
-    /**
-     * Get badgeTypeId
-     *
-     * @return integer
-     */
-    public function getBadgeTypeId()
-    {
-        return $this->id;
     }
 
     /**
