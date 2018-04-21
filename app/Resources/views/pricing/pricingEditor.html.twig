@@ -113,6 +113,8 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="text-center py-4 mt-3">
+                            <input type="hidden" id="currentBadgeType" name="currentBadgeType" value="">
+                            <input type="hidden" id="currentPricingKey" name="currentPricingKey" value="">
                             <button id="editorSave" class="btn btn-warning btn-sm" type="button">Add</button>
                             <button id="editorCancel" class="btn btn-grey btn-sm" type="button">Cancel</button>
                             <button id="editorDelete" class="btn btn-danger btn-sm" type="button" style="display: none">Delete</button>
@@ -143,7 +145,7 @@
         addPanel(badgeName, start, end, count, 'blank');
     };
 
-    var addPanel = function(badgeName, start, end, count, type, price, description) {
+    var addPanel = function(badgeName, start, end, count, type, pricingKey, description) {
         var aTagId = 'a_'+badgeName + count;
         var aTagInfo = {
             href: 'javascript:void(0);',
@@ -185,7 +187,7 @@
             count: count,
             priceStart: start,
             priceEnd: end,
-            price: price,
+            price: type,
             description: description,
             type: type
         }, function( event ) {
@@ -197,6 +199,9 @@
             var labelDescription = $('#descriptionLabel');
             var editorSave = $('#editorSave');
             var editorDelete = $('#editorDelete');
+
+            $('#currentPricingKey').val(pricingKey);
+            $('#currentBadgeType').val(event.data.badgeName);
 
             var header = 'New ' + badgeDescription[event.data.badgeName]['name'] + ' price';
             fieldPriceStart.val('');
@@ -239,37 +244,70 @@
         return padding.substring(0, padding.length - string.length) + string
     };
 
+    var displayPricingForBadgeType = function(badgeName) {
+        var badgePricing = pricing[badgeName];
+
+        var badgeTypeTd = $('#badgeType_td_' + badgeName);
+        badgeTypeTd.html('');
+        if (badgePricing.pricingKeys.length === 0 || jQuery.isEmptyObject(badgePricing.pricing)) {
+            addBlankPanel(badgeName, pricingStart, pricingEnd, 0 + 'blank');
+        } else {
+            var lastPriceChange = pricingStart;
+            for (var j = 0, pricingLength = badgePricing.pricingKeys.length; j < pricingLength; j++) {
+                var pricingKey = badgePricing.pricingKeys[j];
+                var pricePoint = badgePricing.pricing[pricingKey];
+                if (lastPriceChange < pricePoint.start) {
+                    addBlankPanel(badgeName, lastPriceChange, pricePoint.start, j + 'blank');
+                }
+                addPanel(badgeName, pricePoint.start, pricePoint.end, j, pricePoint.price, pricingKey, pricePoint.description);
+                lastPriceChange = pricePoint.end;
+            }
+            if (lastPriceChange < pricingEnd) {
+                addBlankPanel(badgeName, lastPriceChange, pricingEnd, 'endblank');
+            }
+        }
+    };
+
+    var removeValueFromArray = function(array, value) {
+        var index = array.indexOf(parseInt(value));
+        if (index > -1) {
+            array = array.splice((index+1), 1);
+        }
+
+        return array;
+    };
+
+    var deletePricePoint = function(pricingKey, badgeType) {
+        var badgePricing = pricing[badgeType];
+        pricing[badgeType]["pricingKeys"] = removeValueFromArray(badgePricing["pricingKeys"], pricingKey);
+        delete badgePricing["pricing"][pricingKey];
+        displayPricingForBadgeType(badgeType);
+        $('#editorPanel').hide();
+    };
+
     $( document ).ready(function() {
         for (var i = 0, length = badgeTypes.length; i < length; i++) {
             var badgeName = badgeTypes[i];
-            var badgePricing = pricing[badgeName];
-
-            if (badgePricing.pricingKeys.length === 0) {
-                addBlankPanel(badgeName, pricingStart, pricingEnd, 0 + 'blank');
-            } else {
-                var lastPriceChange = pricingStart;
-
-                var badgeTypeTd = $('#badgeType_td_'+badgeName);
-                badgeTypeTd.html('');
-                for (var j = 0, pricingLength = badgePricing.pricingKeys.length; j < pricingLength; j++) {
-                    var pricingKey = badgePricing.pricingKeys[j];
-                    var pricePoint = badgePricing.pricing[pricingKey];
-                    if (lastPriceChange < pricePoint.start) {
-                        addBlankPanel(badgeName, lastPriceChange, pricePoint.start, j + 'blank');
-                    }
-                    addPanel(badgeName, pricePoint.start, pricePoint.end, j, pricePoint.price, pricePoint.price, pricePoint.description);
-                    lastPriceChange = pricePoint.end;
-                }
-                if (lastPriceChange < pricingEnd) {
-                    addBlankPanel(badgeName, lastPriceChange, pricingEnd, 'endblank');
-                }
-            }
+            displayPricingForBadgeType(badgeName);
         }
 
         $('#editorCancel').click(function () {
             $('#editorPanel').hide();
-        })
+        });
+
+        $('#editorDelete').click(function() {
+            var pricingKey = $('#currentPricingKey').val();
+            var badgeType = $('#currentBadgeType').val();
+            deletePricePoint(pricingKey, badgeType);
+        });
     });
+
+    // Array Remove - By John Resig (MIT Licensed)
+    Array.prototype.remove = function(from, to) {
+        var rest = this.slice((to || from) + 1 || this.length);
+        this.length = from < 0 ? this.length + from : from;
+        return this.push.apply(this, rest);
+    };
 </script>
 <style>
     .pricingBlock {
