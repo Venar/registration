@@ -30,17 +30,23 @@ class PricingController extends Controller
 
         $parameters['event'] = $this->getDoctrine()->getRepository(Event::class)->getSelectedEvent();
 
-        $parameters['badgeTypes'] = $this->getDoctrine()->getRepository(BadgeType::class)->findAll();
+        $parameters['badgeTypes'] = $this->getDoctrine()->getRepository(BadgeType::class)->findBy([], ['description' => 'ASC']);
 
         $parameters['pricing'] = [];
         $parameters['badgeTypeNames'] = [];
         $parameters['badgeTypeDescriptions'] = [];
+        $parameters['displayBadgeTypes'] = [];
+        $emptyBadgeTypes = [];
         foreach ($parameters['badgeTypes'] as $badgeType) {
             $parameters['badgeTypeNames'][] = $badgeType->getName();
-            $parameters['badgeTypeDescriptions'][$badgeType->getName()] = $badgeType->getDescription();
+            $parameters['badgeTypeDescriptions'][$badgeType->getName()] = [
+                'color' => $badgeType->getColor(),
+                'name' => $badgeType->getDescription(),
+            ];
             $pricing = $this->getDoctrine()->getRepository(Pricing::class)->getPricingForBadgeType($badgeType);
 
             $pricingArray = [];
+            $pricingKeys = [];
             foreach ($pricing as $price) {
                 $tmp = [
                     'id' => $price->getId(),
@@ -50,13 +56,25 @@ class PricingController extends Controller
                     'price' => $price->getPrice(),
                     'description' => $price->getDescription(),
                 ];
-                $pricingArray[] = $tmp;
+                $pricingArray[$price->getPricingBegin()->format('U')] = $tmp;
+                $pricingKeys[] = (int) $price->getPricingBegin()->format('U');
             }
 
             $tmp = [
                 'pricing' => $pricingArray,
+                'pricingKeys' => $pricingKeys,
             ];
             $parameters['pricing'][$badgeType->getName()] = $tmp;
+
+            if (count($pricingArray) > 0) {
+                $parameters['displayBadgeTypes'][] = $badgeType;
+            } else {
+                $emptyBadgeTypes[] = $badgeType;
+            }
+        }
+
+        foreach ($emptyBadgeTypes as $badgeType) {
+            $parameters['displayBadgeTypes'][] = $badgeType;
         }
 
         return $this->render('pricing/pricingEditor.html.twig', $parameters);

@@ -52,7 +52,7 @@
     #}
 
     <div class="row">
-        <div class="col-sm-9">
+        <div class="col-sm-8">
             <table class="table table-striped table-sm">
                 <thead class="unique-color">
                     <tr class="text-white">
@@ -63,30 +63,24 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for badgeType in badgeTypes %}
+                    {% for badgeType in displayBadgeTypes %}
                     <tr id="badgeType_row_{{ badgeType.name }}">
                         <td>{{ badgeType.description }}</td>
                         <td colspan="3" id="badgeType_td_{{ badgeType.name }}">
-                            {#
-                            <a href="javascript:void(0);">
-                                <div style="width: 100%" class="rgba-stylish-strong text-white text-center">
-                                    <i class="fas fa-plus-circle"></i>
-                                </div>
-                            </a>
-                            #}
+                        <td colspan="3" id="badgeType_td_{{ badgeType.name }}">
                         </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
-        <div class="col-sm-3" id="editorPanel" style="display: none">
+        <div class="col-sm-4" id="editorPanel" style="display: none">
             <div id="editorHeader" class="unique-color text-white" style="padding: .45rem; font-weight: bolder"></div>
             <form>
                 <div class="row">
                     <div class="col-md-12">
                         <div class="md-form">
-                            <input type="date" id="name" name="name" class="form-control">
+                            <input type="date" id="priceStart" name="priceStart" class="form-control">
                             <label for="name" class="active">Start Date</label>
                         </div>
                     </div>
@@ -94,7 +88,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="md-form">
-                            <input type="date" id="name" name="name" class="form-control">
+                            <input type="date" id="priceEnd" name="priceEnd" class="form-control">
                             <label for="name" class="active">End Date</label>
                         </div>
                     </div>
@@ -102,16 +96,16 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="md-form">
-                            <input type="number" id="name" name="name" class="form-control">
-                            <label for="name" class="">Price (in USD)</label>
+                            <input type="number" id="price" name="price" class="form-control">
+                            <label for="name" id="priceLabel">Price (in USD)</label>
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
                         <div class="md-form">
-                            <input type="text" id="name" name="name" class="form-control">
-                            <label for="name" class="">Description</label>
+                            <input type="text" id="description" name="description" class="form-control">
+                            <label for="name" id="descriptionLabel">Description</label>
                         </div>
                     </div>
                 </div>
@@ -119,8 +113,9 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="text-center py-4 mt-3">
-                            <button class="btn btn-warning" type="button">Add</button>
-                            <button id="editorCancel" class="btn btn-grey" type="button">Cancel</button>
+                            <button id="editorSave" class="btn btn-warning btn-sm" type="button">Add</button>
+                            <button id="editorCancel" class="btn btn-grey btn-sm" type="button">Cancel</button>
+                            <button id="editorDelete" class="btn btn-danger btn-sm" type="button" style="display: none">Delete</button>
                         </div>
                     </div>
                 </div>
@@ -138,41 +133,136 @@
     var badgeDescription = {{ badgeTypeDescriptions|json_encode|raw }};
     var pricing = {{ pricing|json_encode|raw }};
 
+     var getRandomizer = function(bottom, top) {
+        return function() {
+            return Math.floor( Math.random() * ( 1 + top - bottom ) );
+        }
+    };
+
+    var addBlankPanel = function(badgeName, start, end, count) {
+        addPanel(badgeName, start, end, count, 'blank');
+    };
+
+    var addPanel = function(badgeName, start, end, count, type, price, description) {
+        var aTagId = 'a_'+badgeName + count;
+        var aTagInfo = {
+            href: 'javascript:void(0);',
+            id: aTagId,
+            badgeName: badgeName,
+            priceStart: pricingStart,
+            priceEnd: pricingEnd,
+            description: '',
+            price: 0
+        };
+
+        var pricingTime = end - start;
+
+        var width = (pricingTime/maxTime) * 100;
+        var color = 'rgba(62,69,81,.7);';
+        if (type !== 'blank' && badgeDescription[badgeName]['color'] !== null) {
+            color = badgeDescription[badgeName]['color'];
+        }
+        var style = 'width: '+width+'%;border: 1px solid black; background-color: '+color+';';
+        var barLabel = '';
+        var icon = 'fas fa-plus-circle';
+        if (type !== 'blank') {
+            barLabel = '$' + type + ' ';
+            icon = 'fas fa-edit';
+        }
+        var divClass = 'text-white text-center pricingBlock';
+        var divId = 'div_'+badgeName + count;
+        var aTag = $('<a>', aTagInfo).append(
+            $('<div>', {style: style, class: divClass, id: divId}).append(barLabel).append(
+                $('<i>', {class: icon})
+            )
+        );
+        var badgeTypeTd = $('#badgeType_td_'+badgeName);
+
+        badgeTypeTd.append(aTag);
+        $('#a_'+badgeName + count).bind( "click", {
+            aTagId: aTagId,
+            badgeName: badgeName,
+            count: count,
+            priceStart: start,
+            priceEnd: end,
+            price: price,
+            description: description,
+            type: type
+        }, function( event ) {
+            var fieldPriceStart = $('#priceStart');
+            var fieldPriceEnd = $('#priceEnd');
+            var fieldPrice = $('#price');
+            var labelPrice = $('#priceLabel');
+            var fieldDescription = $('#description');
+            var labelDescription = $('#descriptionLabel');
+            var editorSave = $('#editorSave');
+            var editorDelete = $('#editorDelete');
+
+            var header = 'New ' + badgeDescription[event.data.badgeName]['name'] + ' price';
+            fieldPriceStart.val('');
+            fieldPriceEnd.val('');
+            fieldPrice.val('');
+            fieldDescription.val('');
+            labelPrice.removeClass('active');
+            labelDescription.removeClass('active');
+            editorSave.html('Add');
+            editorDelete.hide();
+            if (type !== 'blank') {
+                header = 'Edit ' + badgeDescription[event.data.badgeName]['name'] + ' price';
+                fieldPriceStart.val(epochToDateField(event.data.priceStart));
+                fieldPriceEnd.val(epochToDateField(event.data.priceEnd));
+                fieldPrice.val(event.data.price);
+                labelPrice.addClass('active');
+                fieldDescription.val(event.data.description);
+                labelDescription.addClass('active');
+                editorSave.html('Save');
+                editorDelete.show();
+            }
+
+            $('#editorHeader').html(header);
+            $('#editorPanel').show();
+        });
+    };
+
+    var epochToDateField = function(epochTime) {
+        var date = new Date(epochTime*1000);
+        var year = date.getFullYear();
+        var month = padZeroLeft(date.getMonth() + 1);
+        var day = padZeroLeft(date.getDate());
+
+        return year + '-' + month + '-' + day;
+    };
+
+    var padZeroLeft = function(original) {
+        var string = "" + original;
+        var padding = "00";
+        return padding.substring(0, padding.length - string.length) + string
+    };
+
     $( document ).ready(function() {
         for (var i = 0, length = badgeTypes.length; i < length; i++) {
             var badgeName = badgeTypes[i];
             var badgePricing = pricing[badgeName];
 
-            if (badgePricing.pricing.length === 0) {
-                var aTagId = 'a_empty_'+badgeName;
-                var aTagInfo = {
-                    href: 'javascript:void(0);',
-                    id: aTagId,
-                    badgeName: badgeName,
-                    priceStart: pricingStart,
-                    priceEnd: pricingEnd,
-                    description: '',
-                    price: 0
-                };
-                var aTag = $('<a>', aTagInfo).append(
-                    $('<div>', {style: 'width: 100%;border: 1px solid black;', class: 'rgba-stylish-strong text-white text-center pricingBlock'}).append(
-                        $('<i>', {class: 'fas fa-plus-circle'})
-                    )
-                );
-                var badgeTypeTd = $('#badgeType_td_'+badgeName);
-
-                badgeTypeTd.html('');
-                badgeTypeTd.append(aTag);
-                //$('#badgeType_td_'+badgeName).append(aTag.clone());
-                $('#a_empty_'+badgeName).bind( "click", {
-                    aTagId: aTagId,
-                    badgeName: badgeName
-                }, function( event ) {
-                    $('#editorHeader').html('New ' + badgeDescription[event.data.badgeName] + ' price');
-                    $('#editorPanel').show();
-                });
+            if (badgePricing.pricingKeys.length === 0) {
+                addBlankPanel(badgeName, pricingStart, pricingEnd, 0 + 'blank');
             } else {
-                // loop
+                var lastPriceChange = pricingStart;
+
+                var badgeTypeTd = $('#badgeType_td_'+badgeName);
+                badgeTypeTd.html('');
+                for (var j = 0, pricingLength = badgePricing.pricingKeys.length; j < pricingLength; j++) {
+                    var pricingKey = badgePricing.pricingKeys[j];
+                    var pricePoint = badgePricing.pricing[pricingKey];
+                    if (lastPriceChange < pricePoint.start) {
+                        addBlankPanel(badgeName, lastPriceChange, pricePoint.start, j + 'blank');
+                    }
+                    addPanel(badgeName, pricePoint.start, pricePoint.end, j, pricePoint.price, pricePoint.price, pricePoint.description);
+                    lastPriceChange = pricePoint.end;
+                }
+                if (lastPriceChange < pricingEnd) {
+                    addBlankPanel(badgeName, lastPriceChange, pricingEnd, 'endblank');
+                }
             }
         }
 
